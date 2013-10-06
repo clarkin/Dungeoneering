@@ -54,12 +54,17 @@ package
 		public var treasure_tile:Tile;
 		public var treasure_tile_linked:Boolean = false;
 		
+		public var hero:Hero;
+		
 		override public function create():void {
 			//FlxG.visualDebug = true;
 			FlxG.camera.setBounds(0, 0, 800, 600);
 			FlxG.worldBounds = new FlxRect(0, 0, 800, 600);
 			
 			tileManager = new TileManager();
+			
+			hero = new Hero(starting_point.x, starting_point.y - Tile.TILESIZE);
+			hero.is_taking_turn = true;
 			
 			treasure_tile = new Tile("hint_treasure_room");
 			var rand_x:int = Math.floor(Math.random() * 8) - 3;
@@ -68,10 +73,12 @@ package
 			
 			var starting_tile:Tile = new Tile("corr_dead1", starting_point.x, starting_point.y);
 			tiles.add(starting_tile);
+			hero.setCurrentTile(starting_tile);
 			starting_tile = new Tile("corr_straight1", starting_point.x, starting_point.y - Tile.TILESIZE);
 			tiles.add(starting_tile);
 			starting_tile = new Tile("corr_fourway");
 			addTileAt(starting_tile, starting_point.x, starting_point.y - Tile.TILESIZE - Tile.TILESIZE);
+			hero.setMovingToTile(starting_tile);
 			
 			var blank_tile:Tile;
 			var i:int;
@@ -171,6 +178,7 @@ package
 			sndSwordkill = new WavSound(new WAVswordkill() as ByteArray);
 
 			add(tiles);
+			add(hero);
 			add(highlights);
 			add(guiGroup);
 			add(explorationChoice);
@@ -196,7 +204,7 @@ package
 		}
 		
 		public function checkMouseClick():void {
-			if (FlxG.mouse.justReleased()) {
+			if (!hero.is_taking_turn && FlxG.mouse.justReleased()) {
 				var clicked_at:FlxPoint = FlxG.mouse.getWorldPosition();
 				if (choosingTile) {
 					for each (var explorationTile:Tile in explorationTiles.members) {
@@ -271,7 +279,9 @@ package
 				sndFootsteps.play();
 			}
 			
-			addTileAt(tile, choosingHighlight.x, choosingHighlight.y);
+			var justAdded:Tile = addTileAt(tile, choosingHighlight.x, choosingHighlight.y);
+			//colm 
+			hero.setMovingToTile(justAdded);
 			choosingHighlight.kill();
 		}
 		
@@ -321,7 +331,7 @@ package
 			explorationChoice.visible = true;		
 		}
 		
-		public function addTileAt(tile:Tile, X:int, Y:int):void {
+		public function addTileAt(tile:Tile, X:int, Y:int):Tile {
 			tile.x = X;
 			tile.y = Y;
 			tiles.add(tile);
@@ -369,7 +379,7 @@ package
 					
 				}
 			}
-			
+			return tile;
 		}
 		
 		public function addHighlight(X:int, Y:int, from_direction:int):void {
