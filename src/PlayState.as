@@ -37,6 +37,7 @@ package
 		public var guiGroup:FlxGroup = new FlxGroup();
 		public var questionMarks:FlxSprite;
 		public var explorationTiles:FlxGroup = new FlxGroup();
+		public var cardsInHand:FlxGroup = new FlxGroup();
 		
 		public static const starting_point:Point = new Point(358, 578);
 		
@@ -169,6 +170,11 @@ package
 			player_life_label.setFormat("Popup", 30, 0x5C3425, "right", 0x000000);
 			guiGroup.add(player_life_label);
 			
+			var card:Card = new Card(50, 100);
+			cardsInHand.add(card);
+			card = new Card(200, 100);
+			cardsInHand.add(card);
+			
 			sndCheer = new WavSound(new WAVcheer() as ByteArray);
 			sndCoins = new WavSound(new WAVcoins() as ByteArray);
 			sndDeathscream = new WavSound(new WAVdeathscream() as ByteArray);
@@ -181,6 +187,7 @@ package
 			add(hero);
 			add(highlights);
 			add(guiGroup);
+			add(cardsInHand);
 			add(explorationChoice);
 		}
 		
@@ -244,7 +251,10 @@ package
 			if (FlxG.keys.justReleased("SPACE")) {
 				trace("*** RESET ***");
 				FlxG.switchState(new MenuState);
-			} 
+			} else if (FlxG.keys.justReleased("D")) {
+				trace("*** Toggle Debug ***");
+				FlxG.visualDebug = !FlxG.visualDebug;
+			}
 		}
 		
 		public function chooseLeftTile():void {
