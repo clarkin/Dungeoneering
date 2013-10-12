@@ -5,11 +5,11 @@ package
 	public class Card extends FlxGroup
 	{
 		[Embed(source = "../assets/ass_char_tran.png")] private var charactersPNG:Class;
-		[Embed(source = "../assets/card2.png")] private var cardPNG:Class;
+		[Embed(source = "../assets/card_backgrounds.png")] private var cardBackgroundsPNG:Class;
 		[Embed(source = "../assets/Crushed.ttf", fontFamily = "Crushed", embedAsCFF = "false")] public	var	FONTCrushed:String;
 		
 		public static const CARDS_WEIGHTED:Array = [
-			"MONSTER", "MONSTER", "TREASURE"];
+			"MONSTER", "MONSTER", "TREASURE", "WEAPON"];
 		public static const ALL_MONSTERS:Array = [
 			"Runty Goblin", "Goblin Leader"];
 		public static const ALL_TREASURE:Array = [
@@ -22,6 +22,8 @@ package
 		public var card_type:String = "";
 
 		private var _background:FlxSprite;
+		private var _background_frame:Number = 0;
+		private var _card_text_color:uint = 0xFF000000;
 		private var _titleText:FlxText;
 		private var _descText:FlxText;
 		
@@ -38,12 +40,18 @@ package
 			switch (type) {
 				case "MONSTER":
 					card = ALL_MONSTERS[Math.floor(Math.random() * (ALL_MONSTERS.length))]
+					_background_frame = 0;
+					_card_text_color = 0xFF812222;
 					break;
 				case "TREASURE":
 					card = ALL_TREASURE[Math.floor(Math.random() * (ALL_TREASURE.length))]
+					_background_frame = 2;
+					_card_text_color = 0xFF003399;
 					break;
 				case "WEAPON":
 					card = ALL_WEAPONS[Math.floor(Math.random() * (ALL_WEAPONS.length))]
+					_background_frame = 1;
+					_card_text_color = 0xFF5C3425;
 					break;
 				default:
 					throw new Error("no matching card type defined for " + type);
@@ -77,17 +85,18 @@ package
 			}
 			
 			_background = new FlxSprite(X, Y);
-			_background.loadGraphic(cardPNG, false, false, 150, 200);
+			_background.loadGraphic(cardBackgroundsPNG, false, false, 150, 200);
+			_background.frame = _background_frame;
 			this.add(_background);
 			
 			_titleText = new FlxText(X + 1, Y + 1, 148, title.toUpperCase());
 			_titleText.height = 32;
-			_titleText.setFormat("Crushed", 24, 0xFF5C3425, "center");
+			_titleText.setFormat("Crushed", 26, _card_text_color, "center");
 			this.add(_titleText);
 			
 			_descText = new FlxText(X + 1, Y + 55, 148, desc.toUpperCase());
 			_descText.height = 124;
-			_descText.setFormat("Crushed", 18, 0xFF5C3425, "center");
+			_descText.setFormat("Crushed", 18, _card_text_color, "center");
 			this.add(_descText);
 			
 			trace("card: " + this.title + " of type " + this.card_type);
