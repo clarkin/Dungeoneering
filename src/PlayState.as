@@ -170,10 +170,11 @@ package
 			player_life_label.setFormat("Popup", 30, 0x5C3425, "right", 0x000000);
 			guiGroup.add(player_life_label);
 			
-			var card:Card = new Card(50, 100);
-			cardsInHand.add(card);
-			card = new Card(200, 100);
-			cardsInHand.add(card);
+			var card:Card;
+			for (var cc:int = 0; cc < 5; cc++) {
+				card = new Card(cc * 155 + 15, 50);
+				cardsInHand.add(card);
+			}
 			
 			sndCheer = new WavSound(new WAVcheer() as ByteArray);
 			sndCoins = new WavSound(new WAVcoins() as ByteArray);
