@@ -172,7 +172,11 @@ package
 			
 			var card:Card;
 			for (var cc:int = 0; cc < 5; cc++) {
-				card = new Card(cc * 155 + 15, 50);
+				var card_type:String = "";
+				if (cc < 2) {
+					card_type = "TILE";
+				} 
+				card = new Card(cc * 155 + 15, 50, card_type);
 				cardsInHand.add(card);
 			}
 			

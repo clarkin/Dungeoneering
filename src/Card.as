@@ -9,23 +9,29 @@ package
 		[Embed(source = "../assets/Crushed.ttf", fontFamily = "Crushed", embedAsCFF = "false")] public	var	FONTCrushed:String;
 		
 		public static const CARDS_WEIGHTED:Array = [
-			"MONSTER", "MONSTER", "TREASURE", "WEAPON"];
+			"MONSTER", "MONSTER", "MONSTER", "WEAPON", "WEAPON", "TREASURE"];
 		public static const ALL_MONSTERS:Array = [
 			"Runty Goblin", "Goblin Leader"];
 		public static const ALL_TREASURE:Array = [
 			"Silver Coins", "Small Chest", "Coin Pouch"];
 		public static const ALL_WEAPONS:Array = [
 			"Short Sword", "Magic Axe"];
-		
+
 		public var title:String = "";
 		public var desc:String = "";
 		public var card_type:String = "";
 
+		private static const TITLE_OFFSET:FlxPoint = new FlxPoint(1,1);
+		private static const ICON_OFFSET:FlxPoint = new FlxPoint(54, 45);
+		private static const DESC_OFFSET:FlxPoint = new FlxPoint(1,95);
+		
 		private var _background:FlxSprite;
 		private var _background_frame:Number = 0;
 		private var _card_text_color:uint = 0xFF000000;
 		private var _titleText:FlxText;
 		private var _descText:FlxText;
+		private var _iconHolder:FlxGroup = new FlxGroup();
+		private var _tile:Tile;
 		
 		public function Card(X:int = 0, Y:int = 0, type:String = "") 
 		{
@@ -50,8 +56,15 @@ package
 					break;
 				case "WEAPON":
 					card = ALL_WEAPONS[Math.floor(Math.random() * (ALL_WEAPONS.length))]
+					_background_frame = 3;
+					_card_text_color = 0xFF36632D;
+					break;
+				case "TILE":
+					card = Tile.ALL_TILES[Math.floor(Math.random() * (Tile.ALL_TILES.length))]
 					_background_frame = 1;
 					_card_text_color = 0xFF5C3425;
+					_tile = new Tile(card, X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
+					_iconHolder.add(_tile);
 					break;
 				default:
 					throw new Error("no matching card type defined for " + type);
@@ -81,7 +94,17 @@ package
 					this.desc = "This axe gleams and shines in the darkness with an inner fire.";
 					break;
 				default:
-					throw new Error("no matching card defined for " + card);
+					if (card_type == "TILE") {
+						if (card.indexOf("corr") == 0) {
+							this.title = "Corridor";
+							this.desc = "Where might it lead?";
+						} else {
+							this.title = "Room";
+							this.desc = "What might be inside?";
+						}
+					} else {
+						throw new Error("no matching card defined for " + card);
+					}
 			}
 			
 			_background = new FlxSprite(X, Y);
@@ -89,15 +112,17 @@ package
 			_background.frame = _background_frame;
 			this.add(_background);
 			
-			_titleText = new FlxText(X + 1, Y + 1, 148, title.toUpperCase());
+			_titleText = new FlxText(X + TITLE_OFFSET.x, Y + TITLE_OFFSET.y, 148, title.toUpperCase());
 			_titleText.height = 32;
 			_titleText.setFormat("Crushed", 26, _card_text_color, "center");
 			this.add(_titleText);
 			
-			_descText = new FlxText(X + 1, Y + 55, 148, desc.toUpperCase());
-			_descText.height = 124;
-			_descText.setFormat("Crushed", 18, _card_text_color, "center");
+			_descText = new FlxText(X + DESC_OFFSET.x, Y + DESC_OFFSET.y, 148, desc.toUpperCase());
+			_descText.height = 104;
+			_descText.setFormat("Crushed", 16, _card_text_color, "center");
 			this.add(_descText);
+			
+			this.add(_iconHolder);
 			
 			trace("card: " + this.title + " of type " + this.card_type);
 		}
