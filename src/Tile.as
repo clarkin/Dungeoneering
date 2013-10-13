@@ -25,7 +25,7 @@ package
 		public var entry_south:Boolean = false;
 		public var entry_west:Boolean = false;
 		
-		public var higlight_entrance:int;
+		public var highlight_entrance:int;
 		
 		public var type:String = "";
 		public var treasure_cards:int = 0;
@@ -173,5 +173,6 @@ package
 					throw new Error("invalid direction " + direction);
 			}
 		}
+		
 	}
 }

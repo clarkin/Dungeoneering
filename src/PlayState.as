@@ -235,7 +235,6 @@ package
 				} else if (turn_phase == PHASE_CARDS) {
 					if (!is_placing_card) {
 						for each (var card_in_hand:Card in cardsInHand.members) {
-							//trace("card_in_hand: " + card_in_hand.title);
 							if (card_in_hand != null && card_in_hand.alive) {
 								if (card_in_hand._background.overlapsPoint(clicked_at)) {
 									trace("clicked on card " + card_in_hand.title);
@@ -258,17 +257,17 @@ package
 						trace("placing card " + placing_card.title);
 						if (placing_card._tile != null) {
 							for each (var highlight:Tile in highlights.members) {
-								//trace("checking highlight at " + highlight.x + ", " + highlight.y);
-								if (highlight.alive && highlight.overlapsPoint(clicked_at)) {
-									//trace("click at " + clicked_at.x + ", " + clicked_at.y);
-									//trace("highlight at " + highlight.x + ", " + highlight.y);
+								if (highlight.alive && highlight.overlapsPoint(clicked_at) && placing_card._tile.checkExit(highlight.highlight_entrance)) {
 									var new_tile:Tile = new Tile(placing_card._tile.type);
 									var justAdded:Tile = addTileAt(new_tile, highlight.x, highlight.y);
 									highlight.kill()
 									placing_card.kill();
-									//placing_card = null;
 									is_placing_card = false;
-									cardsInHand.visible = true;
+									if (cardsInHand.countLiving() > 0) {
+										cardsInHand.visible = true;
+									} else {
+										turn_phase = PHASE_HERO_THINK;
+									}
 								} 
 							}
 						}
@@ -385,6 +384,7 @@ package
 			choosingHighlight.kill();
 		}
 		
+		/*
 		public function showTileChoice():void {
 			choosingTile = true;
 			explorationTiles.clear();  //possible mem leak
@@ -430,6 +430,7 @@ package
 			explorationTiles.add(_new_tile);							
 			explorationChoice.visible = true;		
 		}
+		*/
 		
 		public function addTileAt(tile:Tile, X:int, Y:int):Tile {
 			tile.x = X;
@@ -484,7 +485,8 @@ package
 		
 		public function addHighlight(X:int, Y:int, from_direction:int):void {
 			var new_highlight:Tile = new Tile("highlight", X, Y);
-			new_highlight.higlight_entrance = Tile.oppositeDirection(from_direction);
+			//trace("adding highlight at [" + X + "," + Y + "] with entrance " + from_direction);
+			new_highlight.highlight_entrance = Tile.oppositeDirection(from_direction);
 			highlights.add(new_highlight);
 		}
 		
