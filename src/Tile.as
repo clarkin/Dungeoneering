@@ -191,6 +191,21 @@ package
 			}
 		}
 		
+		public function getTileCoordsThroughExit(direction:int):FlxPoint {
+			switch (direction) {
+				case NORTH:
+					return new FlxPoint(this.x, this.y - TILESIZE);
+				case EAST:
+					return new FlxPoint(this.x + TILESIZE, this.y);
+				case SOUTH:
+					return new FlxPoint(this.x, this.y + TILESIZE);
+				case WEST:
+					return new FlxPoint(this.x - TILESIZE, this.y);
+				default:
+					throw new Error("invalid direction " + direction);
+			}
+		}
+		
 		public static function oppositeDirection(direction:int):int {
 			switch (direction) {
 				case NORTH:

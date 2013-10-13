@@ -42,10 +42,11 @@ package
 		
 		public static const starting_point:Point = new Point(358, 578);
 		
-		private static const PHASE_NEWTURN:int = 0;
-		private static const PHASE_CARDS:int = 1;
-		private static const PHASE_HERO_THINK:int = 2;
-		public var turn_phase:int = PHASE_NEWTURN;
+		public static const PHASE_NEWTURN:int = 0; //
+		public static const PHASE_CARDS:int = 1;
+		public static const PHASE_HERO_THINK:int = 2;
+		public static const PHASE_HERO_MOVING:int = 2;
+		public var turn_phase:int = PHASE_HERO_THINK;
 		
 		public var placing_card:Card;
 		public var is_placing_card:Boolean = false;
@@ -73,22 +74,23 @@ package
 			
 			tileManager = new TileManager();
 			
-			hero = new Hero(starting_point.x, starting_point.y - Tile.TILESIZE);
-			hero.is_taking_turn = true;
+			hero = new Hero(this, starting_point.x, starting_point.y - Tile.TILESIZE);
+			//hero.is_taking_turn = true;
 			
 			treasure_tile = new Tile("hint_treasure_room");
 			var rand_x:int = Math.floor(Math.random() * 8) - 3;
 			var rand_y:int = Math.floor(Math.random() * 4) + 8;
 			addTileAt(treasure_tile, starting_point.x + (Tile.TILESIZE * rand_x), starting_point.y - (Tile.TILESIZE * rand_y));
 			
-			var starting_tile:Tile = new Tile("corr_dead1", starting_point.x, starting_point.y);
+			var starting_tile:Tile;
+			starting_tile = new Tile("empty", starting_point.x, starting_point.y);
+			tiles.add(starting_tile);
+			starting_tile = new Tile("corr_dead1", starting_point.x, starting_point.y - Tile.TILESIZE);
 			tiles.add(starting_tile);
 			hero.setCurrentTile(starting_tile);
-			starting_tile = new Tile("corr_straight1", starting_point.x, starting_point.y - Tile.TILESIZE);
-			tiles.add(starting_tile);
 			starting_tile = new Tile("corr_fourway");
 			addTileAt(starting_tile, starting_point.x, starting_point.y - Tile.TILESIZE - Tile.TILESIZE);
-			hero.setMovingToTile(starting_tile);
+			//hero.setMovingToTile(starting_tile);
 			
 			var blank_tile:Tile;
 			var i:int;
@@ -208,10 +210,19 @@ package
 		}
 		
 		private function checkControls():void {
+			checkNewTurn();
+			checkHero();
 			checkPlacing();
 			checkMouseHover();
 			checkMouseClick();
 			checkKeyboard();
+		}
+		
+		public function checkHero():void {
+			if (turn_phase == PHASE_HERO_THINK && !hero.is_taking_turn) {
+				trace("starting hero turn");
+				hero.startTurn();
+			}
 		}
 		
 		public function checkPlacing():void {
@@ -221,6 +232,14 @@ package
 			}
 		}
 		
+		public function checkNewTurn():void {
+			if (turn_phase == PHASE_NEWTURN) {
+				dealCards();
+				turn_phase = PHASE_CARDS;
+				cardsInHand.visible = true;
+			} 
+		}
+		
 		public function checkMouseHover():void {
 			
 		}
@@ -228,11 +247,7 @@ package
 		public function checkMouseClick():void {
 			if (FlxG.mouse.justReleased()) {
 				var clicked_at:FlxPoint = FlxG.mouse.getWorldPosition();
-				if (turn_phase == PHASE_NEWTURN) {
-					dealCards();
-					turn_phase = PHASE_CARDS;
-					cardsInHand.visible = true;
-				} else if (turn_phase == PHASE_CARDS) {
+				if (turn_phase == PHASE_CARDS) {
 					if (!is_placing_card) {
 						for each (var card_in_hand:Card in cardsInHand.members) {
 							if (card_in_hand != null && card_in_hand.alive) {
@@ -285,7 +300,7 @@ package
 							} else {
 								clearCards();
 								cardsInHand.visible = false;
-								turn_phase = PHASE_NEWTURN;
+								turn_phase = PHASE_HERO_THINK;
 							}
 						}
 					}
@@ -337,6 +352,12 @@ package
 			} else if (FlxG.keys.justReleased("D")) {
 				trace("*** Toggle Debug ***");
 				FlxG.visualDebug = !FlxG.visualDebug;
+			} else if (FlxG.keys.justReleased("X")) {
+				if (turn_phase == PHASE_CARDS) {
+					clearCards();
+					cardsInHand.visible = false;
+					turn_phase = PHASE_HERO_THINK;
+				}
 			}
 		}
 		
@@ -372,6 +393,17 @@ package
 				}
 			}
 			//trace("post trim, cardsInHand.members.length: " + cardsInHand.members.length);
+		}
+		
+		public function getTileAt(point:FlxPoint):Tile {
+			for each (var t:Tile in tiles.members) {
+				//trace("checking tile " + t.type + " at [" + t.x + "," + t.y + "]");
+				if (t.x == point.x && t.y == point.y) {
+					return t;
+				}
+			}
+			
+			return null;
 		}
 		
 		public function chooseLeftTile():void {
