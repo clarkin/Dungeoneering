@@ -42,10 +42,11 @@ package
 		
 		public static const starting_point:Point = new Point(358, 578);
 		
-		public static const PHASE_NEWTURN:int = 0; //
+		public static const PHASE_NEWTURN:int = 0; 
 		public static const PHASE_CARDS:int = 1;
 		public static const PHASE_HERO_THINK:int = 2;
-		public static const PHASE_HERO_MOVING:int = 2;
+		public static const PHASE_HERO_MOVING:int = 3;
+		public static const PHASE_HERO_CARDS:int = 4;
 		public var turn_phase:int = PHASE_HERO_THINK;
 		
 		public var placing_card:Card;
@@ -220,9 +221,16 @@ package
 		
 		public function checkHero():void {
 			if (turn_phase == PHASE_HERO_THINK && !hero.is_taking_turn) {
-				trace("starting hero turn");
+				//trace("starting hero turn");
 				hero.startTurn();
+			} else if (turn_phase == PHASE_HERO_CARDS && !hero.is_processing_cards) {
+				hero.processNextCard();
 			}
+		}
+				
+		public function heroArrivedAt(tile:Tile):void {
+			//trace("checking cards");
+			turn_phase = PlayState.PHASE_HERO_CARDS;
 		}
 		
 		public function checkPlacing():void {
@@ -252,7 +260,7 @@ package
 						for each (var card_in_hand:Card in cardsInHand.members) {
 							if (card_in_hand != null && card_in_hand.alive) {
 								if (card_in_hand._background.overlapsPoint(clicked_at)) {
-									trace("clicked on card " + card_in_hand._title);
+									//trace("clicked on card " + card_in_hand._title);
 									placing_card = card_in_hand;
 									is_placing_card = true;
 									cardsInHand.remove(card_in_hand);
@@ -272,7 +280,7 @@ package
 							}
 						}
 					} else {
-						trace("placing card " + placing_card._title);
+						//trace("placing card " + placing_card._title);
 						if (placing_card._type == "TILE") {
 							for each (var highlight:Tile in highlights.members) {
 								if (highlight.alive && highlight.overlapsPoint(clicked_at) && placing_card._tile.checkExit(highlight.highlight_entrance)) {
@@ -406,6 +414,7 @@ package
 			return null;
 		}
 		
+		/*
 		public function chooseLeftTile():void {
 			if (choosingTile) {
 				chooseTile(explorationTiles.members[0]);
@@ -443,6 +452,7 @@ package
 			hero.setMovingToTile(justAdded);
 			choosingHighlight.kill();
 		}
+		*/
 		
 		/*
 		public function showTileChoice():void {
