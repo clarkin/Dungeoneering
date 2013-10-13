@@ -34,6 +34,8 @@ package
 		public static const TREASURE_CHANCE:Array = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 3];
 		public static const MONSTER_CHANCE:Array =  [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2];
 		
+		private static const ICON_OFFSET:FlxPoint = new FlxPoint(10, 5);
+		public var cards:Array = new Array();
 		
 		public function Tile(type:String, X:int = 0, Y:int = 0) 
 		{
@@ -142,6 +144,36 @@ package
 		
 		override public function update():void {	
 			super.update();
+		}
+		
+		override public function draw():void {	
+			super.draw();
+			
+			for each (var card:Card in this.cards) {
+				card._sprite.draw();
+			}
+		}
+		
+		public function addCard(card:Card):void {
+			//copy of given card
+			var newCard:Card = new Card(this.x, this.y, card._type, card._title);
+			newCard._sprite.x = this.x + ICON_OFFSET.x;
+			newCard._sprite.y = this.y + ICON_OFFSET.y;
+			//trace("added card " + newCard._type + ":" + newCard._title + " to tile " + this.type);
+			this.cards.push(newCard);
+		}
+		
+		public function validEntrances():Array {
+			var valid_entrances:Array = new Array();
+			if (this.entry_north)
+				valid_entrances.push(NORTH);
+			if (this.entry_east)
+				valid_entrances.push(EAST);
+			if (this.entry_south)
+				valid_entrances.push(SOUTH);
+			if (this.entry_west)
+				valid_entrances.push(WEST);
+			return valid_entrances;
 		}
 		
 		public function checkExit(direction:int):Boolean {

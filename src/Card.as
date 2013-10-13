@@ -5,6 +5,7 @@ package
 	public class Card extends FlxGroup
 	{
 		[Embed(source = "../assets/ass_char_tran.png")] private var charactersPNG:Class;
+		[Embed(source = "../assets/ass_item_tran.png")] private var itemsPNG:Class;
 		[Embed(source = "../assets/card_backgrounds.png")] private var cardBackgroundsPNG:Class;
 		[Embed(source = "../assets/Crushed.ttf", fontFamily = "Crushed", embedAsCFF = "false")] public	var	FONTCrushed:String;
 		
@@ -13,20 +14,20 @@ package
 		public static const ALL_MONSTERS:Array = [
 			"Runty Goblin", "Goblin Leader"];
 		public static const ALL_TREASURE:Array = [
-			"Silver Coins", "Small Chest", "Coin Pouch"];
+			"Silver Coins", "Small Chest", "Gold Coins"];
 		public static const ALL_WEAPONS:Array = [
 			"Short Sword", "Magic Axe"];
 
-		public var title:String = "";
-		public var desc:String = "";
-		public var card_type:String = "";
-
-		private static const TITLE_OFFSET:FlxPoint = new FlxPoint(1,1);
-		private static const ICON_OFFSET:FlxPoint = new FlxPoint(54, 45);
+		private static const TITLE_OFFSET:FlxPoint = new FlxPoint(1, 1);
+		private static const ICON_TILE_OFFSET:FlxPoint = new FlxPoint(54, 45);
+		private static const ICON_OFFSET:FlxPoint = new FlxPoint(63, 54);
 		private static const DESC_OFFSET:FlxPoint = new FlxPoint(1, 95);
 		private static const CARD_WIDTH:int = 150;
 		private static const CARD_HEIGHT:int = 200;
 		
+		public var _title:String = "";
+		public var _desc:String = "";
+		public var _type:String = "";
 		public var _background:FlxSprite;
 		private var _background_frame:int = 0;
 		private var _card_text_color:uint = 0xFF000000;
@@ -35,78 +36,100 @@ package
 		private var _hoverEffect:FlxSprite;
 		private var _iconHolder:FlxGroup = new FlxGroup();
 		public var _tile:Tile;
+		public var _sprite:FlxSprite;
 		
-		public function Card(X:int = 0, Y:int = 0, type:String = "") 
+		public function Card(X:int = 0, Y:int = 0, type:String = "", title:String = "", tile:Tile = null) 
 		{
 			super();
 			
 			if (type == "") {
 				type = CARDS_WEIGHTED[Math.floor(Math.random() * (CARDS_WEIGHTED.length))];
 			}
-			this.card_type = type;
+			_type = type;
 			
-			var card:String = "";
-			switch (type) {
+			switch (_type) {
 				case "MONSTER":
-					card = ALL_MONSTERS[Math.floor(Math.random() * (ALL_MONSTERS.length))]
+					if (title == "") {
+						title = ALL_MONSTERS[Math.floor(Math.random() * (ALL_MONSTERS.length))]
+					}
 					_background_frame = 0;
 					_card_text_color = 0xFF812222;
+					_sprite = new FlxSprite(X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
+					_sprite.loadGraphic(charactersPNG, false, true, 24, 24);
+					_iconHolder.add(_sprite);
 					break;
 				case "TREASURE":
-					card = ALL_TREASURE[Math.floor(Math.random() * (ALL_TREASURE.length))]
+					if (title == "") {
+						title = ALL_TREASURE[Math.floor(Math.random() * (ALL_TREASURE.length))]
+					}
 					_background_frame = 2;
 					_card_text_color = 0xFF003399;
+					_sprite = new FlxSprite(X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
+					_sprite.loadGraphic(itemsPNG, false, true, 24, 24);
+					_iconHolder.add(_sprite);
 					break;
 				case "WEAPON":
-					card = ALL_WEAPONS[Math.floor(Math.random() * (ALL_WEAPONS.length))]
+					if (title == "") {
+						title = ALL_WEAPONS[Math.floor(Math.random() * (ALL_WEAPONS.length))]
+					}
 					_background_frame = 3;
 					_card_text_color = 0xFF36632D;
+					_sprite = new FlxSprite(X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
+					_sprite.loadGraphic(itemsPNG, false, true, 24, 24);
+					_iconHolder.add(_sprite);
 					break;
 				case "TILE":
-					card = Tile.ALL_TILES[Math.floor(Math.random() * (Tile.ALL_TILES.length))]
+					title = tile.type;
 					_background_frame = 1;
 					_card_text_color = 0xFF5C3425;
-					_tile = new Tile(card, X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
+					_tile = new Tile(title, X + ICON_TILE_OFFSET.x, Y + ICON_TILE_OFFSET.y);
 					_iconHolder.add(_tile);
 					break;
 				default:
 					throw new Error("no matching card type defined for " + type);
 			}
 			
-			this.title = card;
-			switch (card) {
+			_title = title;
+			switch (_title) {
 				case "Runty Goblin":
-					this.desc = "A small goblin. Shouldn't be much of a threat for a competent adventurer..";
+					_desc = "A small goblin. Shouldn't be much of a threat for a competent adventurer..";
+					_sprite.frame = 157;
 					break;
 				case "Goblin Leader":
-					this.desc = "Bigger and meaner than the usual runt.";
+					_desc = "Bigger and meaner than the usual runt.";
+					_sprite.frame = 162;
 					break;
 				case "Silver Coins":
-					this.desc = "A handful of silver, strewn carelessly on the ground.";	
+					_desc = "A handful of silver, strewn carelessly on the ground.";	
+					_sprite.frame = 84;
 					break;
 				case "Small Chest":
-					this.desc = "An ornate wooden chest. What might be inside?";	
+					_desc = "An ornate wooden chest. What might be inside?";	
+					_sprite.frame = 81;
 					break;
-				case "Coin Pouch":
-					this.desc = "Looks full. Could be a fortune in gold coins..";	
+				case "Gold Coins":
+					_desc = "A small pile of coins, gleaming temptfully.";	
+					_sprite.frame = 83;
 					break;
 				case "Short Sword":
-					this.desc = "A dull sword about a foot long. Easy to use but without much reach.";	
+					_desc = "A dull sword about a foot long. Easy to use but without much reach.";
+					_sprite.frame = 6;
 					break;
 				case "Magic Axe":
-					this.desc = "This axe gleams and shines in the darkness with an inner fire.";
+					_desc = "This axe gleams and shines in the darkness with an inner fire.";
+					_sprite.frame = 17;
 					break;
 				default:
-					if (card_type == "TILE") {
-						if (card.indexOf("corr") == 0) {
-							this.title = "Corridor";
-							this.desc = "Where might it lead?";
+					if (_type == "TILE") {
+						if (_title.indexOf("corr") == 0) {
+							_title = "Corridor";
+							_desc = "Where might it lead?";
 						} else {
-							this.title = "Room";
-							this.desc = "What might be inside?";
+							_title = "Room";
+							_desc = "What might be inside?";
 						}
 					} else {
-						throw new Error("no matching card defined for " + card);
+						throw new Error("no matching card defined for " + _title);
 					}
 			}
 			
@@ -115,14 +138,14 @@ package
 			_background.frame = _background_frame;
 			this.add(_background);
 			
-			_titleText = new FlxText(X + TITLE_OFFSET.x, Y + TITLE_OFFSET.y, 148, title.toUpperCase());
+			_titleText = new FlxText(X + TITLE_OFFSET.x, Y + TITLE_OFFSET.y, 148, _title.toUpperCase());
 			_titleText.height = 32;
 			_titleText.setFormat("Crushed", 26, _card_text_color, "center");
 			this.add(_titleText);
 			
-			_descText = new FlxText(X + DESC_OFFSET.x, Y + DESC_OFFSET.y, 148, desc.toUpperCase());
+			_descText = new FlxText(X + DESC_OFFSET.x, Y + DESC_OFFSET.y, 148, _desc.toUpperCase());
 			_descText.height = 104;
-			_descText.setFormat("Crushed", 16, _card_text_color, "center");
+			_descText.setFormat("Crushed", 18, _card_text_color, "center");
 			this.add(_descText);
 			
 			this.add(_iconHolder);
@@ -133,7 +156,6 @@ package
 			_hoverEffect.visible = false;
 			this.add(_hoverEffect);
 			
-			//trace("card: " + this.title + " of type " + this.card_type);
 		}
 		
 		override public function update():void {	

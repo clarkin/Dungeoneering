@@ -216,8 +216,8 @@ package
 		
 		public function checkPlacing():void {
 			if (turn_phase == PHASE_CARDS && placing_card != null) {
-				placingSprite.setAll("x", FlxG.mouse.x - Tile.TILESIZE / 2);
-				placingSprite.setAll("y", FlxG.mouse.y - Tile.TILESIZE / 2);
+				placingSprite.setAll("x", FlxG.mouse.x - 24 / 2);
+				placingSprite.setAll("y", FlxG.mouse.y - 24 / 2);
 			}
 		}
 		
@@ -229,15 +229,15 @@ package
 			if (FlxG.mouse.justReleased()) {
 				var clicked_at:FlxPoint = FlxG.mouse.getWorldPosition();
 				if (turn_phase == PHASE_NEWTURN) {
-					clearCards();
 					dealCards();
 					turn_phase = PHASE_CARDS;
+					cardsInHand.visible = true;
 				} else if (turn_phase == PHASE_CARDS) {
 					if (!is_placing_card) {
 						for each (var card_in_hand:Card in cardsInHand.members) {
 							if (card_in_hand != null && card_in_hand.alive) {
 								if (card_in_hand._background.overlapsPoint(clicked_at)) {
-									trace("clicked on card " + card_in_hand.title);
+									trace("clicked on card " + card_in_hand._title);
 									placing_card = card_in_hand;
 									is_placing_card = true;
 									cardsInHand.remove(card_in_hand);
@@ -246,16 +246,19 @@ package
 										placingSprite.remove(object, true);
 										object.kill();
 									}
-									if (placing_card._tile != null) {
+									if (placing_card._type == "TILE") {
 										placing_card._tile.alpha = 0.6;
 										placingSprite.add(placing_card._tile);
+									} else {
+										placing_card._sprite.alpha = 0.6;
+										placingSprite.add(placing_card._sprite);
 									}
 								}
 							}
 						}
 					} else {
-						trace("placing card " + placing_card.title);
-						if (placing_card._tile != null) {
+						trace("placing card " + placing_card._title);
+						if (placing_card._type == "TILE") {
 							for each (var highlight:Tile in highlights.members) {
 								if (highlight.alive && highlight.overlapsPoint(clicked_at) && placing_card._tile.checkExit(highlight.highlight_entrance)) {
 									var new_tile:Tile = new Tile(placing_card._tile.type);
@@ -263,12 +266,26 @@ package
 									highlight.kill()
 									placing_card.kill();
 									is_placing_card = false;
-									if (cardsInHand.countLiving() > 0) {
-										cardsInHand.visible = true;
-									} else {
-										turn_phase = PHASE_HERO_THINK;
-									}
 								} 
+							}
+						} else {
+							for each (var tile:Tile in tiles.members) {
+								if (tile.overlapsPoint(clicked_at)) {
+									//trace("clicked on tile " + tile.type + " at [" + tile.x + "," + tile.y + "]");
+									tile.addCard(placing_card);
+									placing_card.kill();
+									is_placing_card = false;
+								} 
+							}
+						}
+						
+						if (!is_placing_card) {
+							if (cardsInHand.countLiving() > 0) {
+								cardsInHand.visible = true;
+							} else {
+								clearCards();
+								cardsInHand.visible = false;
+								turn_phase = PHASE_NEWTURN;
 							}
 						}
 					}
@@ -326,13 +343,22 @@ package
 		public function dealCards():void {
 			clearCards();
 			
+			var valid_entrances:Array = new Array();
+			for each (var h:Tile in highlights.members) {
+				//trace("adding entrances for highlight " + h.type + ": " + h.highlight_entrance );
+				valid_entrances.push(h.highlight_entrance);
+			}
+			
 			var card:Card;
 			for (var cc:int = 0; cc < 5; cc++) {
-				var card_type:String = "";
 				if (cc < 2) {
-					card_type = "TILE";
-				} 
-				card = new Card(cc * 155 + 15, 50, card_type);
+					//trace("valid entrances are: " + valid_entrances);
+					var possible_tile:Tile = tileManager.GetRandomTile(valid_entrances);
+					card = new Card(cc * 155 + 15, 50, "TILE", "", possible_tile);
+				} else {
+					card = new Card(cc * 155 + 15, 50);
+				}
+				
 				cardsInHand.add(card);
 			}
 		}
@@ -340,8 +366,10 @@ package
 		public function clearCards():void {
 			//trace("cardsInHand.members.length: " + cardsInHand.members.length);
 			for each (var card:Card in cardsInHand.members) {
-				cardsInHand.remove(card, true);
-				card.kill();
+				if (card != null && card.alive) {
+					cardsInHand.remove(card, true);
+					card.kill();
+				}
 			}
 			//trace("post trim, cardsInHand.members.length: " + cardsInHand.members.length);
 		}

@@ -19,17 +19,18 @@ package
 			}
 		}
 		
-		public function GetRandomTile(entrance:int = NORTH):Tile {
+		public function GetRandomTile(entrance_directions:Array):Tile {
 			var searching:Boolean = true;
 			var this_tile:Tile;
 			while (searching) {
 				this_tile = all_tiles[Math.floor(Math.random() * (all_tiles.length))];
 				//trace("trying " + this_tile.type);
-				//target.indexOf(requiredStart) == 0
 				if (this_tile.type.indexOf("corr") == 0 || this_tile.type.indexOf("room") == 0) { 
 					if (this_tile.type != "room_treasure") {
-						if (this_tile.checkExit(entrance)) {
-							searching = false;
+						for each (var d:int in entrance_directions) {
+							if (this_tile.checkExit(d)) {
+								searching = false;
+							}
 						}
 					}
 				}
