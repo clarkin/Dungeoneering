@@ -27,14 +27,14 @@ package
 		private static const CARD_WIDTH:int = 150;
 		private static const CARD_HEIGHT:int = 200;
 		
-		private var _background:FlxSprite;
+		public var _background:FlxSprite;
 		private var _background_frame:int = 0;
 		private var _card_text_color:uint = 0xFF000000;
 		private var _titleText:FlxText;
 		private var _descText:FlxText;
 		private var _hoverEffect:FlxSprite;
 		private var _iconHolder:FlxGroup = new FlxGroup();
-		private var _tile:Tile;
+		public var _tile:Tile;
 		
 		public function Card(X:int = 0, Y:int = 0, type:String = "") 
 		{

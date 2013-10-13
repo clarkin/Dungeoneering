@@ -38,6 +38,7 @@ package
 		public var questionMarks:FlxSprite;
 		public var explorationTiles:FlxGroup = new FlxGroup();
 		public var cardsInHand:FlxGroup = new FlxGroup();
+		public var placingSprite:FlxGroup = new FlxGroup();
 		
 		public static const starting_point:Point = new Point(358, 578);
 		
@@ -45,6 +46,9 @@ package
 		private static const PHASE_CARDS:int = 1;
 		private static const PHASE_HERO_THINK:int = 2;
 		public var turn_phase:int = PHASE_NEWTURN;
+		
+		public var placing_card:Card;
+		public var is_placing_card:Boolean = false;
 		
 		public var choosingHighlight:Tile;
 		public var choosingTile:Boolean = false;
@@ -190,6 +194,7 @@ package
 			add(highlights);
 			add(guiGroup);
 			add(cardsInHand);
+			add(placingSprite);
 			//add(explorationChoice);
 		}
 		
@@ -203,9 +208,17 @@ package
 		}
 		
 		private function checkControls():void {
+			checkPlacing();
 			checkMouseHover();
 			checkMouseClick();
 			checkKeyboard();
+		}
+		
+		public function checkPlacing():void {
+			if (turn_phase == PHASE_CARDS && placing_card != null) {
+				placingSprite.setAll("x", FlxG.mouse.x - Tile.TILESIZE / 2);
+				placingSprite.setAll("y", FlxG.mouse.y - Tile.TILESIZE / 2);
+			}
 		}
 		
 		public function checkMouseHover():void {
@@ -213,17 +226,56 @@ package
 		}
 		
 		public function checkMouseClick():void {
-			
-			if (turn_phase == PHASE_NEWTURN) {
-				clearCards();
-				if (FlxG.mouse.justReleased()) {
-					var clicked_at:FlxPoint = FlxG.mouse.getWorldPosition();
+			if (FlxG.mouse.justReleased()) {
+				var clicked_at:FlxPoint = FlxG.mouse.getWorldPosition();
+				if (turn_phase == PHASE_NEWTURN) {
+					clearCards();
 					dealCards();
 					turn_phase = PHASE_CARDS;
+				} else if (turn_phase == PHASE_CARDS) {
+					if (!is_placing_card) {
+						for each (var card_in_hand:Card in cardsInHand.members) {
+							//trace("card_in_hand: " + card_in_hand.title);
+							if (card_in_hand != null && card_in_hand.alive) {
+								if (card_in_hand._background.overlapsPoint(clicked_at)) {
+									trace("clicked on card " + card_in_hand.title);
+									placing_card = card_in_hand;
+									is_placing_card = true;
+									cardsInHand.remove(card_in_hand);
+									cardsInHand.visible = false;
+									for each (var object:* in placingSprite.members) {
+										placingSprite.remove(object, true);
+										object.kill();
+									}
+									if (placing_card._tile != null) {
+										placing_card._tile.alpha = 0.6;
+										placingSprite.add(placing_card._tile);
+									}
+								}
+							}
+						}
+					} else {
+						trace("placing card " + placing_card.title);
+						if (placing_card._tile != null) {
+							for each (var highlight:Tile in highlights.members) {
+								//trace("checking highlight at " + highlight.x + ", " + highlight.y);
+								if (highlight.alive && highlight.overlapsPoint(clicked_at)) {
+									//trace("click at " + clicked_at.x + ", " + clicked_at.y);
+									//trace("highlight at " + highlight.x + ", " + highlight.y);
+									var new_tile:Tile = new Tile(placing_card._tile.type);
+									var justAdded:Tile = addTileAt(new_tile, highlight.x, highlight.y);
+									highlight.kill()
+									placing_card.kill();
+									//placing_card = null;
+									is_placing_card = false;
+									cardsInHand.visible = true;
+								} 
+							}
+						}
+					}
 				}
-			} else if (turn_phase == PHASE_CARDS) {
-				
 			}
+			
 			/*
 			if (!hero.is_taking_turn && FlxG.mouse.justReleased()) {
 				var clicked_at:FlxPoint = FlxG.mouse.getWorldPosition();
