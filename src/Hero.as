@@ -6,11 +6,11 @@ package
 	{
 		[Embed(source = "../assets/ass_char_tran.png")] private var charactersPNG:Class;
 		
-		public static const TILESIZE:Number = 42;
-		public static const SPEED:Number = 4;
+		public static const TILESIZE:int = 42;
+		public static const SPEED:int = 4;
 		
-		private var tile_offset_x:Number = 5;
-		private var tile_offset_y:Number = 12;
+		private var tile_offset_x:int = 5;
+		private var tile_offset_y:int = 12;
 		
 		public var current_tile:Tile;
 		public var moving_to_tile:Tile;
@@ -40,8 +40,8 @@ package
 		
 		private function checkMovement():void {
 			if (current_tile != moving_to_tile) {
-				var distance_x:Number = moving_to_tile.x + tile_offset_x - x;
-				var distance_y:Number = moving_to_tile.y + tile_offset_y - y;
+				var distance_x:int = moving_to_tile.x + tile_offset_x - x;
+				var distance_y:int = moving_to_tile.y + tile_offset_y - y;
 				
 				x += distance_x * FlxG.elapsed * SPEED;
 				y += distance_y * FlxG.elapsed * SPEED;

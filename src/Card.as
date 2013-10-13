@@ -23,13 +23,16 @@ package
 
 		private static const TITLE_OFFSET:FlxPoint = new FlxPoint(1,1);
 		private static const ICON_OFFSET:FlxPoint = new FlxPoint(54, 45);
-		private static const DESC_OFFSET:FlxPoint = new FlxPoint(1,95);
+		private static const DESC_OFFSET:FlxPoint = new FlxPoint(1, 95);
+		private static const CARD_WIDTH:int = 150;
+		private static const CARD_HEIGHT:int = 200;
 		
 		private var _background:FlxSprite;
-		private var _background_frame:Number = 0;
+		private var _background_frame:int = 0;
 		private var _card_text_color:uint = 0xFF000000;
 		private var _titleText:FlxText;
 		private var _descText:FlxText;
+		private var _hoverEffect:FlxSprite;
 		private var _iconHolder:FlxGroup = new FlxGroup();
 		private var _tile:Tile;
 		
@@ -108,7 +111,7 @@ package
 			}
 			
 			_background = new FlxSprite(X, Y);
-			_background.loadGraphic(cardBackgroundsPNG, false, false, 150, 200);
+			_background.loadGraphic(cardBackgroundsPNG, false, false, CARD_WIDTH, CARD_HEIGHT);
 			_background.frame = _background_frame;
 			this.add(_background);
 			
@@ -124,7 +127,13 @@ package
 			
 			this.add(_iconHolder);
 			
-			trace("card: " + this.title + " of type " + this.card_type);
+			_hoverEffect = new FlxSprite(X, Y);
+			_hoverEffect.makeGraphic(CARD_WIDTH, CARD_HEIGHT, _card_text_color);
+			_hoverEffect.alpha = 0.3;
+			_hoverEffect.visible = false;
+			this.add(_hoverEffect);
+			
+			//trace("card: " + this.title + " of type " + this.card_type);
 		}
 		
 		override public function update():void {	
@@ -132,14 +141,18 @@ package
 			//trace("moving to tile: " + moving_to_tile.type + " at [" + moving_to_tile.x + "," + moving_to_tile.y + "]");
 			//trace("currently at : [" + x + "," + y + "], moving to [" + moving_to_tile.x + "," + moving_to_tile.y + "]");
 
+			checkHover();
 			
 			super.update();
 		}
 		
-		override public function draw():void {	
-			_titleText.draw();
-			
-			super.draw();
+		public function checkHover():void {
+			if (_background.overlapsPoint(FlxG.mouse.getWorldPosition())) {
+				_hoverEffect.visible = true;
+			} else {
+				_hoverEffect.visible = false;
+			}
+			//trace("mouse at [" + FlxG.mouse.x + "," + FlxG.mouse.y + "], visible: " + _hoverEffect.visible);
 		}
 
 	}

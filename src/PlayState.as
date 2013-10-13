@@ -41,6 +41,11 @@ package
 		
 		public static const starting_point:Point = new Point(358, 578);
 		
+		private static const PHASE_NEWTURN:int = 0;
+		private static const PHASE_CARDS:int = 1;
+		private static const PHASE_HERO_THINK:int = 2;
+		public var turn_phase:int = PHASE_NEWTURN;
+		
 		public var choosingHighlight:Tile;
 		public var choosingTile:Boolean = false;
 		
@@ -111,6 +116,7 @@ package
 				addTileAt(blank_tile, new_x, new_y);
 			}
 			
+			/*
 			questionMarks = new FlxSprite(6, 98, ARTquestionMarks);
 			explorationChoice.add(questionMarks);
 			var title:FlxText = new FlxText(0, 160, 800, "CHOOSE A TILE");
@@ -152,6 +158,7 @@ package
 			explorationChoice.add(monster_icon_label_right);
 			explorationChoice.add(explorationTiles);
 			explorationChoice.visible = false;
+			*/
 			
 			var guiOverlay:FlxSprite = new FlxSprite(0, 0, ARTguiOverlay);
 			guiGroup.add(guiOverlay);
@@ -169,17 +176,7 @@ package
 			player_life_label = new FlxText(494, 6, 300, "Life: 5");
 			player_life_label.setFormat("Popup", 30, 0x5C3425, "right", 0x000000);
 			guiGroup.add(player_life_label);
-			
-			var card:Card;
-			for (var cc:int = 0; cc < 5; cc++) {
-				var card_type:String = "";
-				if (cc < 2) {
-					card_type = "TILE";
-				} 
-				card = new Card(cc * 155 + 15, 50, card_type);
-				cardsInHand.add(card);
-			}
-			
+						
 			sndCheer = new WavSound(new WAVcheer() as ByteArray);
 			sndCoins = new WavSound(new WAVcoins() as ByteArray);
 			sndDeathscream = new WavSound(new WAVdeathscream() as ByteArray);
@@ -193,7 +190,7 @@ package
 			add(highlights);
 			add(guiGroup);
 			add(cardsInHand);
-			add(explorationChoice);
+			//add(explorationChoice);
 		}
 		
 		override public function update():void {
@@ -216,8 +213,21 @@ package
 		}
 		
 		public function checkMouseClick():void {
+			
+			if (turn_phase == PHASE_NEWTURN) {
+				clearCards();
+				if (FlxG.mouse.justReleased()) {
+					var clicked_at:FlxPoint = FlxG.mouse.getWorldPosition();
+					dealCards();
+					turn_phase = PHASE_CARDS;
+				}
+			} else if (turn_phase == PHASE_CARDS) {
+				
+			}
+			/*
 			if (!hero.is_taking_turn && FlxG.mouse.justReleased()) {
 				var clicked_at:FlxPoint = FlxG.mouse.getWorldPosition();
+				
 				if (choosingTile) {
 					for each (var explorationTile:Tile in explorationTiles.members) {
 						//trace("checking tile at " + explorationTile.x + ", " + explorationTile.y);
@@ -248,8 +258,8 @@ package
 						treasure_tile.kill();
 					}
 				}
-				
 			}
+			*/
 		}
 		
 		public function checkKeyboard():void {
@@ -260,6 +270,29 @@ package
 				trace("*** Toggle Debug ***");
 				FlxG.visualDebug = !FlxG.visualDebug;
 			}
+		}
+		
+		public function dealCards():void {
+			clearCards();
+			
+			var card:Card;
+			for (var cc:int = 0; cc < 5; cc++) {
+				var card_type:String = "";
+				if (cc < 2) {
+					card_type = "TILE";
+				} 
+				card = new Card(cc * 155 + 15, 50, card_type);
+				cardsInHand.add(card);
+			}
+		}
+		
+		public function clearCards():void {
+			//trace("cardsInHand.members.length: " + cardsInHand.members.length);
+			for each (var card:Card in cardsInHand.members) {
+				cardsInHand.remove(card, true);
+				card.kill();
+			}
+			//trace("post trim, cardsInHand.members.length: " + cardsInHand.members.length);
 		}
 		
 		public function chooseLeftTile():void {
