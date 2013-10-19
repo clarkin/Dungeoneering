@@ -229,7 +229,7 @@ package
 		}
 				
 		public function heroArrivedAt(tile:Tile):void {
-			//trace("checking cards");
+			//trace("heroArrivedAt, changing to PHASE_HERO_CARDS");
 			turn_phase = PlayState.PHASE_HERO_CARDS;
 		}
 		
@@ -374,8 +374,10 @@ package
 			
 			var valid_entrances:Array = new Array();
 			for each (var h:Tile in highlights.members) {
-				//trace("adding entrances for highlight " + h.type + ": " + h.highlight_entrance );
-				valid_entrances.push(h.highlight_entrance);
+				if (h.alive) {
+					//trace("adding entrances for highlight at [" + Math.floor(h.x / Tile.TILESIZE) + "," + Math.floor(h.y / Tile.TILESIZE) + "]: " + Tile.directionName(h.highlight_entrance) );
+					valid_entrances.push(h.highlight_entrance);
+				}
 			}
 			
 			var card:Card;

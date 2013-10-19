@@ -206,6 +206,21 @@ package
 			}
 		}
 		
+		public static function directionName(direction:int):String {
+			switch (direction) {
+				case NORTH:
+					return "SOUTH";
+				case EAST:
+					return "WEST";
+				case SOUTH:
+					return "NORTH";
+				case WEST:
+					return "EAST";
+				default:
+					throw new Error("invalid direction " + direction);
+			}
+		}
+		
 		public static function oppositeDirection(direction:int):int {
 			switch (direction) {
 				case NORTH:
