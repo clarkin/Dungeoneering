@@ -39,6 +39,7 @@ package
 		public var explorationTiles:FlxGroup = new FlxGroup();
 		public var cardsInHand:FlxGroup = new FlxGroup();
 		public var placingSprite:FlxGroup = new FlxGroup();
+		public var floatingTexts:FlxGroup = new FlxGroup();
 		
 		public static const starting_point:Point = new Point(358, 578);
 		
@@ -123,50 +124,6 @@ package
 				addTileAt(blank_tile, new_x, new_y);
 			}
 			
-			/*
-			questionMarks = new FlxSprite(6, 98, ARTquestionMarks);
-			explorationChoice.add(questionMarks);
-			var title:FlxText = new FlxText(0, 160, 800, "CHOOSE A TILE");
-			title.setFormat("Popup", 36, 0x5C3425, "center", 0);
-			explorationChoice.add(title);
-			var leftButton:FlxButtonPlus = new FlxButtonPlus(236, 389, chooseLeftTile, null, "CHOOSE", 80, 20);
-			leftButton.textNormal.setFormat("Popup", 12, 0x5C3425, "center", 0);
-			leftButton.textHighlight.setFormat("Popup", 12, 0x5C3425, "center", 0);
-			leftButton.borderColor = 0xFF5C3425;
-			leftButton.updateInactiveButtonColors([0xFFC2A988, 0xFFFFFFCC]);
-			leftButton.updateActiveButtonColors([0xFFD54DFF, 0xFFF9E6FF]);
-			explorationChoice.add(leftButton);
-			var rightButton:FlxButtonPlus = new FlxButtonPlus(489, 389, chooseRightTile, null, "CHOOSE", 80, 20);
-			rightButton.textNormal.setFormat("Popup", 12, 0x5C3425, "center", 0);
-			rightButton.textHighlight.setFormat("Popup", 12, 0x5C3425, "center", 0);
-			rightButton.borderColor = 0xFF5C3425;
-			rightButton.updateInactiveButtonColors([0xFFC2A988, 0xFFFFFFCC]);
-			rightButton.updateActiveButtonColors([0xFFD54DFF, 0xFFF9E6FF]);
-			explorationChoice.add(rightButton);
-			treasure_icon_left = new FlxSprite(236, 340, ARTcrownCoin);
-			explorationChoice.add(treasure_icon_left);
-			treasure_icon_label_left = new FlxText(236, 340, 26, "1");
-			treasure_icon_label_left.setFormat(null, 8, 0xFFFFFF, "left", 0x666666);
-			explorationChoice.add(treasure_icon_label_left);
-			monster_icon_left = new FlxSprite(280, 340, ARTspectre);
-			explorationChoice.add(monster_icon_left);
-			monster_icon_label_left = new FlxText(280, 340, 26, "1");
-			monster_icon_label_left.setFormat(null, 8, 0xFFFFFF, "left", 0x666666);
-			explorationChoice.add(monster_icon_label_left);
-			treasure_icon_right = new FlxSprite(488, 340, ARTcrownCoin);
-			explorationChoice.add(treasure_icon_right);
-			treasure_icon_label_right = new FlxText(488, 340, 26, "1");
-			treasure_icon_label_right.setFormat(null, 8, 0xFFFFFF, "left", 0x666666);
-			explorationChoice.add(treasure_icon_label_right);
-			monster_icon_right = new FlxSprite(532, 340, ARTspectre);
-			explorationChoice.add(monster_icon_right);
-			monster_icon_label_right = new FlxText(532, 340, 26, "1");
-			monster_icon_label_right.setFormat(null, 8, 0xFFFFFF, "left", 0x666666);
-			explorationChoice.add(monster_icon_label_right);
-			explorationChoice.add(explorationTiles);
-			explorationChoice.visible = false;
-			*/
-			
 			var guiOverlay:FlxSprite = new FlxSprite(0, 0, ARTguiOverlay);
 			guiGroup.add(guiOverlay);
 			player_treasure_label = new FlxText(6, 6, 300, "Treasure: 0");
@@ -195,6 +152,7 @@ package
 			add(tiles);
 			add(hero);
 			add(highlights);
+			add(floatingTexts);
 			add(guiGroup);
 			add(cardsInHand);
 			add(placingSprite);
@@ -364,7 +322,9 @@ package
 				if (turn_phase == PHASE_CARDS) {
 					clearCards();
 					cardsInHand.visible = false;
-					placing_card.kill();
+					if (placing_card != null) {
+						placing_card.kill();
+					}
 					is_placing_card = false;
 					turn_phase = PHASE_HERO_THINK;
 				}
@@ -417,94 +377,6 @@ package
 			
 			return null;
 		}
-		
-		/*
-		public function chooseLeftTile():void {
-			if (choosingTile) {
-				chooseTile(explorationTiles.members[0]);
-			}
-		}
-		
-		public function chooseRightTile():void {
-			if (choosingTile) {
-				chooseTile(explorationTiles.members[1]);
-			}
-		}
-		
-		public function chooseTile(tile:Tile):void {
-			choosingTile = false;
-			explorationChoice.visible = false;
-			player_treasure += tile.treasure_cards;
-			player_life -= tile.monster_cards;
-			if (player_life <= 0) {
-				player_alive = false;
-				leaveDungeon();
-			}
-			
-			if (tile.monster_cards > 0) {
-				sndSwordkill.play();
-			} else if (tile.treasure_cards > 0) {
-				sndCoins.play();
-			} else if (tile.type.indexOf("room") == 0) {
-				sndDoorcreak.play();
-			} else if (tile.type.indexOf("corr") == 0) {
-				sndFootsteps.play();
-			}
-			
-			var justAdded:Tile = addTileAt(tile, choosingHighlight.x, choosingHighlight.y);
-			//colm 
-			hero.setMovingToTile(justAdded);
-			choosingHighlight.kill();
-		}
-		*/
-		
-		/*
-		public function showTileChoice():void {
-			choosingTile = true;
-			explorationTiles.clear();  //possible mem leak
-			var _new_tile:Tile = tileManager.GetRandomTile(choosingHighlight.higlight_entrance);
-			_new_tile.x = 252;
-			_new_tile.y = 283;
-			explorationTiles.add(_new_tile);
-			if (_new_tile.treasure_cards > 0) {
-				treasure_icon_label_left.text = _new_tile.treasure_cards.toString();
-				treasure_icon_label_left.visible = true;
-				treasure_icon_left.visible = true;
-			} else {
-				treasure_icon_label_left.visible = false;
-				treasure_icon_left.visible = false;
-			}
-			if (_new_tile.monster_cards > 0) {
-				monster_icon_label_left.text = _new_tile.monster_cards.toString();
-				monster_icon_label_left.visible = true;
-				monster_icon_left.visible = true;
-			} else {
-				monster_icon_label_left.visible = false;
-				monster_icon_left.visible = false;
-			}
-			_new_tile = tileManager.GetRandomTile(choosingHighlight.higlight_entrance);
-			_new_tile.x = 504;
-			_new_tile.y = 283;
-			if (_new_tile.treasure_cards > 0) {
-				treasure_icon_label_right.text = _new_tile.treasure_cards.toString();
-				treasure_icon_label_right.visible = true;
-				treasure_icon_right.visible = true;
-			} else {
-				treasure_icon_label_right.visible = false;
-				treasure_icon_right.visible = false;
-			}
-			if (_new_tile.monster_cards > 0) {
-				monster_icon_label_right.text = _new_tile.monster_cards.toString();
-				monster_icon_label_right.visible = true;
-				monster_icon_right.visible = true;
-			} else {
-				monster_icon_label_right.visible = false;
-				monster_icon_right.visible = false;
-			}
-			explorationTiles.add(_new_tile);							
-			explorationChoice.visible = true;		
-		}
-		*/
 		
 		public function addTileAt(tile:Tile, X:int, Y:int):Tile {
 			tile.x = X;

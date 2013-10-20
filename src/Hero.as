@@ -8,11 +8,13 @@ package
 		
 		public static const TILESIZE:int = 42;
 		public static const SPEED:int = 4;
-		public static const THINKING_TIME:Number = 0.5;
+		public static const THINKING_TIME:Number = 2;
 		public static const CARD_TIME:Number = 2;
 		
 		private var tile_offset_x:int = 5;
 		private var tile_offset_y:int = 12;
+		
+		private var thought_offset:FlxPoint = new FlxPoint(28, -8);
 		
 		public var current_tile:Tile;
 		public var moving_to_tile:Tile;
@@ -89,8 +91,47 @@ package
 				_playState.turn_phase = PlayState.PHASE_NEWTURN;
 			} else {
 				moving_to_tile = valid_tiles[Math.floor(Math.random() * (valid_tiles.length))];
+				thinkSomething();
 				_playState.turn_phase = PlayState.PHASE_HERO_THINK;
 			}
+		}
+		
+		private function thinkSomething():void {
+			var thought:String = "";
+			if (moving_to_tile.cards.length > 0) {
+				var top_card:Card = moving_to_tile.cards[moving_to_tile.cards.length - 1];
+				switch (top_card._type) {
+					case "MONSTER":
+						var monster_thoughts:Array = ["Grrr! I hate MONSTERs!!", "That MONSTER is going to get it",
+							"Yeah, I THINK I can take it..", "Oh god not a MONSTER", "Well lets get this over with",
+							"BANZAAAAAIIIIII", "MONSTERs drop loot, right?"];
+						thought = monster_thoughts[Math.floor(Math.random() * (monster_thoughts.length))];
+						thought = thought.replace(/MONSTER/g, top_card._title);
+						break;
+					case "TREASURE":
+						var treasure_thoughts:Array = ["SHINY", "That looks a bit like a TREASURE",
+							"Is that? TREASURE!", "THIS is why I'm a dungeoneer!", "Om nyom nyom",
+							"Ooh gimme", "TREASURE? TREASURE!"];
+						thought = treasure_thoughts[Math.floor(Math.random() * (treasure_thoughts.length))];
+						thought = thought.replace(/TREASURE/g, top_card._title);
+						break;
+					case "WEAPON":
+						var weapon_thoughts:Array = ["Oh yeah I need me one of those", "That looks a bit like a WEAPON",
+							"Is that? WEAPON!", "Another WEAPON? Jeez", "That looks useful..", "Yeah! #LOOT",
+							"Hm, is that an upgrade?", "That will look nice on my mantelpiece"];
+						thought = weapon_thoughts[Math.floor(Math.random() * (weapon_thoughts.length))];
+						thought = thought.replace(/WEAPON/g, top_card._title);
+						break;
+				}
+				
+			} else {
+				var random_thoughts:Array = ["On we go..", "Hm.. was I already here?", "A dungeoneer's life is never dull..",
+					"I think I'm lost #DUNGEONEERING", "Maybe over here.. #YOLO", "This looks vaguely familiar", 
+					"The Guild isn't paying me enough for this"];
+				thought = random_thoughts[Math.floor(Math.random() * (random_thoughts.length))];
+			}
+			
+			_playState.floatingTexts.add(new FloatingText(x + thought_offset.x, y + thought_offset.y, thought));
 		}
 		
 		private function checkMovement():void {
