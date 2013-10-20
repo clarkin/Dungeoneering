@@ -12,11 +12,11 @@ package
 		public static const CARDS_WEIGHTED:Array = [
 			"MONSTER", "MONSTER", "MONSTER", "WEAPON", "WEAPON", "TREASURE"];
 		public static const ALL_MONSTERS:Array = [
-			"Runty Goblin", "Goblin Leader"];
+			"Runty Goblin", "Goblin Leader", "Giant Bat", "Chicken", "Filthy Rat", "Skeleton"];
 		public static const ALL_TREASURE:Array = [
-			"Silver Coins", "Small Chest", "Gold Coins"];
+			"Silver Coins", "Small Chest", "Gold Coins", "Sapphire Ring"];
 		public static const ALL_WEAPONS:Array = [
-			"Short Sword", "Magic Axe"];
+			"Short Sword", "Magic Axe", "Long Sword", "Wooden Shield", "Leather Vest"];
 
 		private static const TITLE_OFFSET:FlxPoint = new FlxPoint(1, 1);
 		private static const ICON_TILE_OFFSET:FlxPoint = new FlxPoint(54, 45);
@@ -99,6 +99,22 @@ package
 					_desc = "Bigger and meaner than the usual runt.";
 					_sprite.frame = 162;
 					break;
+				case "Giant Bat":
+					_desc = "Bats aren't scary. Unless they weigh more than you..";
+					_sprite.frame = 217;
+					break;
+				case "Chicken":
+					_desc = "*cluck* *cluck*\nHow did this get in here?";
+					_sprite.frame = 210;
+					break;
+				case "Filthy Rat":
+					_desc = "Nasty spreader of pestilence, but no threat unless they swarm.";
+					_sprite.frame = 213;
+					break;
+				case "Skeleton":
+					_desc = "Once a hoplite, always a hoplite.";
+					_sprite.frame = 193;
+					break;
 				case "Silver Coins":
 					_desc = "A handful of silver, strewn carelessly on the ground.";	
 					_sprite.frame = 84;
@@ -111,6 +127,10 @@ package
 					_desc = "A small pile of coins, gleaming temptfully.";	
 					_sprite.frame = 83;
 					break;
+				case "Sapphire Ring":
+					_desc = "A ring mounted with a huge sapphire, fit for a princess.";	
+					_sprite.frame = 74;
+					break;
 				case "Short Sword":
 					_desc = "A dull sword about a foot long. Easy to use but without much reach.";
 					_sprite.frame = 6;
@@ -118,6 +138,18 @@ package
 				case "Magic Axe":
 					_desc = "This axe gleams and shines in the darkness with an inner fire.";
 					_sprite.frame = 17;
+					break;
+				case "Long Sword":
+					_desc = "The classic, versatile weapon. Perhaps a little boring.";
+					_sprite.frame = 0;
+					break;
+				case "Wooden Shield":
+					_desc = "A solid weight of wood to fend off a few blows.";
+					_sprite.frame = 41;
+					break;
+				case "Leather Vest":
+					_desc = "Tight fitted leather for your midriff, not great but better than nothing.";
+					_sprite.frame = 48;
 					break;
 				default:
 					if (_type == "TILE") {
