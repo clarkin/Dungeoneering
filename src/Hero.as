@@ -91,6 +91,11 @@ package
 				_playState.turn_phase = PlayState.PHASE_NEWTURN;
 			} else {
 				moving_to_tile = chooseTile(valid_tiles);
+				if (moving_to_tile.x < current_tile.x) {
+					facing = LEFT;
+				} else {
+					facing = RIGHT;
+				}
 				thinkSomething();
 				_playState.turn_phase = PlayState.PHASE_HERO_THINK;
 			}
@@ -122,14 +127,14 @@ package
 						break;
 					case "TREASURE":
 						var treasure_thoughts:Array = ["SHINY", "That looks a bit like a TREASURE",
-							"Is that? TREASURE!", "THIS is why I'm a dungeoneer!", "Om nyom nyom",
-							"Ooh gimme", "TREASURE? TREASURE!"];
+							"Is that.. TREASURE!", "THIS is why I'm a dungeoneer!", "Om nyom nyom",
+							"Ooh gimme", "TREASURE? TREASURE!", "Cha-CHING!"];
 						thought = treasure_thoughts[Math.floor(Math.random() * (treasure_thoughts.length))];
 						thought = thought.replace(/TREASURE/g, top_card._title);
 						break;
 					case "WEAPON":
 						var weapon_thoughts:Array = ["Oh yeah I need me one of those", "That looks a bit like a WEAPON",
-							"Is that? WEAPON!", "Another WEAPON? Jeez", "That looks useful..", "Yeah! #LOOT",
+							"Is that.. WEAPON!", "Another WEAPON? Jeez", "That looks useful..", "Yeah! #LOOT",
 							"Hm, is that an upgrade?", "That will look nice on my mantelpiece"];
 						thought = weapon_thoughts[Math.floor(Math.random() * (weapon_thoughts.length))];
 						thought = thought.replace(/WEAPON/g, top_card._title);

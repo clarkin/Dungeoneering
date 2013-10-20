@@ -20,6 +20,8 @@ package
 		public static const SOUTH:int = 4;
 		public static const WEST:int  = 8;
 		
+		public static const FLASH_SPEED:Number = 2;
+		
 		public var entry_north:Boolean = false;
 		public var entry_east:Boolean = false;
 		public var entry_south:Boolean = false;
@@ -28,8 +30,7 @@ package
 		public var highlight_entrance:int;
 		
 		public var type:String = "";
-		public var treasure_cards:int = 0;
-		public var monster_cards:int = 0;
+		public var flashing:Boolean = false;
 		
 		public static const TREASURE_CHANCE:Array = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 3];
 		public static const MONSTER_CHANCE:Array =  [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2];
@@ -133,16 +134,25 @@ package
 					throw new Error("no matching tile type defined for " + type);
 			}
 			
-			if (type.indexOf("room") == 0) {
-				treasure_cards = TREASURE_CHANCE[Math.floor(Math.random() * (TREASURE_CHANCE.length))];
-				monster_cards = MONSTER_CHANCE[Math.floor(Math.random() * (MONSTER_CHANCE.length))];
-			}
-			
 			this.type = type;
 			play(type);
+			
+			if (type == "highlight") {
+				flashing = true;
+				//alpha = 1 - Math.random() / 2; //between 0.5 and 1.0
+			}
 		}
 		
 		override public function update():void {	
+			if (flashing) {
+				alpha -= FlxG.elapsed / FLASH_SPEED;
+				if (alpha < 0.5) {
+					alpha = 1;
+				}
+			} else {
+				alpha = 1;
+			}
+			
 			super.update();
 		}
 		
@@ -152,6 +162,15 @@ package
 			for each (var card:Card in this.cards) {
 				card._sprite.draw();
 			}
+		}
+		
+		public function validForCard(card:Card):Boolean {
+			var validity:Boolean = false;
+			if (validEntrances().length > 0 && cards.length == 0) {
+				validity = true;
+			}
+			
+			return validity;
 		}
 		
 		public function addCard(card:Card):void {

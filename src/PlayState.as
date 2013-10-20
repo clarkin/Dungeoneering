@@ -68,6 +68,7 @@ package
 		public var treasure_tile_linked:Boolean = false;
 		
 		public var hero:Hero;
+		public var possible_spots:int = 0;
 		
 		override public function create():void {
 			//FlxG.visualDebug = true;
@@ -140,6 +141,8 @@ package
 			player_life_label = new FlxText(494, 6, 300, "Life: 5");
 			player_life_label.setFormat("Popup", 30, 0x5C3425, "right", 0x000000);
 			guiGroup.add(player_life_label);
+			
+			highlights.visible = false;
 						
 			sndCheer = new WavSound(new WAVcheer() as ByteArray);
 			sndCoins = new WavSound(new WAVcoins() as ByteArray);
@@ -230,9 +233,32 @@ package
 									if (placing_card._type == "TILE") {
 										placing_card._tile.alpha = 0.6;
 										placingSprite.add(placing_card._tile);
+										highlights.visible = true;
+										highlights.setAll("visible", false);
+										highlights.setAll("alpha", 1);
+										possible_spots = 0;
+										for each (var possible_highlight:Tile in highlights.members) {
+											if (possible_highlight.alive && placing_card._tile.checkExit(possible_highlight.highlight_entrance)) {
+												possible_highlight.visible = true;
+												possible_spots++;
+											}
+										}
+										if (possible_spots == 0) {
+											discardAndContinue();
+										}
 									} else {
 										placing_card._sprite.alpha = 0.6;
 										placingSprite.add(placing_card._sprite);
+										possible_spots = 0;
+										for each (var possible_tile:Tile in tiles.members) {
+											if (possible_tile != hero.current_tile && possible_tile.validForCard(placing_card)) {
+												possible_tile.flashing = true;
+												possible_spots++;
+											}
+										}
+										if (possible_spots == 0) {
+											discardAndContinue();
+										}
 									}
 								}
 							}
@@ -247,15 +273,18 @@ package
 									highlight.kill()
 									placing_card.kill();
 									is_placing_card = false;
+									highlights.visible = false;
 								} 
 							}
 						} else {
 							for each (var tile:Tile in tiles.members) {
-								if (tile.overlapsPoint(clicked_at)) {
+								if (tile != hero.current_tile && tile.validForCard(placing_card) && tile.overlapsPoint(clicked_at)) {
 									//trace("clicked on tile " + tile.type + " at [" + tile.x + "," + tile.y + "]");
 									tile.addCard(placing_card);
 									placing_card.kill();
 									is_placing_card = false;
+									tiles.setAll("alpha", 1);
+									tiles.setAll("flashing", false);
 								} 
 							}
 						}
@@ -273,42 +302,6 @@ package
 				}
 			}
 			
-			/*
-			if (!hero.is_taking_turn && FlxG.mouse.justReleased()) {
-				var clicked_at:FlxPoint = FlxG.mouse.getWorldPosition();
-				
-				if (choosingTile) {
-					for each (var explorationTile:Tile in explorationTiles.members) {
-						//trace("checking tile at " + explorationTile.x + ", " + explorationTile.y);
-						if (explorationTile.overlapsPoint(clicked_at)) {
-							chooseTile(explorationTile);
-						}
-					}
-				} else {
-					var found_highlight:Boolean = false;
-					for each (var highlight:Tile in highlights.members) {
-						//trace("checking highlight at " + highlight.x + ", " + highlight.y);
-						if (highlight.alive && highlight.overlapsPoint(clicked_at)) {
-							//trace("click at " + clicked_at.x + ", " + clicked_at.y);
-							//trace("highlight at " + highlight.x + ", " + highlight.y);
-							found_highlight = true;
-							choosingHighlight = highlight;
-							showTileChoice();					
-						} 
-					}
-					if (treasure_tile_linked && treasure_tile.alive && !found_highlight && treasure_tile.overlapsPoint(clicked_at)) {
-						//trace("exploring treasure room!");
-						player_treasure += 10;
-						sndLotsofcoins.play();
-						
-						var treasure_room_tile:Tile = new Tile("room_treasure")
-						addTileAt(treasure_room_tile, treasure_tile.x, treasure_tile.y);
-						treasure_tile_linked = false;
-						treasure_tile.kill();
-					}
-				}
-			}
-			*/
 		}
 		
 		public function checkKeyboard():void {
@@ -320,15 +313,21 @@ package
 				FlxG.visualDebug = !FlxG.visualDebug;
 			} else if (FlxG.keys.justReleased("X")) {
 				if (turn_phase == PHASE_CARDS) {
-					clearCards();
-					cardsInHand.visible = false;
-					if (placing_card != null) {
-						placing_card.kill();
-					}
-					is_placing_card = false;
-					turn_phase = PHASE_HERO_THINK;
+					discardAndContinue();
 				}
 			}
+		}
+		public function discardAndContinue():void {
+			clearCards();
+			cardsInHand.visible = false;
+			if (placing_card != null) {
+				placing_card.kill();
+			}
+			is_placing_card = false;
+			highlights.visible = false;
+			tiles.setAll("alpha", 1);
+			tiles.setAll("flashing", false);
+			turn_phase = PHASE_HERO_THINK;
 		}
 		
 		public function dealCards():void {
@@ -344,7 +343,7 @@ package
 			
 			var card:Card;
 			for (var cc:int = 0; cc < 5; cc++) {
-				if (cc < 2) {
+				if (valid_entrances.length > 0 && cc < 2) {
 					//trace("valid entrances are: " + valid_entrances);
 					var possible_tile:Tile = tileManager.GetRandomTile(valid_entrances);
 					card = new Card(cc * 155 + 15, 50, "TILE", "", possible_tile);
