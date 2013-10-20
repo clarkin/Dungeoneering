@@ -364,6 +364,8 @@ package
 				if (turn_phase == PHASE_CARDS) {
 					clearCards();
 					cardsInHand.visible = false;
+					placing_card.kill();
+					is_placing_card = false;
 					turn_phase = PHASE_HERO_THINK;
 				}
 			}
