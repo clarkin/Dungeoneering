@@ -163,6 +163,16 @@ package
 			this.cards.push(newCard);
 		}
 		
+		public function countCards(type:String):int {
+			var total:int = 0;
+			for each (var card:Card in cards) {
+				if (card._type == type) {
+					total++;
+				}
+			}
+			return total;
+		}
+		
 		public function validEntrances():Array {
 			var valid_entrances:Array = new Array();
 			if (this.entry_north)

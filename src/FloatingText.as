@@ -4,8 +4,8 @@ package
 	
 	public class FloatingText extends FlxText 
 	{
-		public static const FADETIME:Number = 2;
-		public static const SPEED:Number = 4;
+		public static const FADETIME:Number = 3;
+		public static const SPEED:Number = 6;
 		public static const COLOR_THINKING:uint = 0xFF83F06D
 		public static const COLOR_THINKING_SHADOW:uint = 0xFF36632D;
 		

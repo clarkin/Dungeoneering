@@ -7,7 +7,7 @@ package
 		[Embed(source = "../assets/ass_char_tran.png")] private var charactersPNG:Class;
 		
 		public static const TILESIZE:int = 42;
-		public static const SPEED:int = 4;
+		public static const SPEED:int = 90;
 		public static const THINKING_TIME:Number = 2;
 		public static const CARD_TIME:Number = 2;
 		
@@ -90,10 +90,22 @@ package
 			if (valid_tiles.length == 0) {
 				_playState.turn_phase = PlayState.PHASE_NEWTURN;
 			} else {
-				moving_to_tile = valid_tiles[Math.floor(Math.random() * (valid_tiles.length))];
+				moving_to_tile = chooseTile(valid_tiles);
 				thinkSomething();
 				_playState.turn_phase = PlayState.PHASE_HERO_THINK;
 			}
+		}
+		
+		private function chooseTile(valid_tiles:Array):Tile {
+			//default: random tile
+			var favorite_tile:Tile = valid_tiles[Math.floor(Math.random() * (valid_tiles.length))];
+			for each (var tile:Tile in valid_tiles) {
+				//check if this is preferable to current fave
+				if (tile.countCards("TREASURE") + tile.countCards("WEAPON") > favorite_tile.countCards("TREASURE") + favorite_tile.countCards("WEAPON")) {
+					favorite_tile = tile;
+				}
+			}
+			return favorite_tile;
 		}
 		
 		private function thinkSomething():void {
@@ -139,8 +151,8 @@ package
 				var distance_x:int = moving_to_tile.x + tile_offset_x - x;
 				var distance_y:int = moving_to_tile.y + tile_offset_y - y;
 				
-				x += distance_x * FlxG.elapsed * SPEED;
-				y += distance_y * FlxG.elapsed * SPEED;
+				x += FlxG.elapsed * (SPEED * (distance_x / Tile.TILESIZE));
+				y += FlxG.elapsed * (SPEED * (distance_y / Tile.TILESIZE));
 				
 				if (distance_x >= -1 && distance_x <= 1 && distance_y >= -1 && distance_y <= 1) {
 					setCurrentTile(moving_to_tile);
