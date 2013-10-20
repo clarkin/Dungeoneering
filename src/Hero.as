@@ -143,8 +143,8 @@ package
 				
 			} else {
 				var random_thoughts:Array = ["On we go..", "Hm.. was I already here?", "A dungeoneer's life is never dull..",
-					"I think I'm lost #DUNGEONEERING", "Maybe over here.. #YOLO", "This looks vaguely familiar", 
-					"The Guild isn't paying me enough for this"];
+					"I think I'm lost #DUNGEONEERING", "Eyes closed this time.. #YOLO", "This looks vaguely familiar", 
+					"The Guild isn't paying me enough for this", "Maybe over here", "I hope this place has a tavern"];
 				thought = random_thoughts[Math.floor(Math.random() * (random_thoughts.length))];
 			}
 			

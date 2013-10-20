@@ -80,10 +80,10 @@ package
 			hero = new Hero(this, starting_point.x, starting_point.y - Tile.TILESIZE);
 			//hero.is_taking_turn = true;
 			
-			treasure_tile = new Tile("hint_treasure_room");
-			var rand_x:int = Math.floor(Math.random() * 8) - 3;
-			var rand_y:int = Math.floor(Math.random() * 4) + 8;
-			addTileAt(treasure_tile, starting_point.x + (Tile.TILESIZE * rand_x), starting_point.y - (Tile.TILESIZE * rand_y));
+			//treasure_tile = new Tile("hint_treasure_room");
+			//var rand_x:int = Math.floor(Math.random() * 8) - 3;
+			//var rand_y:int = Math.floor(Math.random() * 4) + 8;
+			//addTileAt(treasure_tile, starting_point.x + (Tile.TILESIZE * rand_x), starting_point.y - (Tile.TILESIZE * rand_y));
 			
 			var starting_tile:Tile;
 			starting_tile = new Tile("empty", starting_point.x, starting_point.y);
