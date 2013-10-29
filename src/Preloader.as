@@ -7,6 +7,7 @@ package
 		public function Preloader():void
 		{
 			className = "Dungeoneering";
+			myURL = "http://gambrinous.com/games/dungeoneering/";
 			super();
 		}
 	}
