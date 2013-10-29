@@ -23,6 +23,7 @@ package
 		private static const DESC_OFFSET:FlxPoint = new FlxPoint(1, 95);
 		private static const CARD_WIDTH:int = 150;
 		private static const CARD_HEIGHT:int = 200;
+		private static const SPEED:int = 5;
 		
 		public var _title:String = "";
 		public var _desc:String = "";
@@ -34,15 +35,23 @@ package
 		private var _titleText:FlxText;
 		private var _descText:FlxText;
 		private var _hoverEffect:FlxSprite;
+		private var _hover_enabled:Boolean = true;
 		private var _iconHolder:FlxGroup = new FlxGroup();
+		public var _card_front:FlxGroup = new FlxGroup();
 		public var _tile:Tile;
 		public var _sprite:FlxSprite;
 		public var _showing_back:Boolean = false;
-		public var _card_front:FlxGroup = new FlxGroup();
+		public var _shrunk:Boolean = false;
+		public var _moving_to:FlxPoint;
+		public var _is_moving:Boolean = false;
 		
-		public function Card(X:int = 0, Y:int = 0, type:String = "", title:String = "", tile:Tile = null) 
+		private var _playState:PlayState;
+		
+		public function Card(playState:PlayState, X:int = 0, Y:int = 0, type:String = "", title:String = "", tile:Tile = null) 
 		{
 			super();
+			
+			_playState = playState;
 			
 			if (type == "") {
 				type = CARDS_WEIGHTED[Math.floor(Math.random() * (CARDS_WEIGHTED.length))];
@@ -73,11 +82,14 @@ package
 					_iconHolder.add(_sprite);
 					break;
 				case "TILE":
+					if (tile == null) {
+						tile = _playState.tileManager.GetRandomTile();
+					}
 					title = tile.type;
 					_background_frame = 1;
 					_background_frame_back = 5;
 					_card_text_color = 0xFF5C3425;
-					_tile = new Tile(title, X + ICON_TILE_OFFSET.x, Y + ICON_TILE_OFFSET.y);
+					_tile = new Tile(_playState, title, X + ICON_TILE_OFFSET.x, Y + ICON_TILE_OFFSET.y);
 					_iconHolder.add(_tile);
 					break;
 				default:
@@ -193,14 +205,46 @@ package
 			//trace("currently at : [" + x + "," + y + "], moving to [" + moving_to_tile.x + "," + moving_to_tile.y + "]");
 			
 			
-
+			checkMovement();
 			checkHover();
 			
 			super.update();
 		}
 		
+		private function checkMovement():void {
+			if (_is_moving) {
+				var distance_x:int = _moving_to.x - _background.x;
+				var distance_y:int = _moving_to.y - _background.y;
+				
+				var change_x:Number = FlxG.elapsed * (SPEED * distance_x);
+				var change_y:Number = FlxG.elapsed * (SPEED * distance_y);
+				//trace("change_y: " + change_y);
+				
+				_background.x += change_x;
+				_background.y += change_y;
+				if (_sprite != null) {
+					_sprite.x += change_x;
+					_sprite.y += change_y;
+				}
+				if (_tile != null) {
+					_tile.x += change_x;
+					_tile.y += change_y;
+				}
+				_titleText.x += change_x;
+				_titleText.y += change_y;
+				_descText.x += change_x;
+				_descText.y += change_y;
+				_hoverEffect.x += change_x;
+				_hoverEffect.y += change_y;
+				
+				if (distance_x >= -1 && distance_x <= 1 && distance_y >= -1 && distance_y <= 1) {
+					_is_moving = false;
+				}
+			}
+		}
+		
 		public function checkHover():void {
-			if (_background.overlapsPoint(FlxG.mouse.getWorldPosition())) {
+			if (_hover_enabled && _background.overlapsPoint(FlxG.mouse.getWorldPosition())) {
 				_hoverEffect.visible = true;
 			} else {
 				_hoverEffect.visible = false;
@@ -219,6 +263,18 @@ package
 			}
 			
 			_card_front.setAll("visible", !_showing_back);
+		}
+		
+		public function toggleSize():void {
+			_shrunk = !_shrunk;
+			
+			if (_shrunk) {
+				_background.scale = new FlxPoint(0.5, 0.5);
+				_hover_enabled = false;
+			} else {
+				_background.scale = new FlxPoint(1.0, 1.0);
+				_hover_enabled = true;
+			}
 		}
 
 	}

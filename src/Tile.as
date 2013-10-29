@@ -38,9 +38,13 @@ package
 		private static const ICON_OFFSET:FlxPoint = new FlxPoint(10, 5);
 		public var cards:Array = new Array();
 		
-		public function Tile(type:String, X:int = 0, Y:int = 0) 
+		private var _playState:PlayState;
+		
+		public function Tile(playState:PlayState, type:String, X:int = 0, Y:int = 0) 
 		{
-			super(X,Y);
+			super(X, Y);
+			
+			_playState = playState;
 			
 			loadGraphic(dungeonTilesPNG, true, false, TILESIZE, TILESIZE);
 			for (var i:int = 0; i < ALL_TILES.length; i++) {
@@ -175,7 +179,7 @@ package
 		
 		public function addCard(card:Card):void {
 			//copy of given card
-			var newCard:Card = new Card(this.x, this.y, card._type, card._title);
+			var newCard:Card = new Card(_playState, this.x, this.y, card._type, card._title);
 			newCard._sprite.x = this.x + ICON_OFFSET.x;
 			newCard._sprite.y = this.y + ICON_OFFSET.y;
 			//trace("added card " + newCard._type + ":" + newCard._title + " to tile " + this.type);

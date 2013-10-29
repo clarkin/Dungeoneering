@@ -33,21 +33,21 @@ package
 		public var tileManager:TileManager;
 		public var tiles:FlxGroup = new FlxGroup();
 		public var highlights:FlxGroup = new FlxGroup();
-		public var explorationChoice:FlxGroup = new FlxGroup();
 		public var guiGroup:FlxGroup = new FlxGroup();
 		public var questionMarks:FlxSprite;
-		public var explorationTiles:FlxGroup = new FlxGroup();
+		public var cardDecks:FlxGroup = new FlxGroup();
 		public var cardsInHand:FlxGroup = new FlxGroup();
 		public var placingSprite:FlxGroup = new FlxGroup();
 		public var floatingTexts:FlxGroup = new FlxGroup();
 		
 		public static const starting_point:Point = new Point(358, 578);
 		
-		public static const PHASE_NEWTURN:int = 0; 
-		public static const PHASE_CARDS:int = 1;
-		public static const PHASE_HERO_THINK:int = 2;
-		public static const PHASE_HERO_MOVING:int = 3;
-		public static const PHASE_HERO_CARDS:int = 4;
+		public static const PHASE_NEWTURN:int      = 0; 
+		public static const PHASE_CARDS_PICK:int   = 1;
+		public static const PHASE_CARDS_PLAY:int   = 2;
+		public static const PHASE_HERO_THINK:int   = 3;
+		public static const PHASE_HERO_MOVING:int  = 4;
+		public static const PHASE_HERO_CARDS:int   = 5;
 		public var turn_phase:int = PHASE_HERO_THINK;
 		
 		public var placing_card:Card;
@@ -76,17 +76,17 @@ package
 			FlxG.camera.setBounds(0, 0, 800, 600);
 			FlxG.worldBounds = new FlxRect(0, 0, 800, 600);
 			
-			tileManager = new TileManager();
+			tileManager = new TileManager(this);
 			
 			hero = new Hero(this, starting_point.x, starting_point.y - Tile.TILESIZE);
 
 			var starting_tile:Tile;
-			starting_tile = new Tile("empty", starting_point.x, starting_point.y);
+			starting_tile = new Tile(this, "empty", starting_point.x, starting_point.y);
 			tiles.add(starting_tile);
-			starting_tile = new Tile("corr_dead1", starting_point.x, starting_point.y - Tile.TILESIZE);
+			starting_tile = new Tile(this, "corr_dead1", starting_point.x, starting_point.y - Tile.TILESIZE);
 			tiles.add(starting_tile);
 			hero.setCurrentTile(starting_tile);
-			starting_tile = new Tile("corr_fourway");
+			starting_tile = new Tile(this, "corr_fourway");
 			addTileAt(starting_tile, starting_point.x, starting_point.y - Tile.TILESIZE - Tile.TILESIZE);
 			
 			var blank_tile:Tile;
@@ -94,27 +94,27 @@ package
 			var new_x:int = starting_point.x;
 			var new_y:int = starting_point.y;
 			for (i = 1; i <= 10; i++) {
-				blank_tile = new Tile("empty");
+				blank_tile = new Tile(this, "empty");
 				new_x += Tile.TILESIZE;
 				addTileAt(blank_tile, new_x, new_y);
 			}
 			for (i = 1; i <= 12; i++) {
-				blank_tile = new Tile("empty");
+				blank_tile = new Tile(this, "empty");
 				new_y -= Tile.TILESIZE;
 				addTileAt(blank_tile, new_x, new_y);
 			}
 			for (i = 1; i <= 19; i++) {
-				blank_tile = new Tile("empty");
+				blank_tile = new Tile(this, "empty");
 				new_x -= Tile.TILESIZE;
 				addTileAt(blank_tile, new_x, new_y);
 			}
 			for (i = 1; i <= 12; i++) {
-				blank_tile = new Tile("empty");
+				blank_tile = new Tile(this, "empty");
 				new_y += Tile.TILESIZE;
 				addTileAt(blank_tile, new_x, new_y);
 			}
 			for (i = 1; i <= 8; i++) {
-				blank_tile = new Tile("empty");
+				blank_tile = new Tile(this, "empty");
 				new_x += Tile.TILESIZE;
 				addTileAt(blank_tile, new_x, new_y);
 			}
@@ -140,6 +140,16 @@ package
 			guiGroup.add(dungeon_danger_label);
 			
 			highlights.visible = false;
+			placingSprite.visible = true;
+			
+			var card_deck:Card;
+			card_deck = new Card(this, 125, 50, "TILE");
+			cardDecks.add(card_deck);
+			card_deck = new Card(this, 325, 50, "MONSTER");
+			cardDecks.add(card_deck);
+			card_deck = new Card(this, 525, 50, "TREASURE");
+			cardDecks.add(card_deck);
+			cardDecks.visible = false;
 						
 			sndCheer = new WavSound(new WAVcheer() as ByteArray);
 			sndCoins = new WavSound(new WAVcoins() as ByteArray);
@@ -155,6 +165,7 @@ package
 			add(floatingTexts);
 			add(guiGroup);
 			add(cardsInHand);
+			add(cardDecks);
 			add(placingSprite);
 		}
 		
@@ -191,16 +202,16 @@ package
 		}
 		
 		public function checkPlacing():void {
-			if (turn_phase == PHASE_CARDS && placing_card != null) {
-				placingSprite.setAll("x", FlxG.mouse.x - 24 / 2);
-				placingSprite.setAll("y", FlxG.mouse.y - 24 / 2);
+			if (turn_phase == PHASE_CARDS_PLAY && is_placing_card) {
+				placingSprite.setAll("x", FlxG.mouse.x - 12);
+				placingSprite.setAll("y", FlxG.mouse.y - 12);
 			}
 		}
 		
 		public function checkNewTurn():void {
 			if (turn_phase == PHASE_NEWTURN) {
-				dealCards();
-				turn_phase = PHASE_CARDS;
+				chooseCards();
+				turn_phase = PHASE_CARDS_PICK;
 				cardsInHand.visible = true;
 			} 
 		}
@@ -212,7 +223,15 @@ package
 		public function checkMouseClick():void {
 			if (FlxG.mouse.justReleased()) {
 				var clicked_at:FlxPoint = FlxG.mouse.getWorldPosition();
-				if (turn_phase == PHASE_CARDS) {
+				if (turn_phase == PHASE_CARDS_PICK) {
+					for each (var card_deck:Card in cardDecks.members) {
+						if (card_deck != null && card_deck.alive) {
+							if (card_deck._background.overlapsPoint(clicked_at)) {
+								addCardFromDeck(card_deck._type);
+							}
+						}
+					}
+				} else if (turn_phase == PHASE_CARDS_PLAY) {
 					if (!is_placing_card) {
 						for each (var card_in_hand:Card in cardsInHand.members) {
 							if (card_in_hand != null && card_in_hand.alive) {
@@ -257,6 +276,8 @@ package
 											discardAndContinue();
 										}
 									}
+									placingSprite.setAll("visible", true);
+									//trace("placingSprite.countLiving(): " + placingSprite.countLiving());
 								}
 							}
 						}
@@ -265,7 +286,7 @@ package
 						if (placing_card._type == "TILE") {
 							for each (var highlight:Tile in highlights.members) {
 								if (highlight.alive && highlight.overlapsPoint(clicked_at) && placing_card._tile.checkExit(highlight.highlight_entrance)) {
-									var new_tile:Tile = new Tile(placing_card._tile.type);
+									var new_tile:Tile = new Tile(this, placing_card._tile.type);
 									var justAdded:Tile = addTileAt(new_tile, highlight.x, highlight.y);
 									highlight.kill()
 									placing_card.kill();
@@ -309,7 +330,7 @@ package
 				trace("*** Toggle Debug ***");
 				FlxG.visualDebug = !FlxG.visualDebug;
 			} else if (FlxG.keys.justReleased("X")) {
-				if (turn_phase == PHASE_CARDS) {
+				if (turn_phase == PHASE_CARDS_PLAY) {
 					discardAndContinue();
 				}
 			}
@@ -327,28 +348,67 @@ package
 			turn_phase = PHASE_HERO_THINK;
 		}
 		
-		public function dealCards():void {
+		public function chooseCards():void {
 			clearCards();
 			
-			var valid_entrances:Array = new Array();
-			for each (var h:Tile in highlights.members) {
-				if (h.alive) {
-					//trace("adding entrances for highlight at [" + Math.floor(h.x / Tile.TILESIZE) + "," + Math.floor(h.y / Tile.TILESIZE) + "]: " + Tile.directionName(h.highlight_entrance) );
-					valid_entrances.push(h.highlight_entrance);
-				}
+			cardDecks.visible = true;
+			cardsInHand.visible = true;
+		}
+		
+		public function addCardFromDeck(type:String):void {
+			//trace("adding card from deck " + type);
+			//trace("cardsInHand.countLiving(): " + cardsInHand.countLiving());
+			
+			var cards_so_far:int = cardsInHand.countLiving();
+			if (cards_so_far < 0) {
+				cards_so_far = 0;
+			}
+			var possible_card:Card;
+			var card_point:FlxPoint = new FlxPoint(155 + 80 * cards_so_far, 250 + 0 * cards_so_far);
+			switch (type) {
+				case "TILE":
+					var valid_entrances:Array = new Array();
+					for each (var h:Tile in highlights.members) {
+						if (h.alive) {
+							//trace("adding entrances for highlight at [" + Math.floor(h.x / Tile.TILESIZE) + "," + Math.floor(h.y / Tile.TILESIZE) + "]: " + Tile.directionName(h.highlight_entrance) );
+							valid_entrances.push(h.highlight_entrance);
+						}
+					}
+					var possible_tile:Tile = tileManager.GetRandomTile(valid_entrances);
+					possible_card = new Card(this, card_point.x, card_point.y, "TILE", "", possible_tile);
+					break;
+				case "MONSTER":
+					possible_card = new Card(this, card_point.x, card_point.y, "MONSTER");
+					break;
+				case "TREASURE":
+					possible_card = new Card(this, card_point.x, card_point.y, "TREASURE");
+					break;
+				default:
+					throw new Error("no matching card type defined for " + type);
 			}
 			
-			var card:Card;
-			for (var cc:int = 0; cc < 5; cc++) {
-				if (valid_entrances.length > 0 && cc < 2) {
-					//trace("valid entrances are: " + valid_entrances);
-					var possible_tile:Tile = tileManager.GetRandomTile(valid_entrances);
-					card = new Card(cc * 155 + 15, 50, "TILE", "", possible_tile);
-				} else {
-					card = new Card(cc * 155 + 15, 50);
-				}
-				
-				cardsInHand.add(card);
+			possible_card.toggleSize();
+			cardsInHand.add(possible_card);
+			
+			if (cards_so_far >= 4) {
+				//trace("full hand");
+				playCards();
+			}
+		}
+		
+		public function playCards():void {
+			turn_phase = PHASE_CARDS_PLAY;
+			cardDecks.visible = false;
+			//cardsInHand.callAll("toggleSize", false);
+			//cardsInHand.callAll("flipCard", false);
+			
+			var card_no:int = 0;
+			for each (var card_in_hand:Card in cardsInHand.members) {
+				card_in_hand.toggleSize();
+				card_in_hand.flipCard();
+				card_in_hand._moving_to = new FlxPoint(card_no * 155 + 15, 50);
+				card_in_hand._is_moving = true;
+				card_no++;
 			}
 		}
 		
@@ -426,7 +486,7 @@ package
 		}
 		
 		public function addHighlight(X:int, Y:int, from_direction:int):void {
-			var new_highlight:Tile = new Tile("highlight", X, Y);
+			var new_highlight:Tile = new Tile(this, "highlight", X, Y);
 			//trace("adding highlight at [" + X + "," + Y + "] with entrance " + from_direction);
 			new_highlight.highlight_entrance = Tile.oppositeDirection(from_direction);
 			highlights.add(new_highlight);

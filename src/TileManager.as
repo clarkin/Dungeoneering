@@ -12,14 +12,22 @@ package
 		public var all_directions:Array = new Array(NORTH, EAST, SOUTH, WEST);
 		public var all_tiles:Array = new Array();
 		
-		public function TileManager() {
+		private var _playState:PlayState;
+		
+		public function TileManager(playState:PlayState) {
+			_playState = playState;
+			
 			//create one of every tile
 			for (var i:int = 0; i < Tile.ALL_TILES.length; i++) {
-				all_tiles.push(new Tile(Tile.ALL_TILES[i]));
+				all_tiles.push(new Tile(_playState, Tile.ALL_TILES[i]));
 			}
 		}
 		
-		public function GetRandomTile(entrance_directions:Array):Tile {
+		public function GetRandomTile(entrance_directions:Array = null):Tile {
+			if (entrance_directions == null) {
+				entrance_directions = all_directions;
+			}
+			
 			var searching:Boolean = true;
 			var this_tile:Tile;
 			while (searching) {
@@ -38,7 +46,7 @@ package
 			}
 			
 			//trace("found " + this_tile.type);
-			return new Tile(this_tile.type);
+			return new Tile(_playState, this_tile.type);
 		}
 		
 		
