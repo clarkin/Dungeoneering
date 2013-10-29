@@ -10,13 +10,12 @@ package
 		[Embed(source = "../assets/Crushed.ttf", fontFamily = "Crushed", embedAsCFF = "false")] public	var	FONTCrushed:String;
 		
 		public static const CARDS_WEIGHTED:Array = [
-			"MONSTER", "MONSTER", "MONSTER", "WEAPON", "WEAPON", "TREASURE"];
+			"MONSTER", "MONSTER", "MONSTER", "TREASURE", "TREASURE"];
 		public static const ALL_MONSTERS:Array = [
 			"Runty Goblin", "Goblin Leader", "Giant Bat", "Chicken", "Filthy Rat", "Skeleton"];
 		public static const ALL_TREASURE:Array = [
-			"Silver Coins", "Small Chest", "Gold Coins", "Sapphire Ring"];
-		public static const ALL_WEAPONS:Array = [
-			"Short Sword", "Magic Axe", "Long Sword", "Wooden Shield", "Leather Vest"];
+			"Silver Coins", "Small Chest", "Gold Coins", "Sapphire Ring", "Short Sword", 
+			"Magic Axe", "Long Sword", "Wooden Shield", "Leather Vest"];
 
 		private static const TITLE_OFFSET:FlxPoint = new FlxPoint(1, 1);
 		private static const ICON_TILE_OFFSET:FlxPoint = new FlxPoint(54, 45);
@@ -30,6 +29,7 @@ package
 		public var _type:String = "";
 		public var _background:FlxSprite;
 		private var _background_frame:int = 0;
+		private var _background_frame_back:int = 0;
 		private var _card_text_color:uint = 0xFF000000;
 		private var _titleText:FlxText;
 		private var _descText:FlxText;
@@ -37,6 +37,8 @@ package
 		private var _iconHolder:FlxGroup = new FlxGroup();
 		public var _tile:Tile;
 		public var _sprite:FlxSprite;
+		public var _showing_back:Boolean = false;
+		public var _card_front:FlxGroup = new FlxGroup();
 		
 		public function Card(X:int = 0, Y:int = 0, type:String = "", title:String = "", tile:Tile = null) 
 		{
@@ -53,6 +55,7 @@ package
 						title = ALL_MONSTERS[Math.floor(Math.random() * (ALL_MONSTERS.length))]
 					}
 					_background_frame = 0;
+					_background_frame_back = 4;
 					_card_text_color = 0xFF812222;
 					_sprite = new FlxSprite(X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
 					_sprite.loadGraphic(charactersPNG, false, true, 24, 24);
@@ -63,17 +66,8 @@ package
 						title = ALL_TREASURE[Math.floor(Math.random() * (ALL_TREASURE.length))]
 					}
 					_background_frame = 2;
+					_background_frame_back = 6;
 					_card_text_color = 0xFF003399;
-					_sprite = new FlxSprite(X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
-					_sprite.loadGraphic(itemsPNG, false, true, 24, 24);
-					_iconHolder.add(_sprite);
-					break;
-				case "WEAPON":
-					if (title == "") {
-						title = ALL_WEAPONS[Math.floor(Math.random() * (ALL_WEAPONS.length))]
-					}
-					_background_frame = 3;
-					_card_text_color = 0xFF36632D;
 					_sprite = new FlxSprite(X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
 					_sprite.loadGraphic(itemsPNG, false, true, 24, 24);
 					_iconHolder.add(_sprite);
@@ -81,6 +75,7 @@ package
 				case "TILE":
 					title = tile.type;
 					_background_frame = 1;
+					_background_frame_back = 5;
 					_card_text_color = 0xFF5C3425;
 					_tile = new Tile(title, X + ICON_TILE_OFFSET.x, Y + ICON_TILE_OFFSET.y);
 					_iconHolder.add(_tile);
@@ -173,14 +168,15 @@ package
 			_titleText = new FlxText(X + TITLE_OFFSET.x, Y + TITLE_OFFSET.y, 148, _title.toUpperCase());
 			_titleText.height = 32;
 			_titleText.setFormat("Crushed", 26, _card_text_color, "center");
-			this.add(_titleText);
+			_card_front.add(_titleText);
 			
 			_descText = new FlxText(X + DESC_OFFSET.x, Y + DESC_OFFSET.y, 148, _desc.toUpperCase());
 			_descText.height = 104;
 			_descText.setFormat("Crushed", 18, _card_text_color, "center");
-			this.add(_descText);
+			_card_front.add(_descText);
 			
-			this.add(_iconHolder);
+			_card_front.add(_iconHolder);
+			this.add(_card_front);
 			
 			_hoverEffect = new FlxSprite(X, Y);
 			_hoverEffect.makeGraphic(CARD_WIDTH, CARD_HEIGHT, _card_text_color);
@@ -188,12 +184,15 @@ package
 			_hoverEffect.visible = false;
 			this.add(_hoverEffect);
 			
+			this.flipCard();
 		}
 		
 		override public function update():void {	
 			//trace("current tile: " + current_tile.type + " at [" + current_tile.x + "," + current_tile.y + "]");
 			//trace("moving to tile: " + moving_to_tile.type + " at [" + moving_to_tile.x + "," + moving_to_tile.y + "]");
 			//trace("currently at : [" + x + "," + y + "], moving to [" + moving_to_tile.x + "," + moving_to_tile.y + "]");
+			
+			
 
 			checkHover();
 			
@@ -207,6 +206,19 @@ package
 				_hoverEffect.visible = false;
 			}
 			//trace("mouse at [" + FlxG.mouse.x + "," + FlxG.mouse.y + "], visible: " + _hoverEffect.visible);
+		}
+		
+		public function flipCard():void {
+			_showing_back = !_showing_back;
+			//trace("now _showing_back: " + _showing_back);
+			
+			if (_showing_back) {
+				_background.frame = _background_frame_back;
+			} else {
+				_background.frame = _background_frame;
+			}
+			
+			_card_front.setAll("visible", !_showing_back);
 		}
 
 	}
