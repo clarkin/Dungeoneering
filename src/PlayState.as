@@ -122,18 +122,18 @@ package
 			var guiOverlay:FlxSprite = new FlxSprite(0, 0, ARTguiOverlay);
 			guiGroup.add(guiOverlay);
 			player_treasure_label = new FlxText(6, 6, 300, "Treasure: 0");
-			player_treasure_label.setFormat("Popup", 30, 0x5C3425, "left", 0x000000);
+			player_treasure_label.setFormat("Crushed", 30, 0xFFFF8A8A, "left", 0x000000);
 			guiGroup.add(player_treasure_label);
-			var leaveBtn:FlxButtonPlus = new FlxButtonPlus(330, 10, leaveDungeon, null, "Leave The Dungeon", 220, 24);
-			leaveBtn.textNormal.setFormat("Popup", 16, 0x5C3425, "center", 0);
-			leaveBtn.textHighlight.setFormat("Popup", 16, 0x5C3425, "center", 0);
+			var leaveBtn:FlxButtonPlus = new FlxButtonPlus(330, 10, leaveDungeon, null, "Leave The Dungeon", 220, 28);
+			leaveBtn.textNormal.setFormat("Crushed", 16, 0xFF812222, "center", 0);
+			leaveBtn.textHighlight.setFormat("Crushed", 16, 0xFF812222, "center", 0);
 			leaveBtn.borderColor = 0xFF5C3425;
-			leaveBtn.updateInactiveButtonColors([0xFFC2A988, 0xFFFFFFCC]);
-			leaveBtn.updateActiveButtonColors([0xFFD54DFF, 0xFFF9E6FF]);	
+			leaveBtn.updateInactiveButtonColors([0xFFFFCCCC, 0xFFFF8A8A]);
+			leaveBtn.updateActiveButtonColors([0xFFFF8A8A, 0xFFFFCCCC]);	
 			leaveBtn.screenCenter();
 			guiGroup.add(leaveBtn);
 			player_life_label = new FlxText(494, 6, 300, "Life: 5");
-			player_life_label.setFormat("Popup", 30, 0x5C3425, "right", 0x000000);
+			player_life_label.setFormat("Crushed", 30, 0xFFFF8A8A, "right", 0x000000);
 			guiGroup.add(player_life_label);
 			var dread_icon:FlxSprite;
 			for (var d:int = 0; d < 5; d++) {
@@ -347,6 +347,7 @@ package
 								cardsInHand.visible = true;
 							} else {
 								clearCards();
+								hideDreadLevel();
 								cardsInHand.visible = false;
 								turn_phase = PHASE_HERO_THINK;
 							}

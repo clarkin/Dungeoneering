@@ -6,7 +6,7 @@ package
 	public class MenuState extends FlxState
 	{
 		[Embed(source = "../assets/title_screen.jpg")] private var ARTtitleScreen:Class;
-		[Embed(source = "../assets/Popup.ttf", fontFamily = "Popup", embedAsCFF = "false")] public	var	FONTPopup:String;
+		[Embed(source = "../assets/Crushed.ttf", fontFamily = "Crushed", embedAsCFF = "false")] public	var	FONTCrushed:String;
 		
 		public var showResults:Boolean = true;
 		public var survived:Boolean = true;
@@ -38,17 +38,17 @@ package
 			var titleScreen:FlxSprite = new FlxSprite(0, 0, ARTtitleScreen);
 			
 			var title:FlxText = new FlxText(0, 200, 800, titleString);
-			title.setFormat("Popup", 36, 0x5C3425, "center", 0);
+			title.setFormat("Crushed", 36, 0xFFFF8A8A, "center", 0);
 			
 			var results:FlxText = new FlxText(0, 240, 800, resultsString);
-			results.setFormat("Popup", 24, 0x5C3425, "center", 0);	
+			results.setFormat("Crushed", 24, 0xFFFF8A8A, "center", 0);	
 			
-			var startButton:FlxButtonPlus = new FlxButtonPlus(400, 500, startGame, null, "START GAME", 320, 40);
-			startButton.textNormal.setFormat("Popup", 36, 0x5C3425, "center", 0);
-			startButton.textHighlight.setFormat("Popup", 36, 0x5C3425, "center", 0);
+			var startButton:FlxButtonPlus = new FlxButtonPlus(400, 500, startGame, null, "START GAME", 320, 50);
+			startButton.textNormal.setFormat("Crushed", 36, 0xFF812222, "center", 0);
+			startButton.textHighlight.setFormat("Crushed", 36, 0xFF812222, "center", 0);
 			startButton.borderColor = 0xFF5C3425;
-			startButton.updateInactiveButtonColors([0xFFC2A988, 0xFFFFFFCC]);
-			startButton.updateActiveButtonColors([0xFFD54DFF, 0xFFF9E6FF]);
+			startButton.updateInactiveButtonColors([0xFFFFCCCC, 0xFFFF8A8A]);
+			startButton.updateActiveButtonColors([0xFFFF8A8A, 0xFFFFCCCC]);
 			startButton.screenCenter();			
 			
 			add(titleScreen);
