@@ -63,14 +63,12 @@ package
 		public var player_alive:Boolean = true;
 		public var player_treasure:int = 0;
 		public var player_life:int = 5;
-		public var dungeon_danger:int = 0;
-		public var player_treasure_label:FlxText, player_life_label:FlxText, dungeon_danger_label:FlxText;
-		
-		public var treasure_tile:Tile;
-		public var treasure_tile_linked:Boolean = false;
-		
+		public var player_treasure_label:FlxText, player_life_label:FlxText, dungeon_dread_label:FlxText;
+				
 		public var hero:Hero;
 		public var possible_spots:int = 0;
+		public var turn_number:int = 0;
+		public var dread_cards_chosen:int = 0;
 		
 		override public function create():void {
 			//FlxG.visualDebug = true;
@@ -136,10 +134,11 @@ package
 			guiGroup.add(leaveBtn);
 			player_life_label = new FlxText(494, 6, 300, "Life: 5");
 			player_life_label.setFormat("Popup", 30, 0x5C3425, "right", 0x000000);
+			dungeon_dread_label = new FlxText(325, 260, 150, "Dread Level: 0");
+			dungeon_dread_label.setFormat("Crushed", 18, 0xF54040, "center", 0xA82C2C);
+			dungeon_dread_label.visible = false;
+			guiGroup.add(dungeon_dread_label);
 			guiGroup.add(player_life_label);
-			dungeon_danger_label = new FlxText(490, 560, 300, "Danger Level: 0");
-			dungeon_danger_label.setFormat("Popup", 30, 0xF54040, "right", 0xA82C2C);
-			guiGroup.add(dungeon_danger_label);
 			
 			highlights.visible = false;
 			placingSprite.visible = true;
@@ -212,10 +211,17 @@ package
 		
 		public function checkNewTurn():void {
 			if (turn_phase == PHASE_NEWTURN) {
+				trace("newturn");
+				turn_number++;
+				dungeon.IncreaseDread();
 				chooseCards();
 				turn_phase = PHASE_CARDS_PICK;
 				cardsInHand.visible = true;
 			} 
+		}
+		
+		public function updateDreadLevel():void {
+			dungeon_dread_label.text = "Dread Level: " + dungeon._dread_level;
 		}
 		
 		public function checkMouseHover():void {
@@ -230,6 +236,13 @@ package
 						if (card_deck != null && card_deck.alive) {
 							if (card_deck._background.overlapsPoint(clicked_at)) {
 								addCardFromDeck(card_deck._type);
+								if (card_deck._type == "MONSTER") {
+									dread_cards_chosen++;
+									if (dread_cards_chosen > dungeon._dread_level) {
+										dread_cards_chosen = -5;
+										dungeon.ReduceDread();
+									}
+								}
 							}
 						}
 					}
@@ -358,7 +371,9 @@ package
 		public function chooseCards():void {
 			clearCards();
 			
+			dread_cards_chosen = 0;
 			cardDecks.visible = true;
+			dungeon_dread_label.visible = true;
 			cardsInHand.visible = true;
 		}
 		
@@ -406,6 +421,7 @@ package
 		public function playCards():void {
 			turn_phase = PHASE_CARDS_PLAY;
 			cardDecks.visible = false;
+			dungeon_dread_label.visible = false;
 			//cardsInHand.callAll("toggleSize", false);
 			//cardsInHand.callAll("flipCard", false);
 			
@@ -474,9 +490,6 @@ package
 						for each (var this_tile:Tile in tiles.members) {
 							if (this_tile.x == new_x && this_tile.y == new_y) {
 								//trace("direction " + direction + " filled by " + this_tile.type);
-								if (this_tile.type == "hint_treasure_room") {
-									treasure_tile_linked = true;
-								}
 								filled = true;
 								break;
 							}
