@@ -39,6 +39,7 @@ package
 		private var _iconHolder:FlxGroup = new FlxGroup();
 		public var _card_front:FlxGroup = new FlxGroup();
 		public var _tile:Tile;
+		public var _monster:Monster;
 		public var _sprite:FlxSprite;
 		public var _showing_back:Boolean = false;
 		public var _shrunk:Boolean = false;
@@ -47,7 +48,7 @@ package
 		
 		private var _playState:PlayState;
 		
-		public function Card(playState:PlayState, X:int = 0, Y:int = 0, type:String = "", title:String = "", tile:Tile = null) 
+		public function Card(playState:PlayState, X:int = 0, Y:int = 0, type:String = "", title:String = "", tile:Tile = null, monster:Monster = null) 
 		{
 			super();
 			
@@ -60,15 +61,16 @@ package
 			
 			switch (_type) {
 				case "MONSTER":
-					if (title == "") {
-						title = ALL_MONSTERS[Math.floor(Math.random() * (ALL_MONSTERS.length))]
+					if (monster == null) {
+						monster = _playState.dungeon.GetRandomMonster();
 					}
 					_background_frame = 0;
 					_background_frame_back = 4;
 					_card_text_color = 0xFF812222;
-					_sprite = new FlxSprite(X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
-					_sprite.loadGraphic(charactersPNG, false, true, 24, 24);
-					_iconHolder.add(_sprite);
+					title = monster._type;
+					_desc = monster._desc;
+					_monster = new Monster(_playState, title, X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
+					_iconHolder.add(_monster);
 					break;
 				case "TREASURE":
 					if (title == "") {
@@ -99,28 +101,22 @@ package
 			_title = title;
 			switch (_title) {
 				case "Runty Goblin":
-					_desc = "A small goblin. Shouldn't be much of a threat for a competent adventurer..";
-					_sprite.frame = 157;
+					
 					break;
 				case "Goblin Leader":
-					_desc = "Bigger and meaner than the usual runt.";
-					_sprite.frame = 162;
+					
 					break;
 				case "Giant Bat":
-					_desc = "Bats aren't scary. Unless they weigh more than you..";
-					_sprite.frame = 217;
+					
 					break;
 				case "Chicken":
-					_desc = "*cluck* *cluck*\nHow did this get in here?";
-					_sprite.frame = 210;
+					
 					break;
 				case "Filthy Rat":
-					_desc = "Nasty spreader of pestilence, but no threat unless they swarm.";
-					_sprite.frame = 213;
+					
 					break;
 				case "Skeleton":
-					_desc = "Once a hoplite, always a hoplite.";
-					_sprite.frame = 193;
+					
 					break;
 				case "Silver Coins":
 					_desc = "A handful of silver, strewn carelessly on the ground.";	
@@ -229,6 +225,10 @@ package
 				if (_tile != null) {
 					_tile.x += change_x;
 					_tile.y += change_y;
+				}
+				if (_monster != null) {
+					_monster.x += change_x;
+					_monster.y += change_y;
 				}
 				_titleText.x += change_x;
 				_titleText.y += change_y;

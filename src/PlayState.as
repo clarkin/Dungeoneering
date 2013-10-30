@@ -31,6 +31,7 @@ package
 		public var sndSwordkill:WavSound;
 		
 		public var tileManager:TileManager;
+		public var dungeon:Dungeon;
 		public var tiles:FlxGroup = new FlxGroup();
 		public var highlights:FlxGroup = new FlxGroup();
 		public var guiGroup:FlxGroup = new FlxGroup();
@@ -77,6 +78,7 @@ package
 			FlxG.worldBounds = new FlxRect(0, 0, 800, 600);
 			
 			tileManager = new TileManager(this);
+			dungeon = new Dungeon(this);
 			
 			hero = new Hero(this, starting_point.x, starting_point.y - Tile.TILESIZE);
 
@@ -263,8 +265,13 @@ package
 											discardAndContinue();
 										}
 									} else {
-										placing_card._sprite.alpha = 0.6;
-										placingSprite.add(placing_card._sprite);
+										if (placing_card._type == "MONSTER") {
+											placing_card._monster.alpha = 0.6;
+											placingSprite.add(placing_card._monster);
+										} else {
+											placing_card._sprite.alpha = 0.6;
+											placingSprite.add(placing_card._sprite);
+										}
 										possible_spots = 0;
 										for each (var possible_tile:Tile in tiles.members) {
 											if (possible_tile != hero.current_tile && possible_tile.validForCard(placing_card)) {
