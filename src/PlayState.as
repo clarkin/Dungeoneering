@@ -7,6 +7,7 @@ package
 	import org.flixel.plugin.photonstorm.*;
 	import org.as3wavsound.*;
 	import flash.utils.ByteArray;
+	import flash.utils.getQualifiedClassName;
  
 	public class PlayState extends FlxState
 	{
@@ -400,7 +401,8 @@ package
 					possible_card = new Card(this, card_point.x, card_point.y, "TILE", "", possible_tile);
 					break;
 				case "MONSTER":
-					possible_card = new Card(this, card_point.x, card_point.y, "MONSTER");
+					var possible_monster:Monster = dungeon.GetRandomMonster();
+					possible_card = new Card(this, card_point.x, card_point.y, "MONSTER", possible_monster._type, null, possible_monster);
 					break;
 				case "TREASURE":
 					possible_card = new Card(this, card_point.x, card_point.y, "TREASURE");
@@ -436,14 +438,15 @@ package
 		}
 		
 		public function clearCards():void {
-			//trace("cardsInHand.members.length: " + cardsInHand.members.length);
-			for each (var card:Card in cardsInHand.members) {
-				if (card != null && card.alive) {
-					cardsInHand.remove(card, true);
-					card.kill();
+			//trace("cardsInHand..countLiving(): " + cardsInHand.countLiving());
+			for each (var clear_card:Card in cardsInHand.members) {
+				if (clear_card != null && clear_card.alive) {
+					//trace(" - clearing card " + clear_card._title);
+					cardsInHand.remove(clear_card, true);
+					clear_card.kill();
 				}
 			}
-			//trace("post trim, cardsInHand.members.length: " + cardsInHand.members.length);
+			cardsInHand.clear();  //TODO, this is a possible memory leak
 		}
 		
 		public function getTileAt(point:FlxPoint):Tile {
