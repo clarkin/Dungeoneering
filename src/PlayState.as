@@ -83,10 +83,10 @@ package
 			var starting_tile:Tile;
 			starting_tile = new Tile(this, "empty", starting_point.x, starting_point.y);
 			tiles.add(starting_tile);
-			starting_tile = new Tile(this, "corr_dead1", starting_point.x, starting_point.y - Tile.TILESIZE);
+			starting_tile = new Tile(this, "corr_grate_n", starting_point.x, starting_point.y - Tile.TILESIZE);
 			tiles.add(starting_tile);
 			hero.setCurrentTile(starting_tile);
-			starting_tile = new Tile(this, "corr_fourway");
+			starting_tile = new Tile(this, "room_skeleton_nesw");
 			addTileAt(starting_tile, starting_point.x, starting_point.y - Tile.TILESIZE - Tile.TILESIZE);
 			
 			var blank_tile:Tile;

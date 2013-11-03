@@ -7,12 +7,12 @@ package
 		[Embed(source = "../assets/ass_char_tran.png")] private var charactersPNG:Class;
 		
 		public static const TILESIZE:int = 42;
-		public static const SPEED:int = 90;
+		public static const SPEED:int = 180;
 		public static const THINKING_TIME:Number = 2;
 		public static const CARD_TIME:Number = 2;
 		
-		private var tile_offset_x:int = 5;
-		private var tile_offset_y:int = 12;
+		private var tile_offset_x:int = 65;
+		private var tile_offset_y:int = 62;
 		
 		private var thought_offset:FlxPoint = new FlxPoint(28, -8);
 		
