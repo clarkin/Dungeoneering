@@ -4,16 +4,31 @@ package
 	
 	public class Tile extends FlxSprite
 	{
-		[Embed(source = "../assets/dungeon_tiles.png")] private var dungeonTilesPNG:Class;
+		//[Embed(source = "../assets/dungeon_tiles.png")] private var dungeonTilesPNG:Class;
+		[Embed(source = "../assets/tiles.png")] private var dungeonTilesPNG:Class;
 		
-		public static const TILESIZE:Number = 42;
+		public static const TILESIZE:Number = 150;
 		
 		public static const ALL_TILES:Array = 
-			["corr_dead1","corr_dead2","corr_dead3","corr_dead4","corr_left1","corr_left2","corr_left3","corr_left4", 
-			 "corr_junction1","corr_junction2","corr_junction3","corr_junction4","corr_straight1","corr_straight2","corr_fourway","highlight",
-			 "room_dead1", "room_dead2", "room_dead3", "room_dead4", "room_left1", "room_left2", "room_left3", "room_left4",
-			 "room_junction1", "room_junction2", "room_junction3", "room_junction4", "room_straight1", "room_straight2", "room_fourway", "hint_treasure_room",
-			 "empty", "room_treasure"];
+			["corr_fat_nesw", "corr_well_nesw", "corr_thin_nesw", "corr_hatch_nesw", "corr_carpet_ns",
+			 "corr_carpet_ew", "corr_rubble_ew", "corr_rubble_ns", "corr_bridge_ew", "corr_bridge_ns", 
+			 "corr_regular_ew", "corr_regular_ns", "corr_pit_nsw", "corr_pit_esw", "corr_pit_nes", 
+			 "corr_pit_new", "corr_regular_nsw", "corr_regular_esw", "corr_regular_nes", "corr_regular_new", 
+			 "corr_crushed_nw", "corr_crushed_sw", "corr_crushed_es", "corr_crushed_ne", "corr_curved_nw", 
+			 "corr_curved_sw", "corr_curved_es", "corr_curved_ne", "corr_grate_w", "corr_grate_s", 
+			 "corr_grate_e", "corr_grate_n", "corr_rubble_w", "corr_rubble_s", "corr_rubble_e", 
+			 "corr_rubble_n", "room_large_w", "room_large_s", "room_large_e", "room_large_n",
+			 "room_round_w", "room_round_s", "room_round_e", "room_round_n", "room_waterfall_w",
+			 "room_waterfall_s", "room_waterfall_e", "room_waterfall_n", "room_torture_w", "room_torture_s",
+			 "room_torture_e", "room_torture_n", "room_pit_new", "room_pit_nsw", "room_pit_esw", 
+			 "room_pit_nes", "room_semicircle_new", "room_semicircle_nsw", "room_semicircle_esw", "room_semicircle_nes", 
+			 "room_hatch_new", "room_hatch_nsw", "room_hatch_esw", "room_hatch_nes", "room_collapse_new", 
+			 "room_collapse_nsw", "room_collapse_esw", "room_collapse_nes", "room_beds_nw", "room_beds_sw", 
+			 "room_beds_es", "room_beds_ne", "room_throne_nw", "room_throne_sw", "room_throne_se", 
+			 "room_throne_ne", "room_cavern_nw", "room_cavern_sw", "room_cavern_es", "room_cavern_ne", 
+			 "room_circle_ew", "room_circle_ns", "room_cages_ew", "room_cages_ns", "room_chasm_ew", 
+			 "room_chasm_ns", "room_carpet_nesw", "room_steps_nesw", "room_well_nesw", "room_skeleton_nesw",
+			 "empty", "highlight"];
 			 
 		public static const NORTH:int = 1;
 		public static const EAST:int  = 2;
@@ -35,7 +50,7 @@ package
 		public static const TREASURE_CHANCE:Array = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 3];
 		public static const MONSTER_CHANCE:Array =  [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2];
 		
-		private static const ICON_OFFSET:FlxPoint = new FlxPoint(10, 5);
+		private static const ICON_OFFSET:FlxPoint = new FlxPoint(80, 45);
 		public var cards:Array = new Array();
 		
 		private var _playState:PlayState;
@@ -51,91 +66,22 @@ package
 				addAnimation(ALL_TILES[i], [i]);
 			}
 			
-			switch (type) {
-				case "empty":
-				case "highlight":
-				case "hint_treasure_room":
-					break;
-				case "corr_dead1":
-				case "room_dead1":
+			if (type.indexOf("corr_") != -1 || type.indexOf("room_") != -1) {			
+				var exits:String = type.substring(type.lastIndexOf("_") + 1, type.length);
+				//trace("added tile of type: " + type + ", exits: " + exits);
+				
+				if (exits.indexOf("n") != -1) {
 					entry_north = true;
-					break;
-				case "corr_dead2":
-				case "room_dead2":
+				}
+				if (exits.indexOf("e") != -1) {
 					entry_east = true;
-					break;
-				case "corr_dead3":
-				case "room_dead3":
+				}
+				if (exits.indexOf("s") != -1) {
 					entry_south = true;
-					break;
-				case "corr_dead4":
-				case "room_dead4":
+				}
+				if (exits.indexOf("w") != -1) {
 					entry_west = true;
-					break;
-				case "corr_left1":
-				case "room_left1":
-					entry_north = true;
-					entry_east = true;
-					break;
-				case "corr_left2":
-				case "room_left2":
-					entry_east = true;
-					entry_south = true;
-					break;
-				case "corr_left3":
-				case "room_left3":
-					entry_south = true;
-					entry_west = true;
-					break;
-				case "corr_left4":
-				case "room_left4":
-					entry_west = true;
-					entry_north = true;
-					break;
-				case "corr_junction1":
-				case "room_junction1":
-					entry_north = true;
-					entry_east = true;
-					entry_west = true;
-					break;
-				case "corr_junction2":
-				case "room_junction2":
-					entry_east = true;
-					entry_south = true;
-					entry_north = true;
-					break;
-				case "corr_junction3":
-				case "room_junction3":
-					entry_south = true;
-					entry_west = true;
-					entry_east = true;
-					break;
-				case "corr_junction4":
-				case "room_junction4":
-					entry_west = true;
-					entry_north = true;
-					entry_south = true;
-					break;
-				case "corr_straight1":
-				case "room_straight1":
-					entry_north = true;
-					entry_south = true;
-					break;
-				case "corr_straight2":
-				case "room_straight2":
-					entry_east = true;
-					entry_west = true;
-					break;
-				case "corr_fourway":
-				case "room_fourway":
-				case "room_treasure":
-					entry_east = true;
-					entry_west = true;
-					entry_north = true;
-					entry_south = true;
-					break;
-				default:
-					throw new Error("no matching tile type defined for " + type);
+				}
 			}
 			
 			this.type = type;

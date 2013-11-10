@@ -1,18 +1,19 @@
 package 
 {
 	import org.flixel.*;
+	import org.flixel.plugin.photonstorm.*;
 	
 	public class Hero extends FlxSprite
 	{
 		[Embed(source = "../assets/ass_char_tran.png")] private var charactersPNG:Class;
 		
-		public static const TILESIZE:int = 42;
-		public static const SPEED:int = 90;
+		public static const TIME_TO_MOVE_TILES:int = 1000;
+		public static const ARRIVAL_THRESHOLD:int = 4;
 		public static const THINKING_TIME:Number = 2;
 		public static const CARD_TIME:Number = 2;
 		
-		private var tile_offset_x:int = 5;
-		private var tile_offset_y:int = 12;
+		public var tile_offset_x:int = 65;
+		public var tile_offset_y:int = 62;
 		
 		private var thought_offset:FlxPoint = new FlxPoint(28, -8);
 		
@@ -32,7 +33,7 @@ package
 			
 			loadGraphic(charactersPNG, false, true, 24, 24);
 
-			addAnimation("knight1", [36]);
+			addAnimation("knight1", [43]);
 			play("knight1");
 			
 			_playState = playState;
@@ -71,6 +72,7 @@ package
 		}
 		
 		public function startTurn():void {
+			_playState.following_hero = true;
 			is_taking_turn = true;
 			thinking_timer = THINKING_TIME;
 			var possible_directions:Array = current_tile.validEntrances();
@@ -153,16 +155,20 @@ package
 		
 		private function checkMovement():void {
 			if (moving_to_tile != null && current_tile != moving_to_tile) {
-				var distance_x:int = moving_to_tile.x + tile_offset_x - x;
-				var distance_y:int = moving_to_tile.y + tile_offset_y - y;
 				
-				x += FlxG.elapsed * (SPEED * (distance_x / Tile.TILESIZE));
-				y += FlxG.elapsed * (SPEED * (distance_y / Tile.TILESIZE));
+				var distance_x:int = moving_to_tile.x + tile_offset_x - (x + origin.x);
+				var distance_y:int = moving_to_tile.y + tile_offset_y - (y + origin.y);
 				
-				if (distance_x >= -1 && distance_x <= 1 && distance_y >= -1 && distance_y <= 1) {
+				//trace("hero at [" + this.x + "," + this.y + "], moving_to_tile at [" + (moving_to_tile.x + tile_offset_x) + "," + (moving_to_tile.y + tile_offset_y) + "]");
+				//trace("hero origin is [" + this.origin.x + "," + this.origin.y + "]");
+				//trace("distance: [" + distance_x + "," + distance_y + "]");
+				FlxVelocity.moveTowardsPoint(this, new FlxPoint(moving_to_tile.x + tile_offset_x, moving_to_tile.y + tile_offset_y), 0, TIME_TO_MOVE_TILES);
+				
+				if (distance_x >= -ARRIVAL_THRESHOLD && distance_x <= ARRIVAL_THRESHOLD && distance_y >= -ARRIVAL_THRESHOLD && distance_y <= ARRIVAL_THRESHOLD) {
 					setCurrentTile(moving_to_tile);
 					is_taking_turn = false;
 					is_moving = false;
+					velocity = new FlxPoint(0, 0);
 					_playState.heroArrivedAt(moving_to_tile);
 				}
 			}
@@ -170,14 +176,15 @@ package
 		
 		public function setCurrentTile(new_tile:Tile):void {
 			current_tile = new_tile;
-			x = new_tile.x + tile_offset_x;
-			y = new_tile.y + tile_offset_y;
+			//x = new_tile.x + tile_offset_x;
+			//y = new_tile.y + tile_offset_y;
 			//trace("** hero at target tile ** " + current_tile.type + " at [" + current_tile.x + "," + current_tile.y + "]");
 		}
 		
 		public function processNextCard():void {
 			if (current_tile.cards.length == 0) {
 				is_processing_cards = false;
+				_playState.following_hero = false;
 				_playState.turn_phase = PlayState.PHASE_NEWTURN;
 			} else {
 				var next_card:Card = current_tile.cards.pop();
@@ -188,6 +195,7 @@ package
 					_playState.player_treasure += 1;
 				} else if (next_card._type == "MONSTER") {
 					_playState.player_life -= 1;
+					_playState.dungeon._hope_level += 1;
 					if (_playState.player_life <= 0) {
 						_playState.player_alive = false;
 						_playState.leaveDungeon();

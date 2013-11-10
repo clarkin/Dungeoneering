@@ -148,9 +148,13 @@ package org.flixel.plugin.photonstorm
 			{
 				textNormal = new FlxText(X, Y + 3, Width, Label);
 				textNormal.setFormat(null, 8, 0xffffffff, "center", 0xff000000);
+				textNormal.scrollFactor.x = 0;
+				textNormal.scrollFactor.y = 0;
 				
 				textHighlight = new FlxText(X, Y + 3, Width, Label);
 				textHighlight.setFormat(null, 8, 0xffffffff, "center", 0xff000000);
+				textHighlight.scrollFactor.x = 0;
+				textHighlight.scrollFactor.y = 0;
 				
 				add(textNormal);
 				add(textHighlight);

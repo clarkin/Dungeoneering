@@ -51,6 +51,17 @@ package
 		public static const PHASE_HERO_CARDS:int   = 5;
 		public var turn_phase:int = PHASE_HERO_THINK;
 		
+		public static const SCROLL_MAXVELOCITY:Number = 800;
+		public static const SCROLL_ACCELERATION:Number = 800;
+		public static const PLACING_OFFSET:FlxPoint = new FlxPoint(20, 20);
+		
+		public static const HAND_START:FlxPoint = new FlxPoint(225, 50);
+		public static const HAND_CARD_OFFSET:int = 250;
+		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(350, 220);
+		public static const SHRUNK_HAND_CARD_OFFSET:int = 100;
+		public static const DREAD_ICON_START:FlxPoint = new FlxPoint(479, 262);
+		public static const DREAD_ICON_OFFSET:int = 29;
+		
 		public var placing_card:Card;
 		public var is_placing_card:Boolean = false;
 		
@@ -66,63 +77,42 @@ package
 		public var player_treasure_label:FlxText, player_life_label:FlxText;
 				
 		public var hero:Hero;
+		public var camera_target:FlxSprite;
+		public var following_hero:Boolean = false;
 		public var possible_spots:int = 0;
 		public var turn_number:int = 0;
 		public var dread_cards_chosen:int = 0;
 		
 		override public function create():void {
 			//FlxG.visualDebug = true;
-			FlxG.camera.setBounds(0, 0, 800, 600);
-			FlxG.worldBounds = new FlxRect(0, 0, 800, 600);
+			//FlxG.camera.setBounds(0, 0, 800, 600);
+			//FlxG.worldBounds = new FlxRect(0, 0, 800, 600);
 			
 			tileManager = new TileManager(this);
 			dungeon = new Dungeon(this);
 			
 			hero = new Hero(this, starting_point.x, starting_point.y - Tile.TILESIZE);
+			camera_target = new FlxSprite(hero.x, hero.y);
+			//TODO: fix this being a few pixels off at the start
+			//camera_target = new FlxSprite(hero.x + hero.origin.x, hero.y + hero.origin.y);
+			camera_target.width = camera_target.height = 0;
+			camera_target.maxVelocity = new FlxPoint(SCROLL_MAXVELOCITY, SCROLL_MAXVELOCITY);
+			camera_target.drag = new FlxPoint(SCROLL_ACCELERATION, SCROLL_ACCELERATION);
+			camera_target.visible = false;
+			FlxG.camera.follow(camera_target);
 
 			var starting_tile:Tile;
-			starting_tile = new Tile(this, "empty", starting_point.x, starting_point.y);
-			tiles.add(starting_tile);
-			starting_tile = new Tile(this, "corr_dead1", starting_point.x, starting_point.y - Tile.TILESIZE);
+			starting_tile = new Tile(this, "corr_grate_n", starting_point.x, starting_point.y - Tile.TILESIZE);
 			tiles.add(starting_tile);
 			hero.setCurrentTile(starting_tile);
-			starting_tile = new Tile(this, "corr_fourway");
+			starting_tile = new Tile(this, "corr_thin_nesw");
 			addTileAt(starting_tile, starting_point.x, starting_point.y - Tile.TILESIZE - Tile.TILESIZE);
 			
-			var blank_tile:Tile;
-			var i:int;
-			var new_x:int = starting_point.x;
-			var new_y:int = starting_point.y;
-			for (i = 1; i <= 10; i++) {
-				blank_tile = new Tile(this, "empty");
-				new_x += Tile.TILESIZE;
-				addTileAt(blank_tile, new_x, new_y);
-			}
-			for (i = 1; i <= 12; i++) {
-				blank_tile = new Tile(this, "empty");
-				new_y -= Tile.TILESIZE;
-				addTileAt(blank_tile, new_x, new_y);
-			}
-			for (i = 1; i <= 19; i++) {
-				blank_tile = new Tile(this, "empty");
-				new_x -= Tile.TILESIZE;
-				addTileAt(blank_tile, new_x, new_y);
-			}
-			for (i = 1; i <= 12; i++) {
-				blank_tile = new Tile(this, "empty");
-				new_y += Tile.TILESIZE;
-				addTileAt(blank_tile, new_x, new_y);
-			}
-			for (i = 1; i <= 8; i++) {
-				blank_tile = new Tile(this, "empty");
-				new_x += Tile.TILESIZE;
-				addTileAt(blank_tile, new_x, new_y);
-			}
-			
 			var guiOverlay:FlxSprite = new FlxSprite(0, 0, ARTguiOverlay);
-			guiGroup.add(guiOverlay);
+			//guiGroup.add(guiOverlay);
 			player_treasure_label = new FlxText(6, 6, 300, "Treasure: 0");
 			player_treasure_label.setFormat("Crushed", 30, 0xFFFF8A8A, "left", 0x000000);
+			player_treasure_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_treasure_label);
 			var leaveBtn:FlxButtonPlus = new FlxButtonPlus(330, 10, leaveDungeon, null, "Leave The Dungeon", 220, 28);
 			leaveBtn.textNormal.setFormat("Crushed", 16, 0xFF812222, "center", 0);
@@ -131,15 +121,18 @@ package
 			leaveBtn.updateInactiveButtonColors([0xFFFFCCCC, 0xFFFF8A8A]);
 			leaveBtn.updateActiveButtonColors([0xFFFF8A8A, 0xFFFFCCCC]);	
 			leaveBtn.screenCenter();
+			//leaveBtn.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(leaveBtn);
-			player_life_label = new FlxText(494, 6, 300, "Life: 5");
+			player_life_label = new FlxText(FlxG.width - 300 - 6, 6, 300, "Life: 5");
 			player_life_label.setFormat("Crushed", 30, 0xFFFF8A8A, "right", 0x000000);
+			player_life_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_life_label);
 			var dread_icon:FlxSprite;
 			for (var d:int = 0; d < 5; d++) {
-				 dread_icon = new FlxSprite(329 + (d * 29), 262, ARTskullBolt);
+				 dread_icon = new FlxSprite(DREAD_ICON_START.x + (d * DREAD_ICON_OFFSET), DREAD_ICON_START.y, ARTskullBolt);
 				 dread_icon.visible = false;
 				 dread_icon.alpha = 0.8;
+				 dread_icon.scrollFactor = new FlxPoint(0, 0);
 				 guiGroup.add(dread_icon);
 				 dread_icons.push(dread_icon);
 			}
@@ -148,11 +141,15 @@ package
 			placingSprite.visible = true;
 			
 			var card_deck:Card;
-			card_deck = new Card(this, 125, 50, "TILE");
+			card_deck = new Card(this, HAND_START.x + 0 * HAND_CARD_OFFSET, HAND_START.y, "TILE");
+			card_deck.setAll("scrollFactor", new FlxPoint(0, 0));
 			cardDecks.add(card_deck);
-			card_deck = new Card(this, 325, 50, "MONSTER");
+			card_deck = new Card(this, HAND_START.x + 1 * HAND_CARD_OFFSET, HAND_START.y, "MONSTER");
+			card_deck.setAll("scrollFactor", new FlxPoint(0, 0));
 			cardDecks.add(card_deck);
-			card_deck = new Card(this, 525, 50, "TREASURE");
+			card_deck = new Card(this, HAND_START.x + 2 * HAND_CARD_OFFSET, HAND_START.y, "TREASURE");
+			card_deck.setAll("scrollFactor", new FlxPoint(0, 0));
+			card_deck.visible = false;
 			cardDecks.add(card_deck);
 			cardDecks.visible = false;
 						
@@ -165,6 +162,7 @@ package
 			sndSwordkill = new WavSound(new WAVswordkill() as ByteArray);
 
 			add(tiles);
+			add(camera_target);
 			add(hero);
 			add(highlights);
 			add(floatingTexts);
@@ -179,6 +177,8 @@ package
 			
 			player_treasure_label.text = "Treasure: " + player_treasure;
 			player_life_label.text = "Life: " + player_life;
+			
+			//trace("camera_target [" + camera_target.x + ", " + camera_target.y + "], hero [" + hero.x + ", " + hero.y + "]");
 			
 			super.update();
 		}
@@ -208,8 +208,8 @@ package
 		
 		public function checkPlacing():void {
 			if (turn_phase == PHASE_CARDS_PLAY && is_placing_card) {
-				placingSprite.setAll("x", FlxG.mouse.x - 12);
-				placingSprite.setAll("y", FlxG.mouse.y - 12);
+				placingSprite.setAll("x", FlxG.mouse.screenX + PLACING_OFFSET.x);
+				placingSprite.setAll("y", FlxG.mouse.screenY + PLACING_OFFSET.y);
 			}
 		}
 		
@@ -247,8 +247,9 @@ package
 			if (FlxG.mouse.justReleased()) {
 				var clicked_at:FlxPoint = FlxG.mouse.getWorldPosition();
 				if (turn_phase == PHASE_CARDS_PICK) {
+					clicked_at = FlxG.mouse.getScreenPosition();
 					for each (var card_deck:Card in cardDecks.members) {
-						if (card_deck != null && card_deck.alive) {
+						if (card_deck != null && card_deck.alive && card_deck.visible) {
 							if (card_deck._background.overlapsPoint(clicked_at)) {
 								addCardFromDeck(card_deck._type);
 								if (card_deck._type == "MONSTER") {
@@ -257,12 +258,16 @@ package
 										dread_cards_chosen = -5;
 										dungeon.ReduceDread();
 									}
+								} else if (card_deck._type == "TREASURE") {
+									dungeon._hope_level -= 1;
+									checkHope();
 								}
 							}
 						}
 					}
 				} else if (turn_phase == PHASE_CARDS_PLAY) {
 					if (!is_placing_card) {
+						clicked_at = FlxG.mouse.getScreenPosition();
 						for each (var card_in_hand:Card in cardsInHand.members) {
 							if (card_in_hand != null && card_in_hand.alive) {
 								if (card_in_hand._background.overlapsPoint(clicked_at)) {
@@ -312,6 +317,7 @@ package
 										}
 									}
 									placingSprite.setAll("visible", true);
+									placingSprite.setAll("scrollFactor", new FlxPoint(0, 0));
 									//trace("placingSprite.countLiving(): " + placingSprite.countLiving());
 								}
 							}
@@ -370,7 +376,27 @@ package
 					discardAndContinue();
 				}
 			}
+			
+			//camera movement
+			camera_target.acceleration.x = camera_target.acceleration.y = 0;
+			if (following_hero) {
+				FlxVelocity.moveTowardsObject(camera_target, hero, 0, 300);
+			} else {
+				if (FlxG.keys.UP) {
+					camera_target.acceleration.y -= SCROLL_ACCELERATION;
+				}
+				if (FlxG.keys.DOWN) {
+					camera_target.acceleration.y += SCROLL_ACCELERATION;
+				}
+				if (FlxG.keys.LEFT) {
+					camera_target.acceleration.x -= SCROLL_ACCELERATION;
+				}
+				if (FlxG.keys.RIGHT) {
+					camera_target.acceleration.x += SCROLL_ACCELERATION;
+				}
+			}
 		}
+		
 		public function discardAndContinue():void {
 			clearCards();
 			cardsInHand.visible = false;
@@ -388,9 +414,22 @@ package
 			clearCards();
 			
 			dread_cards_chosen = 0;
+			checkHope();
 			cardDecks.visible = true;
 			updateDreadLevel();
 			cardsInHand.visible = true;
+		}
+		
+		public function checkHope():void {
+			for each (var card_deck:Card in cardDecks.members) {
+				if (card_deck._type == "TREASURE") {
+					if (dungeon._hope_level > 0) {
+						card_deck.visible = true;
+					} else {
+						card_deck.visible = false;
+					}
+				}
+			}
 		}
 		
 		public function addCardFromDeck(type:String):void {
@@ -402,7 +441,7 @@ package
 				cards_so_far = 0;
 			}
 			var possible_card:Card;
-			var card_point:FlxPoint = new FlxPoint(155 + 80 * cards_so_far, 250 + 0 * cards_so_far);
+			var card_point:FlxPoint = new FlxPoint(SHRUNK_HAND_START.x + cards_so_far * SHRUNK_HAND_CARD_OFFSET, SHRUNK_HAND_START.y);
 			switch (type) {
 				case "TILE":
 					var valid_entrances:Array = new Array();
@@ -427,9 +466,10 @@ package
 			}
 			
 			possible_card.toggleSize();
+			possible_card.setAll("scrollFactor", new FlxPoint(0, 0));
 			cardsInHand.add(possible_card);
 			
-			if (cards_so_far >= 4) {
+			if (cards_so_far >= 2) {
 				//trace("full hand");
 				playCards();
 			}
@@ -447,7 +487,7 @@ package
 			for each (var card_in_hand:Card in cardsInHand.members) {
 				card_in_hand.toggleSize();
 				card_in_hand.flipCard();
-				card_in_hand._moving_to = new FlxPoint(card_no * 155 + 15, 50);
+				card_in_hand._moving_to = new FlxPoint(HAND_START.x + card_no * HAND_CARD_OFFSET, HAND_START.y); 
 				card_in_hand._is_moving = true;
 				card_no++;
 			}
