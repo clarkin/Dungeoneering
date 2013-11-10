@@ -55,10 +55,12 @@ package
 		public static const SCROLL_ACCELERATION:Number = 800;
 		public static const PLACING_OFFSET:FlxPoint = new FlxPoint(20, 20);
 		
-		public static const HAND_START:FlxPoint = new FlxPoint(225, 100);
+		public static const HAND_START:FlxPoint = new FlxPoint(225, 50);
 		public static const HAND_CARD_OFFSET:int = 250;
-		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(350, 270);
+		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(350, 220);
 		public static const SHRUNK_HAND_CARD_OFFSET:int = 100;
+		public static const DREAD_ICON_START:FlxPoint = new FlxPoint(479, 262);
+		public static const DREAD_ICON_OFFSET:int = 29;
 		
 		public var placing_card:Card;
 		public var is_placing_card:Boolean = false;
@@ -127,7 +129,7 @@ package
 			guiGroup.add(player_life_label);
 			var dread_icon:FlxSprite;
 			for (var d:int = 0; d < 5; d++) {
-				 dread_icon = new FlxSprite(329 + (d * 29), 262, ARTskullBolt);
+				 dread_icon = new FlxSprite(DREAD_ICON_START.x + (d * DREAD_ICON_OFFSET), DREAD_ICON_START.y, ARTskullBolt);
 				 dread_icon.visible = false;
 				 dread_icon.alpha = 0.8;
 				 dread_icon.scrollFactor = new FlxPoint(0, 0);
@@ -147,6 +149,7 @@ package
 			cardDecks.add(card_deck);
 			card_deck = new Card(this, HAND_START.x + 2 * HAND_CARD_OFFSET, HAND_START.y, "TREASURE");
 			card_deck.setAll("scrollFactor", new FlxPoint(0, 0));
+			card_deck.visible = false;
 			cardDecks.add(card_deck);
 			cardDecks.visible = false;
 						
@@ -246,7 +249,7 @@ package
 				if (turn_phase == PHASE_CARDS_PICK) {
 					clicked_at = FlxG.mouse.getScreenPosition();
 					for each (var card_deck:Card in cardDecks.members) {
-						if (card_deck != null && card_deck.alive) {
+						if (card_deck != null && card_deck.alive && card_deck.visible) {
 							if (card_deck._background.overlapsPoint(clicked_at)) {
 								addCardFromDeck(card_deck._type);
 								if (card_deck._type == "MONSTER") {
@@ -255,6 +258,9 @@ package
 										dread_cards_chosen = -5;
 										dungeon.ReduceDread();
 									}
+								} else if (card_deck._type == "TREASURE") {
+									dungeon._hope_level -= 1;
+									checkHope();
 								}
 							}
 						}
@@ -408,9 +414,22 @@ package
 			clearCards();
 			
 			dread_cards_chosen = 0;
+			checkHope();
 			cardDecks.visible = true;
 			updateDreadLevel();
 			cardsInHand.visible = true;
+		}
+		
+		public function checkHope():void {
+			for each (var card_deck:Card in cardDecks.members) {
+				if (card_deck._type == "TREASURE") {
+					if (dungeon._hope_level > 0) {
+						card_deck.visible = true;
+					} else {
+						card_deck.visible = false;
+					}
+				}
+			}
 		}
 		
 		public function addCardFromDeck(type:String):void {

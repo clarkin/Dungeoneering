@@ -6,6 +6,7 @@ package
 	{
 		public var all_monsters:Array = new Array();
 		public var _dread_level:Number = 0;
+		public var _hope_level:Number = 0;
 		
 		private var _playState:PlayState;
 		

@@ -195,6 +195,7 @@ package
 					_playState.player_treasure += 1;
 				} else if (next_card._type == "MONSTER") {
 					_playState.player_life -= 1;
+					_playState.dungeon._hope_level += 1;
 					if (_playState.player_life <= 0) {
 						_playState.player_alive = false;
 						_playState.leaveDungeon();
