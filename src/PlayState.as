@@ -55,6 +55,11 @@ package
 		public static const SCROLL_ACCELERATION:Number = 800;
 		public static const PLACING_OFFSET:FlxPoint = new FlxPoint(20, 20);
 		
+		public static const HAND_START:FlxPoint = new FlxPoint(225, 100);
+		public static const HAND_CARD_OFFSET:int = 250;
+		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(350, 270);
+		public static const SHRUNK_HAND_CARD_OFFSET:int = 100;
+		
 		public var placing_card:Card;
 		public var is_placing_card:Boolean = false;
 		
@@ -134,13 +139,13 @@ package
 			placingSprite.visible = true;
 			
 			var card_deck:Card;
-			card_deck = new Card(this, 125, 50, "TILE");
+			card_deck = new Card(this, HAND_START.x + 0 * HAND_CARD_OFFSET, HAND_START.y, "TILE");
 			card_deck.setAll("scrollFactor", new FlxPoint(0, 0));
 			cardDecks.add(card_deck);
-			card_deck = new Card(this, 325, 50, "MONSTER");
+			card_deck = new Card(this, HAND_START.x + 1 * HAND_CARD_OFFSET, HAND_START.y, "MONSTER");
 			card_deck.setAll("scrollFactor", new FlxPoint(0, 0));
 			cardDecks.add(card_deck);
-			card_deck = new Card(this, 525, 50, "TREASURE");
+			card_deck = new Card(this, HAND_START.x + 2 * HAND_CARD_OFFSET, HAND_START.y, "TREASURE");
 			card_deck.setAll("scrollFactor", new FlxPoint(0, 0));
 			cardDecks.add(card_deck);
 			cardDecks.visible = false;
@@ -417,7 +422,7 @@ package
 				cards_so_far = 0;
 			}
 			var possible_card:Card;
-			var card_point:FlxPoint = new FlxPoint(155 + 80 * cards_so_far, 250 + 0 * cards_so_far);
+			var card_point:FlxPoint = new FlxPoint(SHRUNK_HAND_START.x + cards_so_far * SHRUNK_HAND_CARD_OFFSET, SHRUNK_HAND_START.y);
 			switch (type) {
 				case "TILE":
 					var valid_entrances:Array = new Array();
@@ -445,7 +450,7 @@ package
 			possible_card.setAll("scrollFactor", new FlxPoint(0, 0));
 			cardsInHand.add(possible_card);
 			
-			if (cards_so_far >= 4) {
+			if (cards_so_far >= 2) {
 				//trace("full hand");
 				playCards();
 			}
@@ -463,7 +468,7 @@ package
 			for each (var card_in_hand:Card in cardsInHand.members) {
 				card_in_hand.toggleSize();
 				card_in_hand.flipCard();
-				card_in_hand._moving_to = new FlxPoint(card_no * 155 + 15, 50);
+				card_in_hand._moving_to = new FlxPoint(HAND_START.x + card_no * HAND_CARD_OFFSET, HAND_START.y); 
 				card_in_hand._is_moving = true;
 				card_no++;
 			}
