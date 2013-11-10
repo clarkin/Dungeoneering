@@ -269,10 +269,33 @@ package org.flixel
 				//Render a single pixel shadow beneath the text
 				if(_shadow > 0)
 				{
+					/* //original shadow code
 					_textField.setTextFormat(new TextFormat(formatAdjusted.font,formatAdjusted.size,_shadow,null,null,null,null,null,formatAdjusted.align));				
 					_matrix.translate(1,1);
 					_pixels.draw(_textField,_matrix,_colorTransform);
 					_matrix.translate(-1,-1);
+					_textField.setTextFormat(new TextFormat(formatAdjusted.font,formatAdjusted.size,formatAdjusted.color,null,null,null,null,null,formatAdjusted.align));
+					*/
+					//instead of shadow do an outline all around the text
+					_textField.setTextFormat(new TextFormat(formatAdjusted.font,formatAdjusted.size,_shadow,null,null,null,null,null,formatAdjusted.align));                
+					_matrix.translate(1, 1);
+					_pixels.draw(_textField, _matrix, _colorTransform);
+					_matrix.translate(0, -1);
+					_pixels.draw(_textField, _matrix, _colorTransform);
+					_matrix.translate(0, -1);
+					_pixels.draw(_textField, _matrix, _colorTransform);
+					_matrix.translate( -1, 0);
+					_pixels.draw(_textField, _matrix, _colorTransform);
+					_matrix.translate(-1, 0);
+					_pixels.draw(_textField, _matrix, _colorTransform);
+					_matrix.translate(0, 1);
+					_pixels.draw(_textField, _matrix, _colorTransform);
+					_matrix.translate(0, 1);
+					_pixels.draw(_textField, _matrix, _colorTransform);
+					_matrix.translate(1, 0);
+					_pixels.draw(_textField, _matrix, _colorTransform);
+
+					_matrix.translate(0,-1);
 					_textField.setTextFormat(new TextFormat(formatAdjusted.font,formatAdjusted.size,formatAdjusted.color,null,null,null,null,null,formatAdjusted.align));
 				}
 				//Actually draw the text onto the buffer
