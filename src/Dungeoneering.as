@@ -1,7 +1,7 @@
 package
 {
 	import org.flixel.*; 
-	[SWF(width = "1024", height = "768", backgroundColor = "#000000")] 
+	[SWF(width = "1024", height = "768", backgroundColor = "#333333")] 
 	[Frame(factoryClass="Preloader")]
  
 	public class Dungeoneering extends FlxGame

@@ -22,6 +22,7 @@ package
 
 		override public function create():void {
 			FlxG.mouse.show();
+			FlxG.bgColor = 0xFF333333;
 			
 			var titleString:String = "Instructions";
 			var resultsString:String = "Explore the dungeon looking for treasure,\nbut beware the monsters..\n\nFind the treasure room if you can!";
@@ -60,7 +61,7 @@ package
 		}
 
 		private function startGame():void {
-			FlxG.fade(0xFF000000, 1, finishedFade);
+			FlxG.fade(0xFF333333, 1, finishedFade);
 		}
 		
 		private function finishedFade():void {
