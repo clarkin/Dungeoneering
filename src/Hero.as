@@ -71,6 +71,7 @@ package
 		}
 		
 		public function startTurn():void {
+			_playState.following_hero = true;
 			is_taking_turn = true;
 			thinking_timer = THINKING_TIME;
 			var possible_directions:Array = current_tile.validEntrances();
@@ -178,6 +179,7 @@ package
 		public function processNextCard():void {
 			if (current_tile.cards.length == 0) {
 				is_processing_cards = false;
+				_playState.following_hero = false;
 				_playState.turn_phase = PlayState.PHASE_NEWTURN;
 			} else {
 				var next_card:Card = current_tile.cards.pop();

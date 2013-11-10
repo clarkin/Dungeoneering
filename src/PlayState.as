@@ -51,8 +51,8 @@ package
 		public static const PHASE_HERO_CARDS:int   = 5;
 		public var turn_phase:int = PHASE_HERO_THINK;
 		
-		public static const SCROLL_MAXVELOCITY:Number = 500;
-		public static const SCROLL_ACCELERATION:Number = 500;
+		public static const SCROLL_MAXVELOCITY:Number = 800;
+		public static const SCROLL_ACCELERATION:Number = 800;
 		public static const PLACING_OFFSET:FlxPoint = new FlxPoint(20, 20);
 		
 		public var placing_card:Card;
@@ -70,7 +70,8 @@ package
 		public var player_treasure_label:FlxText, player_life_label:FlxText;
 				
 		public var hero:Hero;
-		public var camera_target:FlxObject;
+		public var camera_target:FlxSprite;
+		public var following_hero:Boolean = false;
 		public var possible_spots:int = 0;
 		public var turn_number:int = 0;
 		public var dread_cards_chosen:int = 0;
@@ -84,20 +85,18 @@ package
 			dungeon = new Dungeon(this);
 			
 			hero = new Hero(this, starting_point.x, starting_point.y - Tile.TILESIZE);
-			camera_target = new FlxObject(hero.x, hero.y, 1, 1);
+			camera_target = new FlxSprite(hero.x, hero.y);
+			camera_target.width = camera_target.height = 0;
 			camera_target.maxVelocity = new FlxPoint(SCROLL_MAXVELOCITY, SCROLL_MAXVELOCITY);
 			camera_target.drag = new FlxPoint(SCROLL_ACCELERATION, SCROLL_ACCELERATION);
 			camera_target.visible = false;
-			add(camera_target);
 			FlxG.camera.follow(camera_target);
 
 			var starting_tile:Tile;
-			//starting_tile = new Tile(this, "empty", starting_point.x, starting_point.y);
-			//tiles.add(starting_tile);
 			starting_tile = new Tile(this, "corr_grate_n", starting_point.x, starting_point.y - Tile.TILESIZE);
 			tiles.add(starting_tile);
 			hero.setCurrentTile(starting_tile);
-			starting_tile = new Tile(this, "room_skeleton_nesw");
+			starting_tile = new Tile(this, "corr_thin_nesw");
 			addTileAt(starting_tile, starting_point.x, starting_point.y - Tile.TILESIZE - Tile.TILESIZE);
 			
 			var guiOverlay:FlxSprite = new FlxSprite(0, 0, ARTguiOverlay);
@@ -153,6 +152,7 @@ package
 			sndSwordkill = new WavSound(new WAVswordkill() as ByteArray);
 
 			add(tiles);
+			add(camera_target);
 			add(hero);
 			add(highlights);
 			add(floatingTexts);
@@ -167,6 +167,8 @@ package
 			
 			player_treasure_label.text = "Treasure: " + player_treasure;
 			player_life_label.text = "Life: " + player_life;
+			
+			//trace("camera_target [" + camera_target.x + ", " + camera_target.y + "], hero [" + hero.x + ", " + hero.y + "]");
 			
 			super.update();
 		}
@@ -362,20 +364,31 @@ package
 				}
 			}
 			
+			//camera movement
 			camera_target.acceleration.x = camera_target.acceleration.y = 0;
-			if (FlxG.keys.UP) {
-				camera_target.acceleration.y -= SCROLL_ACCELERATION;
-			}
-			if (FlxG.keys.DOWN) {
-				camera_target.acceleration.y += SCROLL_ACCELERATION;
-			}
-			if (FlxG.keys.LEFT) {
-				camera_target.acceleration.x -= SCROLL_ACCELERATION;
-			}
-			if (FlxG.keys.RIGHT) {
-				camera_target.acceleration.x += SCROLL_ACCELERATION;
-			}
+			if (following_hero) {
+				FlxVelocity.moveTowardsObject(camera_target, hero, 60, 300);
+			} else {
+			
+				//_playState.camera_target.x = this.x + this.width / 2;
+				//_playState.camera_target.y = this.y + this.height / 2;
+				//FlxG.camera.follow(_playState.camera_target);
+				
+				if (FlxG.keys.UP) {
+					camera_target.acceleration.y -= SCROLL_ACCELERATION;
+				}
+				if (FlxG.keys.DOWN) {
+					camera_target.acceleration.y += SCROLL_ACCELERATION;
+				}
+				if (FlxG.keys.LEFT) {
+					camera_target.acceleration.x -= SCROLL_ACCELERATION;
+				}
+				if (FlxG.keys.RIGHT) {
+					camera_target.acceleration.x += SCROLL_ACCELERATION;
+				}
+				}
 		}
+		
 		public function discardAndContinue():void {
 			clearCards();
 			cardsInHand.visible = false;
