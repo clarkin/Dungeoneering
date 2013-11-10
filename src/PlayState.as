@@ -111,7 +111,7 @@ package
 			var guiOverlay:FlxSprite = new FlxSprite(0, 0, ARTguiOverlay);
 			//guiGroup.add(guiOverlay);
 			player_treasure_label = new FlxText(6, 6, 300, "Treasure: 0");
-			player_treasure_label.setFormat("Crushed", 30, 0xFFFF8A8A, "left", 0x000000);
+			player_treasure_label.setFormat("Crushed", 30, 0xFFFF8A8A, "left", 0xFFA82C2C);
 			player_treasure_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_treasure_label);
 			var leaveBtn:FlxButtonPlus = new FlxButtonPlus(330, 10, leaveDungeon, null, "Leave The Dungeon", 220, 28);
@@ -124,7 +124,7 @@ package
 			//leaveBtn.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(leaveBtn);
 			player_life_label = new FlxText(FlxG.width - 300 - 6, 6, 300, "Life: 5");
-			player_life_label.setFormat("Crushed", 30, 0xFFFF8A8A, "right", 0x000000);
+			player_life_label.setFormat("Crushed", 30, 0xFFFF8A8A, "right", 0xFFA82C2C);
 			player_life_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_life_label);
 			var dread_icon:FlxSprite;

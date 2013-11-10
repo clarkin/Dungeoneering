@@ -37,13 +37,13 @@ package
 			
 			var titleScreen:FlxSprite = new FlxSprite(0, 0, ARTtitleScreen);
 			
-			var title:FlxText = new FlxText(0, 200, 800, titleString);
+			var title:FlxText = new FlxText(0, 300, 1024, titleString);
 			title.setFormat("Crushed", 36, 0xFFFF8A8A, "center", 0);
-			
-			var results:FlxText = new FlxText(0, 240, 800, resultsString);
+						
+			var results:FlxText = new FlxText(0, 340, 1024, resultsString);
 			results.setFormat("Crushed", 24, 0xFFFF8A8A, "center", 0);	
 			
-			var startButton:FlxButtonPlus = new FlxButtonPlus(400, 500, startGame, null, "START GAME", 320, 50);
+			var startButton:FlxButtonPlus = new FlxButtonPlus(400, 600, startGame, null, "START GAME", 320, 50);
 			startButton.textNormal.setFormat("Crushed", 36, 0xFF812222, "center", 0);
 			startButton.textHighlight.setFormat("Crushed", 36, 0xFF812222, "center", 0);
 			startButton.borderColor = 0xFF5C3425;
@@ -56,7 +56,7 @@ package
 			add(results);
 			add(startButton);
 			
-			FlxG.switchState(new PlayState);
+			//FlxG.switchState(new PlayState);
 		}
 
 		private function startGame():void {

@@ -95,7 +95,7 @@ package
 				moving_to_tile = chooseTile(valid_tiles);
 				if (moving_to_tile.x < current_tile.x) {
 					facing = LEFT;
-				} else {
+				} else if (moving_to_tile.x > current_tile.x) {
 					facing = RIGHT;
 				}
 				thinkSomething();
