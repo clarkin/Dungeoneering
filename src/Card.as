@@ -246,7 +246,7 @@ package
 		}
 		
 		public function checkHover():void {
-			if (_hover_enabled && _background.overlapsPoint(FlxG.mouse.getWorldPosition())) {
+			if (_hover_enabled && _background.overlapsPoint(FlxG.mouse.getScreenPosition())) {
 				_hoverEffect.visible = true;
 			} else {
 				_hoverEffect.visible = false;

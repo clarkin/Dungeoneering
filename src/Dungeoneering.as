@@ -1,7 +1,7 @@
 package
 {
 	import org.flixel.*; 
-	[SWF(width = "800", height = "600", backgroundColor = "#000000")] 
+	[SWF(width = "1024", height = "768", backgroundColor = "#000000")] 
 	[Frame(factoryClass="Preloader")]
  
 	public class Dungeoneering extends FlxGame
@@ -9,7 +9,7 @@ package
 		public function Dungeoneering()
 		{
 			
-			super(800, 600, MenuState, 1); 
+			super(1024, 768, MenuState, 1); 
 		}
 	}
 }
