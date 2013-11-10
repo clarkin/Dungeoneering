@@ -86,6 +86,8 @@ package
 			
 			hero = new Hero(this, starting_point.x, starting_point.y - Tile.TILESIZE);
 			camera_target = new FlxSprite(hero.x, hero.y);
+			//TODO: fix this being a few pixels off at the start
+			//camera_target = new FlxSprite(hero.x + hero.origin.x, hero.y + hero.origin.y);
 			camera_target.width = camera_target.height = 0;
 			camera_target.maxVelocity = new FlxPoint(SCROLL_MAXVELOCITY, SCROLL_MAXVELOCITY);
 			camera_target.drag = new FlxPoint(SCROLL_ACCELERATION, SCROLL_ACCELERATION);
@@ -367,13 +369,8 @@ package
 			//camera movement
 			camera_target.acceleration.x = camera_target.acceleration.y = 0;
 			if (following_hero) {
-				FlxVelocity.moveTowardsObject(camera_target, hero, 60, 300);
+				FlxVelocity.moveTowardsObject(camera_target, hero, 0, 300);
 			} else {
-			
-				//_playState.camera_target.x = this.x + this.width / 2;
-				//_playState.camera_target.y = this.y + this.height / 2;
-				//FlxG.camera.follow(_playState.camera_target);
-				
 				if (FlxG.keys.UP) {
 					camera_target.acceleration.y -= SCROLL_ACCELERATION;
 				}
@@ -386,7 +383,7 @@ package
 				if (FlxG.keys.RIGHT) {
 					camera_target.acceleration.x += SCROLL_ACCELERATION;
 				}
-				}
+			}
 		}
 		
 		public function discardAndContinue():void {

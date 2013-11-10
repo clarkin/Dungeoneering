@@ -68,7 +68,7 @@ package
 			
 			if (type.indexOf("corr_") != -1 || type.indexOf("room_") != -1) {			
 				var exits:String = type.substring(type.lastIndexOf("_") + 1, type.length);
-				trace("type: " + type + ", exits: " + exits);
+				//trace("added tile of type: " + type + ", exits: " + exits);
 				
 				if (exits.indexOf("n") != -1) {
 					entry_north = true;
