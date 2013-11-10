@@ -92,6 +92,8 @@ package
 					_background_frame_back = 5;
 					_card_text_color = 0xFF5C3425;
 					_tile = new Tile(_playState, title, X + ICON_TILE_OFFSET.x, Y + ICON_TILE_OFFSET.y);
+					_tile.scale = new FlxPoint(0.33, 0.33);
+					_tile.offset = new FlxPoint(54, 52);
 					_iconHolder.add(_tile);
 					break;
 				default:

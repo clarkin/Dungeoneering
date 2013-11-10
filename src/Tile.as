@@ -9,22 +9,25 @@ package
 		
 		public static const TILESIZE:Number = 150;
 		
-		public static const ALL_TILES_OLD:Array = 
-			["corr_dead1","corr_dead2","corr_dead3","corr_dead4","corr_left1","corr_left2","corr_left3","corr_left4", 
-			 "corr_junction1","corr_junction2","corr_junction3","corr_junction4","corr_straight1","corr_straight2","corr_fourway","highlight",
-			 "room_dead1", "room_dead2", "room_dead3", "room_dead4", "room_left1", "room_left2", "room_left3", "room_left4",
-			 "room_junction1", "room_junction2", "room_junction3", "room_junction4", "room_straight1", "room_straight2", "room_fourway", "hint_treasure_room",
-			 "empty", "room_treasure"];
-		
 		public static const ALL_TILES:Array = 
 			["corr_fat_nesw", "corr_well_nesw", "corr_thin_nesw", "corr_hatch_nesw", "corr_carpet_ns",
-			 "corr_rubble_ew", "corr_rubble_ns", "corr_bridge_ew", "corr_bridge_ns", "corr_regular_ew",
-			 "corr_regular_ns", "corr_pit_nsw", "corr_pit_esw", "corr_pit_nes", "corr_pit_new",
-			 "corr_regular_nsw", "corr_regular_esw", "corr_regular_nes", "corr_regular_new", "corr_crushed_nw",
-			 "corr_crushed_sw", "corr_crushed_es", "corr_crushed_ne", "corr_curved_nw", "corr_curved_sw",
-			 "corr_curved_es", "corr_curved_ne", "corr_grate_w", "corr_grate_s", "corr_grate_e",
-			 "corr_grate_n", "corr_rubble_w", "corr_rubble_s", "corr_rubble_e", "corr_rubble_n",
-			 "room_skeleton_nesw",
+			 "corr_carpet_ew", "corr_rubble_ew", "corr_rubble_ns", "corr_bridge_ew", "corr_bridge_ns", 
+			 "corr_regular_ew", "corr_regular_ns", "corr_pit_nsw", "corr_pit_esw", "corr_pit_nes", 
+			 "corr_pit_new", "corr_regular_nsw", "corr_regular_esw", "corr_regular_nes", "corr_regular_new", 
+			 "corr_crushed_nw", "corr_crushed_sw", "corr_crushed_es", "corr_crushed_ne", "corr_curved_nw", 
+			 "corr_curved_sw", "corr_curved_es", "corr_curved_ne", "corr_grate_w", "corr_grate_s", 
+			 "corr_grate_e", "corr_grate_n", "corr_rubble_w", "corr_rubble_s", "corr_rubble_e", 
+			 "corr_rubble_n", "room_large_w", "room_large_s", "room_large_e", "room_large_n",
+			 "room_round_w", "room_round_s", "room_round_e", "room_round_n", "room_waterfall_w",
+			 "room_waterfall_s", "room_waterfall_e", "room_waterfall_n", "room_torture_w", "room_torture_s",
+			 "room_torture_e", "room_torture_n", "room_pit_new", "room_pit_nsw", "room_pit_esw", 
+			 "room_pit_nes", "room_semicircle_new", "room_semicircle_nsw", "room_semicircle_esw", "room_semicircle_nes", 
+			 "room_hatch_new", "room_hatch_nsw", "room_hatch_esw", "room_hatch_nes", "room_collapse_new", 
+			 "room_collapse_nsw", "room_collapse_esw", "room_collapse_nes", "room_beds_nw", "room_beds_sw", 
+			 "room_beds_es", "room_beds_ne", "room_throne_nw", "room_throne_sw", "room_throne_se", 
+			 "room_throne_ne", "room_cavern_nw", "room_cavern_sw", "room_cavern_es", "room_cavern_ne", 
+			 "room_circle_ew", "room_circle_ns", "room_cages_ew", "room_cages_ns", "room_chasm_ew", 
+			 "room_chasm_ns", "room_carpet_nesw", "room_steps_nesw", "room_well_nesw", "room_skeleton_nesw",
 			 "empty", "highlight"];
 			 
 		public static const NORTH:int = 1;

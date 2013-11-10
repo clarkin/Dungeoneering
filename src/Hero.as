@@ -32,7 +32,7 @@ package
 			
 			loadGraphic(charactersPNG, false, true, 24, 24);
 
-			addAnimation("knight1", [36]);
+			addAnimation("knight1", [43]);
 			play("knight1");
 			
 			_playState = playState;
