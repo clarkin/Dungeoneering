@@ -11,7 +11,6 @@ package
  
 	public class PlayState extends FlxState
 	{
-		[Embed(source = "../assets/gui_overlay.png")] private var ARTguiOverlay:Class;
 		[Embed(source = "../assets/skull_bolt_t.png")] private var ARTskullBolt:Class;
 		
 		[Embed(source = "../assets/cheer.wav", mimeType = "application/octet-stream")] private const WAVcheer:Class;
@@ -39,7 +38,6 @@ package
 		public var cardsInHand:FlxGroup = new FlxGroup();
 		public var placingSprite:FlxGroup = new FlxGroup();
 		public var floatingTexts:FlxGroup = new FlxGroup();
-		public var dread_icons:Array = [];
 		
 		public static const starting_point:Point = new Point(358, 578);
 		
@@ -59,8 +57,6 @@ package
 		public static const HAND_CARD_OFFSET:int = 250;
 		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(350, 220);
 		public static const SHRUNK_HAND_CARD_OFFSET:int = 100;
-		public static const DREAD_ICON_START:FlxPoint = new FlxPoint(479, 262);
-		public static const DREAD_ICON_OFFSET:int = 29;
 		
 		public var placing_card:Card;
 		public var is_placing_card:Boolean = false;
@@ -68,13 +64,13 @@ package
 		public var choosingHighlight:Tile;
 		public var choosingTile:Boolean = false;
 		
-		public var treasure_icon_left:FlxSprite, monster_icon_left:FlxSprite, treasure_icon_right:FlxSprite, monster_icon_right:FlxSprite;
-		public var treasure_icon_label_left:FlxText, monster_icon_label_left:FlxText, treasure_icon_label_right:FlxText, monster_icon_label_right:FlxText; 
-		
 		public var player_alive:Boolean = true;
 		public var player_treasure:int = 0;
 		public var player_life:int = 5;
-		public var player_treasure_label:FlxText, player_life_label:FlxText;
+		public var player_treasure_label:FlxText;
+		public var player_life_label:FlxText;
+		public var player_dread_label:FlxText;
+		public var player_hope_label:FlxText;
 				
 		public var hero:Hero;
 		public var camera_target:FlxSprite;
@@ -108,34 +104,22 @@ package
 			starting_tile = new Tile(this, "corr_thin_nesw");
 			addTileAt(starting_tile, starting_point.x, starting_point.y - Tile.TILESIZE - Tile.TILESIZE);
 			
-			var guiOverlay:FlxSprite = new FlxSprite(0, 0, ARTguiOverlay);
-			//guiGroup.add(guiOverlay);
 			player_treasure_label = new FlxText(6, 6, 300, "Treasure: 0");
-			player_treasure_label.setFormat("Crushed", 30, 0xFFFF8A8A, "left", 0xFFA82C2C);
+			player_treasure_label.setFormat("Crushed", 30, 0xFFEAE2AC, "left", 0xFF6E533F);
 			player_treasure_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_treasure_label);
-			var leaveBtn:FlxButtonPlus = new FlxButtonPlus(330, 10, leaveDungeon, null, "Leave The Dungeon", 220, 28);
-			leaveBtn.textNormal.setFormat("Crushed", 16, 0xFF812222, "center", 0);
-			leaveBtn.textHighlight.setFormat("Crushed", 16, 0xFF812222, "center", 0);
-			leaveBtn.borderColor = 0xFF5C3425;
-			leaveBtn.updateInactiveButtonColors([0xFFFFCCCC, 0xFFFF8A8A]);
-			leaveBtn.updateActiveButtonColors([0xFFFF8A8A, 0xFFFFCCCC]);	
-			leaveBtn.screenCenter();
-			//leaveBtn.scrollFactor = new FlxPoint(0, 0);
-			guiGroup.add(leaveBtn);
-			player_life_label = new FlxText(FlxG.width - 300 - 6, 6, 300, "Life: 5");
-			player_life_label.setFormat("Crushed", 30, 0xFFFF8A8A, "right", 0xFFA82C2C);
+			player_life_label = new FlxText(6, 40, 300, "Life: 5");
+			player_life_label.setFormat("Crushed", 30, 0xFFEAE2AC, "left", 0xFF6E533F);
 			player_life_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_life_label);
-			var dread_icon:FlxSprite;
-			for (var d:int = 0; d < 5; d++) {
-				 dread_icon = new FlxSprite(DREAD_ICON_START.x + (d * DREAD_ICON_OFFSET), DREAD_ICON_START.y, ARTskullBolt);
-				 dread_icon.visible = false;
-				 dread_icon.alpha = 0.8;
-				 dread_icon.scrollFactor = new FlxPoint(0, 0);
-				 guiGroup.add(dread_icon);
-				 dread_icons.push(dread_icon);
-			}
+			player_dread_label = new FlxText(FlxG.width - 300 - 6, 6, 300, "Dread: 0");
+			player_dread_label.setFormat("Crushed", 30, 0xFFFF8A8A, "right", 0xFFA82C2C);
+			player_dread_label.scrollFactor = new FlxPoint(0, 0);
+			guiGroup.add(player_dread_label);
+			player_hope_label = new FlxText(FlxG.width - 300 - 6, 40, 300, "Hope: 0");
+			player_hope_label.setFormat("Crushed", 30, 0xFF8DCDF0, "right", 0xFF025E8F);
+			player_hope_label.scrollFactor = new FlxPoint(0, 0);
+			guiGroup.add(player_hope_label);
 			
 			highlights.visible = false;
 			placingSprite.visible = true;
@@ -173,10 +157,14 @@ package
 		}
 		
 		override public function update():void {
-			checkControls();
 			
-			player_treasure_label.text = "Treasure: " + player_treasure;
-			player_life_label.text = "Life: " + player_life;
+			checkNewTurn();
+			checkHero();
+			checkPlacing();
+			checkMouseClick();
+			checkKeyboard();
+			
+			updateLabels();
 			
 			//trace("camera_target [" + camera_target.x + ", " + camera_target.y + "], hero [" + hero.x + ", " + hero.y + "]");
 			
@@ -184,12 +172,7 @@ package
 		}
 		
 		private function checkControls():void {
-			checkNewTurn();
-			checkHero();
-			checkPlacing();
-			checkMouseHover();
-			checkMouseClick();
-			checkKeyboard();
+			
 		}
 		
 		public function checkHero():void {
@@ -224,23 +207,12 @@ package
 			} 
 		}
 		
-		public function updateDreadLevel():void {
-			for (var d:int = 0; d < 5; d++) {
-				dread_icons[d].visible = false;
-				if (dungeon._dread_level > d) {
-					dread_icons[d].visible = true;
-				}
-			}
-		}
-		
-		public function hideDreadLevel():void {
-			for (var d:int = 0; d < 5; d++) {
-				dread_icons[d].visible = false;
-			}
-		}
-		
-		public function checkMouseHover():void {
-			
+		public function updateLabels():void {
+			//TODO only update these if any change
+			player_treasure_label.text = "Treasure: " + player_treasure;
+			player_life_label.text = "Life: " + player_life;
+			player_dread_label.text = "Dread: " + dungeon._dread_level;
+			player_hope_label.text = "Hope: " + dungeon._hope_level;
 		}
 		
 		public function checkMouseClick():void {
@@ -353,7 +325,7 @@ package
 								cardsInHand.visible = true;
 							} else {
 								clearCards();
-								hideDreadLevel();
+								//hideDreadLevel();
 								cardsInHand.visible = false;
 								turn_phase = PHASE_HERO_THINK;
 							}
@@ -416,7 +388,7 @@ package
 			dread_cards_chosen = 0;
 			checkHope();
 			cardDecks.visible = true;
-			updateDreadLevel();
+			//updateDreadLevel();
 			cardsInHand.visible = true;
 		}
 		
@@ -478,7 +450,7 @@ package
 		public function playCards():void {
 			turn_phase = PHASE_CARDS_PLAY;
 			cardDecks.visible = false;
-			hideDreadLevel();
+			//hideDreadLevel();
 			
 			//cardsInHand.callAll("toggleSize", false);
 			//cardsInHand.callAll("flipCard", false);
