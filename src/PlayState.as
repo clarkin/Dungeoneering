@@ -360,16 +360,24 @@ package
 		
 		public function fillHand():void {
 			
-			//clearCards();
 			
+			var cards_to_add:int = 5 - cardsInHand.countLiving();
+			for (var i:int = 0; i < cards_to_add; i++) {
+				addCardFromDeck(); //TODO recycle members of flxgroup instead
+			}
 
 			//todo fill hand
 			cardsInHand.visible = true;
 		}
 		
-		public function addCardFromDeck(type:String):void {
+		public function addCardFromDeck(type:String = ""):void {
 			//trace("adding card from deck " + type);
 			//trace("cardsInHand.countLiving(): " + cardsInHand.countLiving());
+			
+			if (type == "") {
+				var possible_types:Array = ["TILE", "MONSTER", "TREASURE"];
+				type = possible_types[Math.floor(Math.random() * (possible_types.length))]
+			}
 			
 			var cards_so_far:int = cardsInHand.countLiving();
 			if (cards_so_far < 0) {
