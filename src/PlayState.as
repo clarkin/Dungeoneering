@@ -57,6 +57,8 @@ package
 		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(350, 220);
 		public static const SHRUNK_HAND_CARD_OFFSET:int = 100;
 		
+		public static const CARDS_PER_TURN:int = 3;
+		
 		public var placing_card:Card;
 		public var is_placing_card:Boolean = false;
 		
@@ -70,6 +72,8 @@ package
 		public var player_life_label:FlxText;
 		public var player_dread_label:FlxText;
 		public var player_hope_label:FlxText;
+		public var player_cards_label:FlxText;
+		public var endTurnBtn:FlxButtonPlus;
 				
 		public var hero:Hero;
 		public var camera_target:FlxSprite;
@@ -119,6 +123,20 @@ package
 			player_hope_label.setFormat("Crushed", 30, 0xFF8DCDF0, "right", 0xFF025E8F);
 			player_hope_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_hope_label);
+			
+			player_cards_label = new FlxText(36, 489, 300, "Play up to 3 more cards");
+			player_cards_label.setFormat("Crushed", 24, 0xFFEAE2AC, "left", 0xFF6E533F);
+			player_cards_label.scrollFactor = new FlxPoint(0, 0);
+			player_cards_label.visible = false;
+			guiGroup.add(player_cards_label);
+			endTurnBtn = new FlxButtonPlus(893, 474, endCardPlaying, null, "End Turn", 92, 38);
+			endTurnBtn.textNormal.setFormat("Crushed", 24, 0xFFEAE2AC, "center", 0xFF6E533F);
+			endTurnBtn.textHighlight.setFormat("Crushed", 24, 0xFFEAE2AC, "center", 0xFF6E533F);
+			endTurnBtn.borderColor = 0xFFEAE2AC;
+			endTurnBtn.updateInactiveButtonColors([0xFFA38C69, 0xFFA38C69]);
+			endTurnBtn.updateActiveButtonColors([0xFF6E533F, 0xFF6E533F]);   
+			endTurnBtn.visible = false;
+			guiGroup.add(endTurnBtn);
 			
 			highlights.visible = false;
 			placingSprite.visible = true;
@@ -193,7 +211,7 @@ package
 				turn_number++;
 				dungeon.IncreaseDread();
 				fillHand(); //todo use PHASE_CARDS_FILLING to animate (and show deck backs)
-				cardsInHand.callAll("flipCard", false);
+				showCards();
 				cards_played = 0;
 				cardsInHand.visible = true;
 				turn_phase = PHASE_CARDS_PLAY;
@@ -201,7 +219,7 @@ package
 		}
 		
 		public function updateLabels():void {
-			//TODO only update these if any change
+			//TODO only update these if any change instead of every frame
 			player_treasure_label.text = "Treasure: " + player_treasure;
 			player_life_label.text = "Life: " + player_life;
 			player_dread_label.text = "Dread: " + dungeon._dread_level;
@@ -217,7 +235,7 @@ package
 						for each (var card_in_hand:Card in cardsInHand.members) {
 							if (card_in_hand != null && card_in_hand.alive) {
 								if (card_in_hand._background.overlapsPoint(clicked_at)) {
-									trace("clicked on card " + card_in_hand._title);
+									//trace("clicked on card " + card_in_hand._title);
 									placing_card = card_in_hand;
 									//placing_card.flipCard();
 									is_placing_card = true;
@@ -241,7 +259,7 @@ package
 											}
 										}
 										if (possible_spots == 0) {
-											discardAndContinue(); //TODO remove this
+											//discardAndContinue(); //TODO remove this
 										}
 									} else {
 										if (placing_card._type == "MONSTER") {
@@ -259,17 +277,18 @@ package
 											}
 										}
 										if (possible_spots == 0) {
-											discardAndContinue(); //TODO remove this
+											//discardAndContinue(); //TODO remove this
 										}
 									}
 									placingSprite.setAll("visible", true);
 									placingSprite.setAll("scrollFactor", new FlxPoint(0, 0));
+									endTurnBtn.visible = false;
 									//trace("placingSprite.countLiving(): " + placingSprite.countLiving());
 								}
 							}
 						}
 					} else {
-						trace("placing card " + placing_card._title);
+						//trace("placing card " + placing_card._title);
 						if (placing_card._type == "TILE") {
 							for each (var highlight:Tile in highlights.members) {
 								if (highlight.alive && highlight.overlapsPoint(clicked_at) && placing_card._tile.checkExit(highlight.highlight_entrance)) {
@@ -297,14 +316,15 @@ package
 						}
 						
 						if (!is_placing_card) {
+							endTurnBtn.visible = true;
+							var cards_left:int = CARDS_PER_TURN - cards_played;
+							player_cards_label.text = "Play up to " + cards_left + " more cards";
+							if (cards_left <= 1) {
+								player_cards_label.text = "Play " + cards_left + " more card";
+							}
 							
-							if (cards_played >= 3) {
-								//clearCards();
-								//hideDreadLevel();
-								cardsInHand.callAll("flipCard", false);
-								sortHand();
-								//cardsInHand.visible = false;
-								turn_phase = PHASE_HERO_THINK;
+							if (cards_played >= CARDS_PER_TURN) {
+								endCardPlaying();
 							}
 						}
 					}
@@ -344,19 +364,6 @@ package
 					camera_target.acceleration.x += SCROLL_ACCELERATION;
 				}
 			}
-		}
-		
-		public function discardAndContinue():void {
-			clearCards();
-			cardsInHand.visible = false;
-			if (placing_card != null) {
-				placing_card.kill();
-			}
-			is_placing_card = false;
-			highlights.visible = false;
-			tiles.setAll("alpha", 1);
-			tiles.setAll("flashing", false);
-			turn_phase = PHASE_HERO_THINK;
 		}
 		
 		public function fillHand():void {
@@ -449,16 +456,23 @@ package
 			}
 		}
 		
-		public function clearCards():void {
-			//trace("cardsInHand..countLiving(): " + cardsInHand.countLiving());
-			for each (var clear_card:Card in cardsInHand.members) {
-				if (clear_card != null && clear_card.alive) {
-					//trace(" - clearing card " + clear_card._title);
-					cardsInHand.remove(clear_card, true);
-					clear_card.kill();
-				}
-			}
-			cardsInHand.clear();  //TODO, this is a possible memory leak
+		public function endCardPlaying():void {
+			trace("endCardPlaying");
+			hideCards();
+			sortHand();
+			turn_phase = PHASE_HERO_THINK;
+		}
+		
+		public function hideCards():void {
+			cardsInHand.callAll("showBack", false);
+			endTurnBtn.visible = false;
+			player_cards_label.visible = false;
+		}
+		
+		public function showCards():void {
+			cardsInHand.callAll("showFront", false);
+			endTurnBtn.visible = true;
+			player_cards_label.visible = true;
 		}
 		
 		public function getTileAt(point:FlxPoint):Tile {
