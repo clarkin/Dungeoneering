@@ -302,6 +302,7 @@ package
 								//clearCards();
 								//hideDreadLevel();
 								cardsInHand.callAll("flipCard", false);
+								sortHand();
 								//cardsInHand.visible = false;
 								turn_phase = PHASE_HERO_THINK;
 							}
@@ -359,15 +360,31 @@ package
 		}
 		
 		public function fillHand():void {
+			var cards_in_hand:int = cardsInHand.countLiving();
+			if (cards_in_hand < 0) {
+				cards_in_hand = 0;
+			}
 			
-			
-			var cards_to_add:int = 5 - cardsInHand.countLiving();
+			var cards_to_add:int = 5 - cards_in_hand;
 			for (var i:int = 0; i < cards_to_add; i++) {
 				addCardFromDeck(); //TODO recycle members of flxgroup instead
 			}
 
 			//todo fill hand
 			cardsInHand.visible = true;
+		}
+		
+		public function sortHand():void {
+			var cards_so_far:int = 0;
+			for each (var card_in_hand:Card in cardsInHand.members) {
+				if (card_in_hand != null && card_in_hand.alive) {
+					card_in_hand._moving_to = new FlxPoint(HAND_START.x + cards_so_far * HAND_CARD_OFFSET, HAND_START.y);
+					card_in_hand._is_moving = true;
+					//trace("moving card " + card_in_hand._title + " from x: " + card_in_hand._background.x + " to x: " + card_in_hand._moving_to.x + " for card slot " + cards_so_far);
+					//TODO occasional sorting issue
+					cards_so_far++;
+				}
+			}
 		}
 		
 		public function addCardFromDeck(type:String = ""):void {
