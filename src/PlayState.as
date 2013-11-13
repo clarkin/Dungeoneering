@@ -74,6 +74,7 @@ package
 		public var player_hope_label:FlxText;
 		public var player_cards_label:FlxText;
 		public var endTurnBtn:FlxButtonPlus;
+		public var cancelPlacingBtn:FlxButtonPlus;
 				
 		public var hero:Hero;
 		public var camera_target:FlxSprite;
@@ -137,6 +138,14 @@ package
 			endTurnBtn.updateActiveButtonColors([0xFF6E533F, 0xFF6E533F]);   
 			endTurnBtn.visible = false;
 			guiGroup.add(endTurnBtn);
+			cancelPlacingBtn = new FlxButtonPlus(793, 474, cancelPlacement, null, "Cancel", 92, 38);
+			cancelPlacingBtn.textNormal.setFormat("Crushed", 24, 0xFFEAE2AC, "center", 0xFF6E533F);
+			cancelPlacingBtn.textHighlight.setFormat("Crushed", 24, 0xFFEAE2AC, "center", 0xFF6E533F);
+			cancelPlacingBtn.borderColor = 0xFFEAE2AC;
+			cancelPlacingBtn.updateInactiveButtonColors([0xFFA38C69, 0xFFA38C69]);
+			cancelPlacingBtn.updateActiveButtonColors([0xFF6E533F, 0xFF6E533F]);   
+			cancelPlacingBtn.visible = false;
+			guiGroup.add(cancelPlacingBtn);
 			
 			highlights.visible = false;
 			placingSprite.visible = true;
@@ -213,6 +222,7 @@ package
 				fillHand(); //todo use PHASE_CARDS_FILLING to animate (and show deck backs)
 				showCards();
 				cards_played = 0;
+				player_cards_label.text = "Play up to 3 more cards";
 				cardsInHand.visible = true;
 				turn_phase = PHASE_CARDS_PLAY;
 			} 
@@ -235,55 +245,62 @@ package
 						for each (var card_in_hand:Card in cardsInHand.members) {
 							if (card_in_hand != null && card_in_hand.alive) {
 								if (card_in_hand._background.overlapsPoint(clicked_at)) {
+									
 									//trace("clicked on card " + card_in_hand._title);
-									placing_card = card_in_hand;
-									//placing_card.flipCard();
-									is_placing_card = true;
-									cardsInHand.remove(card_in_hand);
-									//cardsInHand.visible = false;
-									for each (var object:* in placingSprite.members) {
-										placingSprite.remove(object, true);
-										object.kill();
-									}
-									if (placing_card._type == "TILE") {
-										placing_card._tile.alpha = 0.6;
-										placingSprite.add(placing_card._tile);
-										highlights.visible = true;
-										highlights.setAll("visible", false);
-										highlights.setAll("alpha", 1);
-										possible_spots = 0;
+									possible_spots = 0;
+									if (card_in_hand._type == "TILE") {
 										for each (var possible_highlight:Tile in highlights.members) {
-											if (possible_highlight.alive && placing_card._tile.checkExit(possible_highlight.highlight_entrance)) {
-												possible_highlight.visible = true;
+											if (possible_highlight.alive && card_in_hand._tile.checkExit(possible_highlight.highlight_entrance)) {
 												possible_spots++;
 											}
-										}
-										if (possible_spots == 0) {
-											//discardAndContinue(); //TODO remove this
 										}
 									} else {
-										if (placing_card._type == "MONSTER") {
-											placing_card._monster.alpha = 0.6;
-											placingSprite.add(placing_card._monster);
-										} else {
-											placing_card._sprite.alpha = 0.6;
-											placingSprite.add(placing_card._sprite);
-										}
-										possible_spots = 0;
 										for each (var possible_tile:Tile in tiles.members) {
-											if (possible_tile != hero.current_tile && possible_tile.validForCard(placing_card)) {
-												possible_tile.flashing = true;
+											if (possible_tile != hero.current_tile && possible_tile.validForCard(card_in_hand)) {
 												possible_spots++;
 											}
 										}
-										if (possible_spots == 0) {
-											//discardAndContinue(); //TODO remove this
-										}
 									}
-									placingSprite.setAll("visible", true);
-									placingSprite.setAll("scrollFactor", new FlxPoint(0, 0));
-									endTurnBtn.visible = false;
-									//trace("placingSprite.countLiving(): " + placingSprite.countLiving());
+									
+									if (possible_spots > 0) {
+										
+										placing_card = card_in_hand;
+										is_placing_card = true;
+										cardsInHand.remove(card_in_hand);
+										for each (var object:* in placingSprite.members) {
+											placingSprite.remove(object, true);
+											object.kill();
+										}
+										
+										if (placing_card._type == "TILE") {
+											placing_card._tile.alpha = 0.6;
+											placingSprite.add(placing_card._tile);
+											highlights.visible = true;
+											highlights.setAll("visible", false);
+											highlights.setAll("alpha", 1);
+											for each (var possible_highlight2:Tile in highlights.members) {
+												if (possible_highlight2.alive && placing_card._tile.checkExit(possible_highlight2.highlight_entrance)) {
+													possible_highlight2.visible = true;
+												}
+											}											
+										} else {
+											if (placing_card._type == "MONSTER") {
+												placing_card._monster.alpha = 0.6;
+												placingSprite.add(placing_card._monster);
+											} else {
+												placing_card._sprite.alpha = 0.6;
+												placingSprite.add(placing_card._sprite);
+											}
+											for each (var possible_tile2:Tile in tiles.members) {
+												if (possible_tile2 != hero.current_tile && possible_tile2.validForCard(placing_card)) {
+													possible_tile2.flashing = true;
+												}
+											}
+										}
+										
+										selectedCard();
+										//trace("placingSprite.countLiving(): " + placingSprite.countLiving());
+									}
 								}
 							}
 						}
@@ -295,9 +312,7 @@ package
 									var new_tile:Tile = new Tile(this, placing_card._tile.type);
 									var justAdded:Tile = addTileAt(new_tile, highlight.x, highlight.y);
 									highlight.kill()
-									placing_card.kill();
 									is_placing_card = false;
-									cards_played += 1;
 									highlights.visible = false;
 								} 
 							}
@@ -306,9 +321,7 @@ package
 								if (tile != hero.current_tile && tile.validForCard(placing_card) && tile.overlapsPoint(clicked_at)) {
 									//trace("clicked on tile " + tile.type + " at [" + tile.x + "," + tile.y + "]");
 									tile.addCard(placing_card);
-									placing_card.kill();
 									is_placing_card = false;
-									cards_played += 1;
 									tiles.setAll("alpha", 1);
 									tiles.setAll("flashing", false);
 								} 
@@ -317,6 +330,8 @@ package
 						
 						if (!is_placing_card) {
 							endTurnBtn.visible = true;
+							placing_card.kill();
+							cards_played += 1;
 							var cards_left:int = CARDS_PER_TURN - cards_played;
 							player_cards_label.text = "Play up to " + cards_left + " more cards";
 							if (cards_left <= 1) {
@@ -456,8 +471,17 @@ package
 			}
 		}
 		
+		public function selectedCard():void {
+			placingSprite.setAll("visible", true);
+			placingSprite.setAll("scrollFactor", new FlxPoint(0, 0));
+			endTurnBtn.visible = false;
+		}
+		
+		public function cancelPlacement():void {
+			//TODO enable this
+		}
+		
 		public function endCardPlaying():void {
-			trace("endCardPlaying");
 			hideCards();
 			sortHand();
 			turn_phase = PHASE_HERO_THINK;
