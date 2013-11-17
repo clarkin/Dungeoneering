@@ -106,6 +106,7 @@ package
 			tiles.add(starting_tile);
 			hero.setCurrentTile(starting_tile);
 			starting_tile = new Tile(this, "corr_thin_nesw");
+			//starting_tile = new Tile(this, "room_cages_ns");
 			addTileAt(starting_tile, starting_point.x, starting_point.y - Tile.TILESIZE - Tile.TILESIZE);
 			
 			player_treasure_label = new FlxText(6, 6, 300, "Treasure: 0");
@@ -364,7 +365,6 @@ package
 			//camera movement
 			camera_target.acceleration.x = camera_target.acceleration.y = 0;
 			if (following_hero) {
-				//FlxVelocity.moveTowardsObject(camera_target, hero, 0, 300);
 				FlxVelocity.moveTowardsPoint(camera_target, new FlxPoint(hero.x, hero.y + 130), 0, 300);
 			} else {
 				if (FlxG.keys.UP) {

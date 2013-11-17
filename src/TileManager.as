@@ -24,7 +24,7 @@ package
 		}
 		
 		public function GetRandomTile(entrance_directions:Array = null):Tile {
-			if (entrance_directions == null) {
+			if (entrance_directions == null || entrance_directions.length == 0) {
 				entrance_directions = all_directions;
 			}
 			
