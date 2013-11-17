@@ -80,7 +80,7 @@ package
 		public var camera_target:FlxSprite;
 		public var following_hero:Boolean = false;
 		public var is_dragging:Boolean = false;
-		public var click_start:FlxPoint = new FlxPoint();
+		public var click_start:FlxPoint; //needs to be null at start
 		public var dragging_from:FlxPoint = new FlxPoint();
 		public var possible_spots:int = 0;
 		public var turn_number:int = 0;
@@ -134,15 +134,7 @@ package
 			player_cards_label.scrollFactor = new FlxPoint(0, 0);
 			player_cards_label.visible = false;
 			guiGroup.add(player_cards_label);
-			endTurnBtn = new FlxButtonPlus(893, 474, endCardPlaying, null, "End Turn", 92, 38);
-			endTurnBtn.textNormal.setFormat("Crushed", 24, 0xFFEAE2AC, "center", 0xFF6E533F);
-			endTurnBtn.textHighlight.setFormat("Crushed", 24, 0xFFEAE2AC, "center", 0xFF6E533F);
-			endTurnBtn.borderColor = 0xFFEAE2AC;
-			endTurnBtn.updateInactiveButtonColors([0xFFA38C69, 0xFFA38C69]);
-			endTurnBtn.updateActiveButtonColors([0xFF6E533F, 0xFF6E533F]);   
-			endTurnBtn.visible = false;
-			guiGroup.add(endTurnBtn);
-			cancelPlacingBtn = new FlxButtonPlus(793, 474, cancelPlacement, null, "Cancel", 92, 38);
+			cancelPlacingBtn = new FlxButtonPlus(893, 474, cancelPlacement, null, "Cancel", 92, 38);
 			cancelPlacingBtn.textNormal.setFormat("Crushed", 24, 0xFFEAE2AC, "center", 0xFF6E533F);
 			cancelPlacingBtn.textHighlight.setFormat("Crushed", 24, 0xFFEAE2AC, "center", 0xFF6E533F);
 			cancelPlacingBtn.borderColor = 0xFFEAE2AC;
@@ -299,18 +291,15 @@ package
 									}
 									
 									if (possible_spots > 0) {
-										
 										placing_card = card_in_hand;
 										is_placing_card = true;
-										cardsInHand.remove(card_in_hand);
-										for each (var object:* in placingSprite.members) {
-											placingSprite.remove(object, true);
-											object.kill();
-										}
+										card_in_hand.visible = false;
+										cleanUpPlacingSprite();
 										
 										if (placing_card._type == "TILE") {
-											placing_card._tile.alpha = 0.6;
-											placingSprite.add(placing_card._tile);
+											var new_placing_card_tile:Card = new Card(this, -1000, -1000, placing_card._type, "", placing_card._tile);
+											new_placing_card_tile._tile.alpha = 0.6;
+											placingSprite.add(new_placing_card_tile._tile);
 											highlights.visible = true;
 											highlights.setAll("visible", false);
 											highlights.setAll("alpha", 1);
@@ -321,11 +310,13 @@ package
 											}											
 										} else {
 											if (placing_card._type == "MONSTER") {
-												placing_card._monster.alpha = 0.6;
-												placingSprite.add(placing_card._monster);
+												var new_placing_card_monster:Card = new Card(this, -1000, -1000, placing_card._type, placing_card._title, null, placing_card._monster);
+												new_placing_card_monster._monster.alpha = 0.6;
+												placingSprite.add(new_placing_card_monster._monster);
 											} else {
-												placing_card._sprite.alpha = 0.6;
-												placingSprite.add(placing_card._sprite);
+												var new_placing_card_treasure:Card = new Card(this, -1000, -1000, placing_card._type, placing_card._title, null, null);
+												new_placing_card_treasure._sprite.alpha = 0.6;
+												placingSprite.add(new_placing_card_treasure._sprite);
 											}
 											for each (var possible_tile2:Tile in tiles.members) {
 												if (possible_tile2 != hero.current_tile && possible_tile2.validForCard(placing_card)) {
@@ -365,8 +356,9 @@ package
 						}
 						
 						if (!is_placing_card) {
-							endTurnBtn.visible = true;
-							placing_card.kill();
+							cancelPlacingBtn.visible = false;
+							cardsInHand.remove(placing_card, true);
+							cleanUpPlacingSprite();
 							cards_played += 1;
 							var cards_left:int = CARDS_PER_TURN - cards_played;
 							player_cards_label.text = "Play up to " + cards_left + " more cards";
@@ -540,32 +532,31 @@ package
 			
 		}
 		
-		//TODO remove or reuse
-		public function playCards():void {
-			turn_phase = PHASE_CARDS_PLAY;
-			//hideDreadLevel();
-			
-			//cardsInHand.callAll("toggleSize", false);
-			//cardsInHand.callAll("flipCard", false);
-			
-			var card_no:int = 0;
-			for each (var card_in_hand:Card in cardsInHand.members) {
-				card_in_hand.toggleSize();
-				card_in_hand.flipCard();
-				card_in_hand._moving_to = new FlxPoint(HAND_START.x + card_no * HAND_CARD_OFFSET, HAND_START.y); 
-				card_in_hand._is_moving = true;
-				card_no++;
-			}
-		}
-		
 		public function selectedCard():void {
 			placingSprite.setAll("visible", true);
 			placingSprite.setAll("scrollFactor", new FlxPoint(0, 0));
-			endTurnBtn.visible = false;
+			cancelPlacingBtn.visible = true;
 		}
 		
 		public function cancelPlacement():void {
-			//TODO enable this
+			if (is_placing_card) {
+				//trace("cancel placement");
+				is_placing_card = false;
+				cancelPlacingBtn.visible = false;
+				highlights.visible = false;
+				tiles.setAll("alpha", 1);
+				tiles.setAll("flashing", false);
+				placing_card.visible = true;
+				
+				cleanUpPlacingSprite()
+			}
+		}
+		
+		public function cleanUpPlacingSprite():void {
+			for each (var object:* in placingSprite.members) {
+				placingSprite.remove(object, true);
+				object.kill();
+			}
 		}
 		
 		public function endCardPlaying():void {
@@ -576,13 +567,13 @@ package
 		
 		public function hideCards():void {
 			cardsInHand.callAll("showBack", false);
-			endTurnBtn.visible = false;
+			cancelPlacingBtn.visible = false;
 			player_cards_label.visible = false;
 		}
 		
 		public function showCards():void {
 			cardsInHand.callAll("showFront", false);
-			endTurnBtn.visible = true;
+			//cancelPlacingBtn.visible = true;
 			player_cards_label.visible = true;
 		}
 		
