@@ -364,7 +364,8 @@ package
 			//camera movement
 			camera_target.acceleration.x = camera_target.acceleration.y = 0;
 			if (following_hero) {
-				FlxVelocity.moveTowardsObject(camera_target, hero, 0, 300);
+				//FlxVelocity.moveTowardsObject(camera_target, hero, 0, 300);
+				FlxVelocity.moveTowardsPoint(camera_target, new FlxPoint(hero.x, hero.y + 130), 0, 300);
 			} else {
 				if (FlxG.keys.UP) {
 					camera_target.acceleration.y -= SCROLL_ACCELERATION;
