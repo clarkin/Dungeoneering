@@ -359,16 +359,7 @@ package
 							cancelPlacingBtn.visible = false;
 							cardsInHand.remove(placing_card, true);
 							cleanUpPlacingSprite();
-							cards_played += 1;
-							var cards_left:int = CARDS_PER_TURN - cards_played;
-							player_cards_label.text = "Play up to " + cards_left + " more cards";
-							if (cards_left <= 1) {
-								player_cards_label.text = "Play " + cards_left + " more card";
-							}
-							
-							if (cards_played >= CARDS_PER_TURN) {
-								endCardPlaying();
-							}
+							incrementCardsPlayed();
 						}
 					}
 				}
@@ -559,6 +550,13 @@ package
 			}
 		}
 		
+		public function discardCard(card_to_discard:Card):void {
+			//trace("discarding card " + card_to_discard._title);
+			card_to_discard.kill();
+			cardsInHand.remove(card_to_discard, true);
+			incrementCardsPlayed();
+		}
+		
 		public function endCardPlaying():void {
 			hideCards();
 			sortHand();
@@ -573,8 +571,20 @@ package
 		
 		public function showCards():void {
 			cardsInHand.callAll("showFront", false);
-			//cancelPlacingBtn.visible = true;
 			player_cards_label.visible = true;
+		}
+		
+		public function incrementCardsPlayed():void {
+			cards_played += 1;
+			var cards_left:int = CARDS_PER_TURN - cards_played;
+			player_cards_label.text = "Play up to " + cards_left + " more cards";
+			if (cards_left <= 1) {
+				player_cards_label.text = "Play " + cards_left + " more card";
+			}
+			
+			if (cards_played >= CARDS_PER_TURN) {
+				endCardPlaying();
+			}
 		}
 		
 		public function getTileAt(point:FlxPoint):Tile {

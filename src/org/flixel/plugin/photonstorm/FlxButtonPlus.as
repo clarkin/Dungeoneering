@@ -98,8 +98,8 @@ package org.flixel.plugin.photonstorm
 		 */
 		public var onColor:Array = [0xff800000, 0xffff0000];
 		
-		private var _x:int;
-		private var _y:int;
+		private var _x:Number;
+		private var _y:Number;
 		public var width:int;
 		public var height:int;
 		
@@ -171,40 +171,42 @@ package org.flixel.plugin.photonstorm
 			}
 		}
 		
-		public function set x(newX:int):void
+		public function set x(newX:Number):void
 		{
-			_x = newX;
+			var changeX:Number = newX - _x;
+			_x += changeX;
 			
-			buttonNormal.x = _x;
-			buttonHighlight.x = _x;
+			buttonNormal.x += changeX;
+			buttonHighlight.x += changeX;
 			
 			if (textNormal)
 			{
-				textNormal.x = _x;
-				textHighlight.x = _x;
+				textNormal.x += changeX;
+				textHighlight.x += changeX;
 			}
 		}
 		
-		public function get x():int
+		public function get x():Number
 		{
 			return _x;
 		}
 		
-		public function set y(newY:int):void
+		public function set y(newY:Number):void
 		{
-			_y = newY;
+			var changeY:Number = newY - _y;
+			_y += changeY;
 			
-			buttonNormal.y = _y;
-			buttonHighlight.y = _y;
+			buttonNormal.y += changeY;
+			buttonHighlight.y += changeY;
 			
 			if (textNormal)
 			{
-				textNormal.y = _y;
-				textHighlight.y = _y;
+				textNormal.y += changeY;
+				textHighlight.y += changeY;
 			}
 		}
 		
-		public function get y():int
+		public function get y():Number
 		{
 			return _y;
 		}
@@ -272,7 +274,7 @@ package org.flixel.plugin.photonstorm
 		{
 			var prevStatus:uint = _status;
 			
-			if (FlxG.mouse.visible)
+			if (FlxG.mouse.visible && (buttonNormal.visible || buttonHighlight.visible))
 			{
 				if (buttonNormal.cameras == null)
 				{
@@ -344,6 +346,17 @@ package org.flixel.plugin.photonstorm
 						enterCallback.apply(null, enterCallbackParams);
 					}
 				}
+			}
+		}
+		
+		public function resetToNormal():void {
+			buttonNormal.visible = true;
+			buttonHighlight.visible = false;
+			
+			if (textNormal)
+			{
+				textNormal.visible = true;
+				textHighlight.visible = false;
 			}
 		}
 		

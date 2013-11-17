@@ -1,6 +1,7 @@
 package 
 {
 	import org.flixel.*;
+	import org.flixel.plugin.photonstorm.*;
 	
 	public class Card extends FlxGroup
 	{
@@ -21,6 +22,7 @@ package
 		private static const ICON_TILE_OFFSET:FlxPoint = new FlxPoint(50, 40);
 		private static const ICON_OFFSET:FlxPoint = new FlxPoint(63, 54);
 		private static const DESC_OFFSET:FlxPoint = new FlxPoint(1, 95);
+		private static const DISCARD_OFFSET:FlxPoint = new FlxPoint(40, 203);
 		private static const CARD_WIDTH:int = 150;
 		private static const CARD_HEIGHT:int = 200;
 		private static const SPEED:int = 5;
@@ -45,6 +47,7 @@ package
 		public var _shrunk:Boolean = false;
 		public var _moving_to:FlxPoint;
 		public var _is_moving:Boolean = false;
+		public var _discardBtn:FlxButtonPlus;
 		
 		private var _playState:PlayState;
 		
@@ -197,7 +200,17 @@ package
 			_hoverEffect.visible = false;
 			this.add(_hoverEffect);
 			
-			this.flipCard();
+			_discardBtn = new FlxButtonPlus(X + DISCARD_OFFSET.x, Y + DISCARD_OFFSET.y, discardThisCard, null, "Discard", 70, 30);
+			_discardBtn.textNormal.setFormat("Crushed", 18, 0xFFEAE2AC, "center", 0xFF6E533F);
+			_discardBtn.textHighlight.setFormat("Crushed", 18, 0xFFEAE2AC, "center", 0xFF6E533F);
+			_discardBtn.borderColor = 0xFFEAE2AC;
+			_discardBtn.updateInactiveButtonColors([0xFFA38C69, 0xFFA38C69]);
+			_discardBtn.updateActiveButtonColors([0xFF6E533F, 0xFF6E533F]);   
+			//_discardBtn.visible = false;
+			//_discardBtn._status = FlxButtonPlus.PRESSED;
+			_card_front.add(_discardBtn);
+			
+			this.showBack();
 		}
 		
 		override public function update():void {	
@@ -219,7 +232,7 @@ package
 				
 				var change_x:Number = FlxG.elapsed * (SPEED * distance_x);
 				var change_y:Number = FlxG.elapsed * (SPEED * distance_y);
-				//trace("change_y: " + change_y);
+				//trace("change_x: " + change_x);
 				
 				_background.x += change_x;
 				_background.y += change_y;
@@ -241,6 +254,8 @@ package
 				_descText.y += change_y;
 				_hoverEffect.x += change_x;
 				_hoverEffect.y += change_y;
+				_discardBtn.x += change_x;
+				_discardBtn.y += change_y;
 				
 				if (distance_x >= -1 && distance_x <= 1 && distance_y >= -1 && distance_y <= 1) {
 					_is_moving = false;
@@ -255,6 +270,10 @@ package
 				_hoverEffect.visible = false;
 			}
 			//trace("mouse at [" + FlxG.mouse.x + "," + FlxG.mouse.y + "], visible: " + _hoverEffect.visible);
+		}
+		
+		public function discardThisCard():void {
+			_playState.discardCard(this);
 		}
 		
 		public function flipCard():void {
@@ -280,6 +299,7 @@ package
 			_showing_back = false;
 			_background.frame = _background_frame;
 			_card_front.setAll("visible", true);
+			_discardBtn.resetToNormal();
 		}
 		
 		public function toggleSize():void {
