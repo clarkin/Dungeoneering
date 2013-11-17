@@ -112,24 +112,24 @@ package
 			//starting_tile = new Tile(this, "room_cages_ns");
 			addTileAt(starting_tile, starting_point.x, starting_point.y - Tile.TILESIZE - Tile.TILESIZE);
 			
-			player_treasure_label = new FlxText(6, 6, 300, "Treasure: 0");
+			player_treasure_label = new FlxText(6, 6, 150, "Treasure: 0");
 			player_treasure_label.setFormat("Crushed", 30, 0xFFEAE2AC, "left", 0xFF6E533F);
 			player_treasure_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_treasure_label);
-			player_life_label = new FlxText(6, 40, 300, "Life: 5");
+			player_life_label = new FlxText(6, 40, 150, "Life: 5");
 			player_life_label.setFormat("Crushed", 30, 0xFFEAE2AC, "left", 0xFF6E533F);
 			player_life_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_life_label);
-			player_dread_label = new FlxText(FlxG.width - 300 - 6, 6, 300, "Dread: 0");
+			player_dread_label = new FlxText(FlxG.width - 150 - 6, 6, 150, "Dread: 0");
 			player_dread_label.setFormat("Crushed", 30, 0xFFFF8A8A, "right", 0xFFA82C2C);
 			player_dread_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_dread_label);
-			player_hope_label = new FlxText(FlxG.width - 300 - 6, 40, 300, "Hope: 0");
+			player_hope_label = new FlxText(FlxG.width - 150 - 6, 40, 150, "Hope: 0");
 			player_hope_label.setFormat("Crushed", 30, 0xFF8DCDF0, "right", 0xFF025E8F);
 			player_hope_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_hope_label);
 			
-			player_cards_label = new FlxText(36, 489, 300, "Play up to 3 more cards");
+			player_cards_label = new FlxText(36, 489, 250, "Play up to 3 more cards");
 			player_cards_label.setFormat("Crushed", 24, 0xFFEAE2AC, "left", 0xFF6E533F);
 			player_cards_label.scrollFactor = new FlxPoint(0, 0);
 			player_cards_label.visible = false;
@@ -245,6 +245,7 @@ package
 				if (checkMouseOverlapsGroup(guiGroup) == null && checkMouseOverlapsGroup(cardsInHand) == null) {
 					if (click_start == null) {
 						click_start = FlxG.mouse.getScreenPosition();
+						//trace("marking click start, waiting for movement from: [" + click_start.x + "," + click_start.y + "]");
 					}
 				} 
 			}
@@ -265,9 +266,12 @@ package
 				dragging_from = new_position;
 			}
 			
+			if (FlxG.mouse.justReleased()) {
+				click_start = null;
+			}
+			
 			if (FlxG.mouse.justReleased() && is_dragging) {
 				is_dragging = false;
-				click_start = null;
 				dragging_from = null;
 			} else if (FlxG.mouse.justReleased() && !is_dragging) {
 				var clicked_at:FlxPoint = FlxG.mouse.getWorldPosition();

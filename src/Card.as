@@ -18,7 +18,7 @@ package
 			"Magic Axe", "Long Sword", "Wooden Shield", "Leather Vest"];
 
 		private static const TITLE_OFFSET:FlxPoint = new FlxPoint(1, 1);
-		private static const ICON_TILE_OFFSET:FlxPoint = new FlxPoint(54, 45);
+		private static const ICON_TILE_OFFSET:FlxPoint = new FlxPoint(50, 40);
 		private static const ICON_OFFSET:FlxPoint = new FlxPoint(63, 54);
 		private static const DESC_OFFSET:FlxPoint = new FlxPoint(1, 95);
 		private static const CARD_WIDTH:int = 150;
@@ -56,6 +56,7 @@ package
 			
 			if (type == "") {
 				type = CARDS_WEIGHTED[Math.floor(Math.random() * (CARDS_WEIGHTED.length))];
+				trace("WARNING: random card type added");
 			}
 			_type = type;
 			
@@ -93,7 +94,9 @@ package
 					_card_text_color = 0xFF5C3425;
 					_tile = new Tile(_playState, title, X + ICON_TILE_OFFSET.x, Y + ICON_TILE_OFFSET.y);
 					_tile.scale = new FlxPoint(0.33, 0.33);
-					_tile.offset = new FlxPoint(54, 52);
+					_tile.width = _tile.width * 0.33;
+					_tile.height = _tile.height * 0.33;
+					_tile.offset = new FlxPoint(_tile.width, _tile.height);
 					_iconHolder.add(_tile);
 					break;
 				default:
