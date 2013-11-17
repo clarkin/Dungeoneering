@@ -15,7 +15,7 @@ package
 		public var tile_offset_x:int = 65;
 		public var tile_offset_y:int = 62;
 		
-		private var thought_offset:FlxPoint = new FlxPoint(28, -8);
+		private var thought_offset:FlxPoint = new FlxPoint(35, -30);
 		
 		public var current_tile:Tile;
 		public var moving_to_tile:Tile;
