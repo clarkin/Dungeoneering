@@ -246,7 +246,7 @@ package
 		}
 		
 		public function checkHover():void {
-			if (_hover_enabled && _background.overlapsPoint(FlxG.mouse.getScreenPosition())) {
+			if (_hover_enabled && !_showing_back && _background.overlapsPoint(FlxG.mouse.getScreenPosition())) {
 				_hoverEffect.visible = true;
 			} else {
 				_hoverEffect.visible = false;
@@ -265,6 +265,18 @@ package
 			}
 			
 			_card_front.setAll("visible", !_showing_back);
+		}
+		
+		public function showBack():void {
+			_showing_back = true;
+			_background.frame = _background_frame_back;
+			_card_front.setAll("visible", false);
+		}
+		
+		public function showFront():void {
+			_showing_back = false;
+			_background.frame = _background_frame;
+			_card_front.setAll("visible", true);
 		}
 		
 		public function toggleSize():void {

@@ -42,7 +42,6 @@ package
 			if (_dread_level > 5) {
 				_dread_level = 5;
 			}
-			_playState.updateDreadLevel();
 		}
 		
 		public function ReduceDread():void {
@@ -50,7 +49,6 @@ package
 			if (_dread_level < 0) {
 				_dread_level = 0;
 			}
-			_playState.updateDreadLevel();
 		}
 		
 		public function RollForDread():Number {
