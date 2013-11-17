@@ -414,8 +414,36 @@ package
 			//trace("adding card from deck " + type);
 			//trace("cardsInHand.countLiving(): " + cardsInHand.countLiving());
 			
+			var total_tile:int = 0;
+			var total_monster:int = 0;
+			var total_treasure:int = 0;
+			for each (var card_in_hand:Card in cardsInHand.members) {
+				if (card_in_hand != null && card_in_hand.alive) {
+					if (card_in_hand._type == "TILE") {
+						total_tile++;
+					} else if (card_in_hand._type == "MONSTER") {
+						total_monster++;
+					} else {
+						total_treasure++;
+					}
+				}
+			}
+			//trace("total_tile: " + total_tile + ", total_monster: " + total_monster + ", total_treasure: " + total_treasure);
 			if (type == "") {
-				var possible_types:Array = ["TILE", "MONSTER", "TREASURE"];
+				var possible_types:Array = ["TILE", "TILE", "TILE", "MONSTER", "MONSTER", "TREASURE"];
+				if (total_tile == 0) {
+					possible_types.push("TILE");
+					possible_types.push("TILE");
+					possible_types.push("TILE");
+				}
+				if (total_monster == 0) {
+					possible_types.push("MONSTER");
+					possible_types.push("MONSTER");
+				}
+				if (total_treasure == 0) {
+					possible_types.push("TREASURE");
+				}
+				
 				type = possible_types[Math.floor(Math.random() * (possible_types.length))]
 			}
 			
