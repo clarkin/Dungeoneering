@@ -79,6 +79,9 @@ package
 		public var hero:Hero;
 		public var camera_target:FlxSprite;
 		public var following_hero:Boolean = false;
+		public var is_dragging:Boolean = false;
+		public var click_start:FlxPoint = new FlxPoint();
+		public var dragging_from:FlxPoint = new FlxPoint();
 		public var possible_spots:int = 0;
 		public var turn_number:int = 0;
 		public var cards_played:int = 0;
@@ -238,7 +241,35 @@ package
 		}
 		
 		public function checkMouseClick():void {
-			if (FlxG.mouse.justReleased()) {
+			if (FlxG.mouse.justPressed()) {
+				if (checkMouseOverlapsGroup(guiGroup) == null && checkMouseOverlapsGroup(cardsInHand) == null) {
+					if (click_start == null) {
+						click_start = FlxG.mouse.getScreenPosition();
+					}
+				} 
+			}
+			
+			if (click_start != null && !is_dragging) {
+				var mouse_now_at:FlxPoint = FlxG.mouse.getScreenPosition();
+				if (click_start.x != mouse_now_at.x || click_start.y != mouse_now_at.y) {
+					is_dragging = true;
+					dragging_from = FlxG.mouse.getScreenPosition();
+					//trace("dragging_from: [" + dragging_from.x + "," + dragging_from.y + "]");
+				}
+			}
+			
+			if (is_dragging && FlxG.mouse.pressed()) {
+				var new_position:FlxPoint = FlxG.mouse.getScreenPosition();
+				camera_target.x -= new_position.x - dragging_from.x;
+				camera_target.y -= new_position.y - dragging_from.y;
+				dragging_from = new_position;
+			}
+			
+			if (FlxG.mouse.justReleased() && is_dragging) {
+				is_dragging = false;
+				click_start = null;
+				dragging_from = null;
+			} else if (FlxG.mouse.justReleased() && !is_dragging) {
 				var clicked_at:FlxPoint = FlxG.mouse.getWorldPosition();
 				if (turn_phase == PHASE_CARDS_PLAY) {
 					if (!is_placing_card) {
@@ -364,7 +395,7 @@ package
 			
 			//camera movement
 			camera_target.acceleration.x = camera_target.acceleration.y = 0;
-			if (following_hero) {
+			if (following_hero && !is_dragging) {
 				FlxVelocity.moveTowardsPoint(camera_target, new FlxPoint(hero.x, hero.y + 130), 0, 300);
 			} else {
 				if (FlxG.keys.UP) {
@@ -380,6 +411,29 @@ package
 					camera_target.acceleration.x += SCROLL_ACCELERATION;
 				}
 			}
+		}
+		
+		public function checkMouseOverlapsGroup(object:*):FlxObject {
+			if (object == null) {
+				return null;
+			} else if (object is FlxGroup) {
+				//trace("flxgroup found, recursing. " + object);
+				for each (var member:* in object.members) {
+					var this_one:FlxObject = checkMouseOverlapsGroup(member);
+					if (this_one != null) {
+						//trace("found one");
+						return this_one;
+					}
+				}
+			} else {
+				//trace("object found, checking. " + object);
+				if (object.overlapsPoint(FlxG.mouse.getScreenPosition())) {
+					return object;
+				}
+			}
+
+			//trace ("returning null");
+			return null;
 		}
 		
 		public function fillHand():void {

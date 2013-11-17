@@ -31,13 +31,13 @@ package
 				}
 			}
 			
-			trace("getRandomMonster() found " + this_monster._type + " with dread " + this_dread);
+			//trace("getRandomMonster() found " + this_monster._type + " with dread " + this_dread);
 			return new Monster(_playState, this_monster._type);
 		}
 		
 		public function IncreaseDread():void {
 			var dread:Number = Math.floor((_playState.turn_number + 2) / 5);
-			trace("dread level changing from " + _dread_level + " to " + (_dread_level + dread));
+			//trace("dread level changing from " + _dread_level + " to " + (_dread_level + dread));
 			_dread_level += dread;
 			if (_dread_level > 5) {
 				_dread_level = 5;
