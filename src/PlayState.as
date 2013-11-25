@@ -11,8 +11,6 @@ package
  
 	public class PlayState extends FlxState
 	{
-		[Embed(source = "../assets/skull_bolt_t.png")] private var ARTskullBolt:Class;
-		
 		[Embed(source = "../assets/cheer.wav", mimeType = "application/octet-stream")] private const WAVcheer:Class;
 		[Embed(source = "../assets/coins.wav", mimeType = "application/octet-stream")] private const WAVcoins:Class;
 		[Embed(source = "../assets/deathscream.wav", mimeType = "application/octet-stream")] private const WAVdeathscream:Class;

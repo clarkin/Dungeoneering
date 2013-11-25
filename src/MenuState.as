@@ -38,18 +38,18 @@ package
 			
 			var titleScreen:FlxSprite = new FlxSprite(0, 0, ARTtitleScreen);
 			
-			var title:FlxText = new FlxText(0, 300, 1024, titleString);
-			title.setFormat("Crushed", 36, 0xFFFF8A8A, "center", 0);
+			var title:FlxText = new FlxText(0, 350, 1024, titleString);
+			title.setFormat("Crushed", 36, 0xFF6E533F, "center", 0xFFEAE2AC);
 						
-			var results:FlxText = new FlxText(0, 340, 1024, resultsString);
-			results.setFormat("Crushed", 24, 0xFFFF8A8A, "center", 0);	
+			var results:FlxText = new FlxText(0, 390, 1024, resultsString);
+			results.setFormat("Crushed", 24, 0xFF6E533F, "center", 0xFFEAE2AC);	
 			
 			var startButton:FlxButtonPlus = new FlxButtonPlus(400, 600, startGame, null, "START GAME", 320, 50);
-			startButton.textNormal.setFormat("Crushed", 36, 0xFF812222, "center", 0);
-			startButton.textHighlight.setFormat("Crushed", 36, 0xFF812222, "center", 0);
-			startButton.borderColor = 0xFF5C3425;
-			startButton.updateInactiveButtonColors([0xFFFFCCCC, 0xFFFF8A8A]);
-			startButton.updateActiveButtonColors([0xFFFF8A8A, 0xFFFFCCCC]);
+			startButton.textNormal.setFormat("Crushed", 36, 0xFFEAE2AC, "center", 0xFF6E533F);
+			startButton.textHighlight.setFormat("Crushed", 36, 0xFFEAE2AC, "center", 0xFF6E533F);
+			startButton.borderColor = 0xFF6E533F;
+			startButton.updateInactiveButtonColors([0xFFA38C69, 0xFFA38C69]);
+			startButton.updateActiveButtonColors([0xFF6E533F, 0xFF6E533F]);
 			startButton.screenCenter();			
 			
 			add(titleScreen);
@@ -57,7 +57,7 @@ package
 			add(results);
 			add(startButton);
 			
-			FlxG.switchState(new PlayState);
+			//FlxG.switchState(new PlayState);
 		}
 
 		private function startGame():void {
