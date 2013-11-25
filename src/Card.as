@@ -273,7 +273,9 @@ package
 		}
 		
 		public function discardThisCard():void {
-			_playState.discardCard(this);
+			if (!_playState.is_placing_card) {
+				_playState.discardCard(this);
+			}
 		}
 		
 		public function flipCard():void {
