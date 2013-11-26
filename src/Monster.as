@@ -38,7 +38,7 @@ package
 			loadGraphic(charactersPNG, false, true, 24, 24);
 			switch (_type) {
 				case "Runty Goblin":
-					_desc = "A small goblin. Shouldn't be much of a threat for a competent adventurer..";
+					_desc = "A small goblin. Shouldn't be much of a threat for a tough adventurer..";
 					addAnimation(_type, [157]);		
 					_dread = 2;
 					break;

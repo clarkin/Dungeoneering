@@ -271,7 +271,7 @@ package
 						clicked_at = FlxG.mouse.getScreenPosition();
 						for each (var card_in_hand:Card in cardsInHand.members) {
 							if (card_in_hand != null && card_in_hand.alive) {
-								if (card_in_hand._background.overlapsPoint(clicked_at)) {
+								if (card_in_hand._background.overlapsPoint(clicked_at) && canAfford(card_in_hand)) {
 									
 									//trace("clicked on card " + card_in_hand._title);
 									possible_spots = 0;
@@ -356,6 +356,7 @@ package
 						
 						if (!is_placing_card) {
 							cancelPlacingBtn.visible = false;
+							payForCard(placing_card);
 							cardsInHand.remove(placing_card, true);
 							cleanUpPlacingSprite();
 							incrementCardsPlayed();
@@ -421,6 +422,26 @@ package
 			//trace ("returning null");
 			return null;
 		}
+		
+		public function canAfford(card:Card):Boolean {
+			//trace("canAfford " + card._type + " : " + card._title + " for cost " + card._cost + "?");
+			if (card._type == "MONSTER") {
+				return (dungeon._dread_level >= card._cost);
+			} else if (card._type == "TREASURE") {
+				return (dungeon._hope_level >= card._cost);
+			} else {
+				return true;
+			}
+		}
+		
+		public function payForCard(card:Card):void {
+			if (card._type == "MONSTER") {
+				dungeon._dread_level -= card._cost;
+			} else if (card._type == "TREASURE") {
+				dungeon._hope_level -= card._cost;
+			} 
+		}
+		
 		
 		public function fillHand():void {
 			var cards_in_hand:int = cardsInHand.countLiving();

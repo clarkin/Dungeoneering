@@ -12,8 +12,6 @@ package
 		
 		public static const CARDS_WEIGHTED:Array = [
 			"MONSTER", "MONSTER", "MONSTER", "TREASURE", "TREASURE"];
-		public static const ALL_MONSTERS:Array = [
-			"Runty Goblin", "Goblin Leader", "Giant Bat", "Chicken", "Filthy Rat", "Skeleton"];
 		public static const ALL_TREASURE:Array = [
 			"Silver Coins", "Small Chest", "Gold Coins", "Sapphire Ring", "Short Sword", 
 			"Magic Axe", "Long Sword", "Wooden Shield", "Leather Vest"];
@@ -22,6 +20,7 @@ package
 		private static const ICON_TILE_OFFSET:FlxPoint = new FlxPoint(50, 40);
 		private static const ICON_OFFSET:FlxPoint = new FlxPoint(63, 54);
 		private static const DESC_OFFSET:FlxPoint = new FlxPoint(1, 95);
+		private static const COST_OFFSET:FlxPoint = new FlxPoint(1, 180);
 		private static const DISCARD_OFFSET:FlxPoint = new FlxPoint(40, 203);
 		private static const CARD_WIDTH:int = 150;
 		private static const CARD_HEIGHT:int = 200;
@@ -36,6 +35,7 @@ package
 		private var _card_text_color:uint = 0xFF000000;
 		private var _titleText:FlxText;
 		private var _descText:FlxText;
+		private var _costText:FlxText;
 		private var _hoverEffect:FlxSprite;
 		private var _hover_enabled:Boolean = true;
 		private var _iconHolder:FlxGroup = new FlxGroup();
@@ -48,6 +48,7 @@ package
 		public var _moving_to:FlxPoint;
 		public var _is_moving:Boolean = false;
 		public var _discardBtn:FlxButtonPlus;
+		public var _cost:int = 0;
 		
 		private var _playState:PlayState;
 		
@@ -74,6 +75,7 @@ package
 					title = monster._type;
 					_desc = monster._desc;
 					_monster = new Monster(_playState, title, X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
+					_cost = _monster._dread;
 					_iconHolder.add(_monster);
 					break;
 				case "TREASURE":
@@ -108,24 +110,6 @@ package
 			
 			_title = title;
 			switch (_title) {
-				case "Runty Goblin":
-					
-					break;
-				case "Goblin Leader":
-					
-					break;
-				case "Giant Bat":
-					
-					break;
-				case "Chicken":
-					
-					break;
-				case "Filthy Rat":
-					
-					break;
-				case "Skeleton":
-					
-					break;
 				case "Silver Coins":
 					_desc = "A handful of silver, strewn carelessly on the ground.";	
 					_sprite.frame = 84;
@@ -172,7 +156,7 @@ package
 							_desc = "What might be inside?";
 						}
 					} else {
-						throw new Error("no matching card defined for " + _title);
+						//throw new Error("no matching card defined for " + _title);
 					}
 			}
 			
@@ -191,6 +175,14 @@ package
 			_descText.setFormat("Crushed", 18, _card_text_color, "center");
 			_card_front.add(_descText);
 			
+			_costText = new FlxText(X + COST_OFFSET.x, Y + COST_OFFSET.y, 148, _desc.toUpperCase());
+			_costText.height = 24;
+			_costText.setFormat("Crushed", 16, _card_text_color, "left");
+			_costText.text = "Cost: " + _cost;
+			if (_cost > 0) {
+				_card_front.add(_costText);
+			}
+			
 			_card_front.add(_iconHolder);
 			this.add(_card_front);
 			
@@ -206,8 +198,6 @@ package
 			_discardBtn.borderColor = 0xFFEAE2AC;
 			_discardBtn.updateInactiveButtonColors([0xFFA38C69, 0xFFA38C69]);
 			_discardBtn.updateActiveButtonColors([0xFF6E533F, 0xFF6E533F]);   
-			//_discardBtn.visible = false;
-			//_discardBtn._status = FlxButtonPlus.PRESSED;
 			_card_front.add(_discardBtn);
 			
 			this.showBack();
@@ -252,6 +242,8 @@ package
 				_titleText.y += change_y;
 				_descText.x += change_x;
 				_descText.y += change_y;
+				_costText.x += change_x;
+				_costText.y += change_y;
 				_hoverEffect.x += change_x;
 				_hoverEffect.y += change_y;
 				_discardBtn.x += change_x;
