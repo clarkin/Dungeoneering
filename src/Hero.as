@@ -190,9 +190,9 @@ package
 				var next_card:Card = current_tile.cards.pop();
 				//trace("processing card " + next_card._title);
 				
-				if (next_card._type == "TREASURE" || next_card._type == "WEAPON") {
+				if (next_card._type == "TREASURE") {
 					_playState.sndCoins.play();
-					_playState.player_treasure += 1;
+					_playState.player_treasure += next_card._treasure._hope + 1;
 				} else if (next_card._type == "MONSTER") {
 					_playState.player_life -= 1;
 					_playState.dungeon._hope_level += 1;

@@ -243,7 +243,15 @@ package
 			
 			if (click_start != null && !is_dragging) {
 				var mouse_now_at:FlxPoint = FlxG.mouse.getScreenPosition();
-				if (click_start.x != mouse_now_at.x || click_start.y != mouse_now_at.y) {
+				var diff_x:int = click_start.x - mouse_now_at.x;
+				if (diff_x < 0) {
+					diff_x = -diff_x;
+				}
+				var diff_y:int = click_start.y - mouse_now_at.y;
+				if (diff_y < 0) {
+					diff_y = -diff_y;
+				}
+				if (diff_x > 10 || diff_y > 10) {
 					is_dragging = true;
 					dragging_from = FlxG.mouse.getScreenPosition();
 					//trace("dragging_from: [" + dragging_from.x + "," + dragging_from.y + "]");
