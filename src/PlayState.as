@@ -11,6 +11,8 @@ package
  
 	public class PlayState extends FlxState
 	{
+		[Embed(source = "../assets/grid_tile.png")] private var gridTilePNG:Class;
+		
 		[Embed(source = "../assets/cheer.wav", mimeType = "application/octet-stream")] private const WAVcheer:Class;
 		[Embed(source = "../assets/coins.wav", mimeType = "application/octet-stream")] private const WAVcoins:Class;
 		[Embed(source = "../assets/deathscream.wav", mimeType = "application/octet-stream")] private const WAVdeathscream:Class;
@@ -36,7 +38,7 @@ package
 		public var placingSprite:FlxGroup = new FlxGroup();
 		public var floatingTexts:FlxGroup = new FlxGroup();
 		
-		public static const starting_point:Point = new Point(358, 578);
+		public static const starting_point:Point = new Point(0, 0);
 		
 		public static const PHASE_NEWTURN:int         = 0; 
 		public static const PHASE_CARDS_DEAL:int      = 1;
@@ -157,7 +159,10 @@ package
 			sndFootsteps = new WavSound(new WAVfootsteps() as ByteArray);
 			sndLotsofcoins = new WavSound(new WAVlotsofcoins() as ByteArray);
 			sndSwordkill = new WavSound(new WAVswordkill() as ByteArray);
-
+			
+			var grid_backdrop:FlxBackdrop = new FlxBackdrop(gridTilePNG, 1.0, 1.0, true, true);
+			
+			add(grid_backdrop);
 			add(tiles);
 			add(camera_target);
 			add(hero);
@@ -181,10 +186,6 @@ package
 			//trace("camera_target [" + camera_target.x + ", " + camera_target.y + "], hero [" + hero.x + ", " + hero.y + "]");
 			
 			super.update();
-		}
-		
-		private function checkControls():void {
-			
 		}
 		
 		public function checkHero():void {
