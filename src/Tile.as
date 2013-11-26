@@ -111,11 +111,11 @@ package
 			
 			//TODO: is this really the best way to do this?
 			for each (var card:Card in this.cards) {
-				if (card._sprite != null) {
-					card._sprite.draw();
-				}
 				if (card._monster != null) {
 					card._monster.draw();
+				}
+				if (card._treasure != null) {
+					card._treasure.draw();
 				}
 			}
 		}
@@ -131,14 +131,14 @@ package
 		
 		public function addCard(card:Card):void {
 			//copy of given card
-			var newCard:Card = new Card(_playState, this.x, this.y, card._type, card._title, null, card._monster);
-			if (newCard._sprite != null) {
-				newCard._sprite.x = this.x + ICON_OFFSET.x;
-				newCard._sprite.y = this.y + ICON_OFFSET.y;
-			}
+			var newCard:Card = new Card(_playState, this.x, this.y, card._type, null, card._monster, card._treasure);
 			if (newCard._monster != null) {
 				newCard._monster.x = this.x + ICON_OFFSET.x;
 				newCard._monster.y = this.y + ICON_OFFSET.y;
+			}
+			if (newCard._treasure != null) {
+				newCard._treasure.x = this.x + ICON_OFFSET.x;
+				newCard._treasure.y = this.y + ICON_OFFSET.y;
 			}
 			//trace("added card " + newCard._type + ":" + newCard._title + " to tile " + this.type);
 			this.cards.push(newCard);

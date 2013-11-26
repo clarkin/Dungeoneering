@@ -145,7 +145,7 @@ package
 			
 			highlights.visible = false;
 			placingSprite.visible = true;
-					
+			
 			addCardFromDeck("TILE");
 			addCardFromDeck("TILE");
 			addCardFromDeck("TILE");
@@ -296,7 +296,7 @@ package
 										cleanUpPlacingSprite();
 										
 										if (placing_card._type == "TILE") {
-											var new_placing_card_tile:Card = new Card(this, -1000, -1000, placing_card._type, "", placing_card._tile);
+											var new_placing_card_tile:Card = new Card(this, -1000, -1000, placing_card._type, placing_card._tile);
 											new_placing_card_tile._tile.alpha = 0.6;
 											placingSprite.add(new_placing_card_tile._tile);
 											highlights.visible = true;
@@ -309,13 +309,13 @@ package
 											}											
 										} else {
 											if (placing_card._type == "MONSTER") {
-												var new_placing_card_monster:Card = new Card(this, -1000, -1000, placing_card._type, placing_card._title, null, placing_card._monster);
+												var new_placing_card_monster:Card = new Card(this, -1000, -1000, placing_card._type, null, placing_card._monster);
 												new_placing_card_monster._monster.alpha = 0.6;
 												placingSprite.add(new_placing_card_monster._monster);
 											} else {
-												var new_placing_card_treasure:Card = new Card(this, -1000, -1000, placing_card._type, placing_card._title, null, null);
-												new_placing_card_treasure._sprite.alpha = 0.6;
-												placingSprite.add(new_placing_card_treasure._sprite);
+												var new_placing_card_treasure:Card = new Card(this, -1000, -1000, placing_card._type, null, null, placing_card._treasure);
+												new_placing_card_treasure._treasure.alpha = 0.6;
+												placingSprite.add(new_placing_card_treasure._treasure);
 											}
 											for each (var possible_tile2:Tile in tiles.members) {
 												if (possible_tile2 != hero.current_tile && possible_tile2.validForCard(placing_card)) {
@@ -524,14 +524,15 @@ package
 						}
 					}
 					var possible_tile:Tile = tileManager.GetRandomTile(valid_entrances);
-					possible_card = new Card(this, card_point.x, card_point.y, "TILE", "", possible_tile);
+					possible_card = new Card(this, card_point.x, card_point.y, "TILE", possible_tile);
 					break;
 				case "MONSTER":
 					var possible_monster:Monster = dungeon.GetRandomMonster();
-					possible_card = new Card(this, card_point.x, card_point.y, "MONSTER", possible_monster._type, null, possible_monster);
+					possible_card = new Card(this, card_point.x, card_point.y, "MONSTER", null, possible_monster);
 					break;
 				case "TREASURE":
-					possible_card = new Card(this, card_point.x, card_point.y, "TREASURE");
+					var possible_treasure:Treasure = dungeon.GetRandomTreasure();
+					possible_card = new Card(this, card_point.x, card_point.y, "TREASURE", null, null, possible_treasure);
 					break;
 				default:
 					throw new Error("no matching card type defined for " + type);

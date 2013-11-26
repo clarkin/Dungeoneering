@@ -5,16 +5,11 @@ package
 	
 	public class Card extends FlxGroup
 	{
-		[Embed(source = "../assets/ass_char_tran.png")] private var charactersPNG:Class;
-		[Embed(source = "../assets/ass_item_tran.png")] private var itemsPNG:Class;
 		[Embed(source = "../assets/card_backgrounds.png")] private var cardBackgroundsPNG:Class;
 		[Embed(source = "../assets/Crushed.ttf", fontFamily = "Crushed", embedAsCFF = "false")] public	var	FONTCrushed:String;
 		
 		public static const CARDS_WEIGHTED:Array = [
 			"MONSTER", "MONSTER", "MONSTER", "TREASURE", "TREASURE"];
-		public static const ALL_TREASURE:Array = [
-			"Silver Coins", "Small Chest", "Gold Coins", "Sapphire Ring", "Short Sword", 
-			"Magic Axe", "Long Sword", "Wooden Shield", "Leather Vest"];
 
 		private static const TITLE_OFFSET:FlxPoint = new FlxPoint(1, 1);
 		private static const ICON_TILE_OFFSET:FlxPoint = new FlxPoint(50, 40);
@@ -42,7 +37,7 @@ package
 		public var _card_front:FlxGroup = new FlxGroup();
 		public var _tile:Tile;
 		public var _monster:Monster;
-		public var _sprite:FlxSprite;
+		public var _treasure:Treasure;
 		public var _showing_back:Boolean = false;
 		public var _shrunk:Boolean = false;
 		public var _moving_to:FlxPoint;
@@ -52,7 +47,7 @@ package
 		
 		private var _playState:PlayState;
 		
-		public function Card(playState:PlayState, X:int = 0, Y:int = 0, type:String = "", title:String = "", tile:Tile = null, monster:Monster = null) 
+		public function Card(playState:PlayState, X:int = 0, Y:int = 0, type:String = "", tile:Tile = null, monster:Monster = null, treasure:Treasure = null) 
 		{
 			super();
 			
@@ -72,32 +67,34 @@ package
 					_background_frame = 0;
 					_background_frame_back = 4;
 					_card_text_color = 0xFF812222;
-					title = monster._type;
+					_title = monster._type;
 					_desc = monster._desc;
-					_monster = new Monster(_playState, title, X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
+					_monster = new Monster(_playState, _title, X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
 					_cost = _monster._dread;
 					_iconHolder.add(_monster);
 					break;
 				case "TREASURE":
-					if (title == "") {
-						title = ALL_TREASURE[Math.floor(Math.random() * (ALL_TREASURE.length))]
+					if (treasure == null) {
+						treasure = _playState.dungeon.GetRandomTreasure();
 					}
 					_background_frame = 2;
 					_background_frame_back = 6;
 					_card_text_color = 0xFF003399;
-					_sprite = new FlxSprite(X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
-					_sprite.loadGraphic(itemsPNG, false, true, 24, 24);
-					_iconHolder.add(_sprite);
+					_title = treasure._type;
+					_desc = treasure._desc;
+					_treasure = new Treasure(_playState, _title, X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
+					_cost = _treasure._hope;
+					_iconHolder.add(_treasure);
 					break;
 				case "TILE":
 					if (tile == null) {
 						tile = _playState.tileManager.GetRandomTile();
 					}
-					title = tile.type;
+					_title = tile.type;
 					_background_frame = 1;
 					_background_frame_back = 5;
 					_card_text_color = 0xFF5C3425;
-					_tile = new Tile(_playState, title, X + ICON_TILE_OFFSET.x, Y + ICON_TILE_OFFSET.y);
+					_tile = new Tile(_playState, _title, X + ICON_TILE_OFFSET.x, Y + ICON_TILE_OFFSET.y);
 					_tile.scale = new FlxPoint(0.33, 0.33);
 					_tile.width = _tile.width * 0.33;
 					_tile.height = _tile.height * 0.33;
@@ -107,58 +104,16 @@ package
 				default:
 					throw new Error("no matching card type defined for " + type);
 			}
-			
-			_title = title;
-			switch (_title) {
-				case "Silver Coins":
-					_desc = "A handful of silver, strewn carelessly on the ground.";	
-					_sprite.frame = 84;
-					break;
-				case "Small Chest":
-					_desc = "An ornate wooden chest. What might be inside?";	
-					_sprite.frame = 81;
-					break;
-				case "Gold Coins":
-					_desc = "A small pile of coins, gleaming temptfully.";	
-					_sprite.frame = 83;
-					break;
-				case "Sapphire Ring":
-					_desc = "A ring mounted with a huge sapphire, fit for a princess.";	
-					_sprite.frame = 74;
-					break;
-				case "Short Sword":
-					_desc = "A dull sword about a foot long. Easy to use but without much reach.";
-					_sprite.frame = 6;
-					break;
-				case "Magic Axe":
-					_desc = "This axe gleams and shines in the darkness with an inner fire.";
-					_sprite.frame = 17;
-					break;
-				case "Long Sword":
-					_desc = "The classic, versatile weapon. Perhaps a little boring.";
-					_sprite.frame = 0;
-					break;
-				case "Wooden Shield":
-					_desc = "A solid weight of wood to fend off a few blows.";
-					_sprite.frame = 41;
-					break;
-				case "Leather Vest":
-					_desc = "Tight fitted leather for your midriff, not great but better than nothing.";
-					_sprite.frame = 48;
-					break;
-				default:
-					if (_type == "TILE") {
-						if (_title.indexOf("corr") == 0) {
-							_title = "Corridor";
-							_desc = "Where might it lead?";
-						} else {
-							_title = "Room";
-							_desc = "What might be inside?";
-						}
-					} else {
-						//throw new Error("no matching card defined for " + _title);
-					}
-			}
+
+			if (_type == "TILE") {
+				if (_title.indexOf("corr") == 0) {
+					_title = "Corridor";
+					_desc = "Where might it lead?";
+				} else {
+					_title = "Room";
+					_desc = "What might be inside?";
+				}
+			} 
 			
 			_background = new FlxSprite(X, Y);
 			_background.loadGraphic(cardBackgroundsPNG, false, false, CARD_WIDTH, CARD_HEIGHT);
@@ -226,10 +181,6 @@ package
 				
 				_background.x += change_x;
 				_background.y += change_y;
-				if (_sprite != null) {
-					_sprite.x += change_x;
-					_sprite.y += change_y;
-				}
 				if (_tile != null) {
 					_tile.x += change_x;
 					_tile.y += change_y;
@@ -237,6 +188,10 @@ package
 				if (_monster != null) {
 					_monster.x += change_x;
 					_monster.y += change_y;
+				}
+				if (_treasure != null) {
+					_treasure.x += change_x;
+					_treasure.y += change_y;
 				}
 				_titleText.x += change_x;
 				_titleText.y += change_y;

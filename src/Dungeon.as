@@ -5,6 +5,7 @@ package
 	public class Dungeon 
 	{
 		public var all_monsters:Array = new Array();
+		public var all_treasures:Array = new Array();
 		public var _dread_level:Number = 0;
 		public var _hope_level:Number = 0;
 		
@@ -13,9 +14,12 @@ package
 		public function Dungeon(playState:PlayState) {
 			_playState = playState;
 			
-			//create one of every monster
+			//create one of every monster & treasure
 			for (var i:int = 0; i < Monster.ALL_MONSTERS.length; i++) {
 				all_monsters.push(new Monster(_playState, Monster.ALL_MONSTERS[i]));
+			}
+			for (var j:int = 0; j < Treasure.ALL_TREASURES.length; j++) {
+				all_treasures.push(new Treasure(_playState, Treasure.ALL_TREASURES[j]));
 			}
 		}
 		
@@ -33,6 +37,13 @@ package
 			
 			//trace("getRandomMonster() found " + this_monster._type + " with dread " + this_dread);
 			return new Monster(_playState, this_monster._type);
+		}
+		
+		public function GetRandomTreasure():Treasure {
+			var this_treasure:Treasure = all_treasures[Math.floor(Math.random() * (all_treasures.length))];
+			
+			//trace("GetRandomTreasure() found " + this_treasure._type);
+			return new Treasure(_playState, this_treasure._type);
 		}
 		
 		public function IncreaseDread():void {

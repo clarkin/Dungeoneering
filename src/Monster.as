@@ -6,22 +6,11 @@ package
 	{
 		[Embed(source = "../assets/ass_char_tran.png")] private var charactersPNG:Class;
 		
-		public static const TILESIZE:int = 42;
-		public static const SPEED:int = 90;
-		public static const THINKING_TIME:Number = 2;
-		public static const CARD_TIME:Number = 2;
 		public static const ICON_OFFSET:FlxPoint = new FlxPoint(10, 5);
 		
 		public static const ALL_MONSTERS:Array = [
 			"Runty Goblin", "Goblin Leader", "Giant Bat", "Chicken", "Filthy Rat", "Skeleton"];
 		
-		public var _current_tile:Tile;
-		public var _moving_to_tile:Tile;
-		public var _is_taking_turn:Boolean = false;
-		public var _is_moving:Boolean = false;
-		public var _is_processing_cards:Boolean = false;
-		public var _thinking_timer:Number = 0;
-		public var _card_timer:Number = 0;
 		public var _type:String = "";
 		public var _desc:String = "";
 		public var _dread:Number = 0;
@@ -73,20 +62,6 @@ package
 			play(_type);
 		}
 		
-		override public function update():void {	
-
-			//trace("monster of type " + _type + ", at [" + x + "," + y + "]");
-			
-			if (_is_taking_turn) {
-				if (_thinking_timer > 0) {
-					_thinking_timer -= FlxG.elapsed;
-				} else {
-					
-				}
-			} 
-			
-			super.update();
-		}
 
 	}
 }
