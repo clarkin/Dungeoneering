@@ -96,8 +96,6 @@ package
 			
 			hero = new Hero(this, starting_point.x, starting_point.y - Tile.TILESIZE);
 			camera_target = new FlxSprite(hero.x, hero.y);
-			//TODO: fix this being a few pixels off at the start
-			//camera_target = new FlxSprite(hero.x + hero.origin.x, hero.y + hero.origin.y);
 			camera_target.width = camera_target.height = 0;
 			camera_target.maxVelocity = new FlxPoint(SCROLL_MAXVELOCITY, SCROLL_MAXVELOCITY);
 			camera_target.drag = new FlxPoint(SCROLL_ACCELERATION, SCROLL_ACCELERATION);
@@ -108,6 +106,8 @@ package
 			starting_tile = new Tile(this, "corr_grate_n", starting_point.x, starting_point.y - Tile.TILESIZE);
 			tiles.add(starting_tile);
 			hero.setCurrentTile(starting_tile);
+			hero.x = starting_tile.x + hero.tile_offset.x - hero.origin.x;
+			hero.y = starting_tile.y + hero.tile_offset.y - hero.origin.y;
 			starting_tile = new Tile(this, "corr_thin_nesw");
 			//starting_tile = new Tile(this, "room_cages_ns");
 			addTileAt(starting_tile, starting_point.x, starting_point.y - Tile.TILESIZE - Tile.TILESIZE);

@@ -5,17 +5,15 @@ package
 	
 	public class Hero extends FlxSprite
 	{
-		[Embed(source = "../assets/ass_char_tran.png")] private var charactersPNG:Class;
+		[Embed(source = "../assets/hero_sprite.png")] private var heroPNG:Class;
 		
 		public static const TIME_TO_MOVE_TILES:int = 1000;
 		public static const ARRIVAL_THRESHOLD:int = 4;
 		public static const THINKING_TIME:Number = 2;
 		public static const CARD_TIME:Number = 2;
 		
-		public var tile_offset_x:int = 65;
-		public var tile_offset_y:int = 62;
-		
-		private var thought_offset:FlxPoint = new FlxPoint(35, -30);
+		public var tile_offset:FlxPoint = new FlxPoint(65, 62);
+		private var thought_offset:FlxPoint = new FlxPoint(70, -20);
 		
 		public var current_tile:Tile;
 		public var moving_to_tile:Tile;
@@ -29,12 +27,10 @@ package
 		
 		public function Hero(playState:PlayState, X:int = 0, Y:int = 0) 
 		{
-			super(X + tile_offset_x, Y + tile_offset_y);
+			trace("adding hero at [" + X + "," + Y + "]");
+			super(X + tile_offset.x, Y + tile_offset.y);
 			
-			loadGraphic(charactersPNG, false, true, 24, 24);
-
-			addAnimation("knight1", [43]);
-			play("knight1");
+			loadGraphic(heroPNG, false, true, 64, 79);
 			
 			_playState = playState;
 		}
@@ -156,13 +152,13 @@ package
 		private function checkMovement():void {
 			if (moving_to_tile != null && current_tile != moving_to_tile) {
 				
-				var distance_x:int = moving_to_tile.x + tile_offset_x - (x + origin.x);
-				var distance_y:int = moving_to_tile.y + tile_offset_y - (y + origin.y);
+				var distance_x:int = moving_to_tile.x + tile_offset.x - (x + origin.x);
+				var distance_y:int = moving_to_tile.y + tile_offset.y - (y + origin.y);
 				
 				//trace("hero at [" + this.x + "," + this.y + "], moving_to_tile at [" + (moving_to_tile.x + tile_offset_x) + "," + (moving_to_tile.y + tile_offset_y) + "]");
 				//trace("hero origin is [" + this.origin.x + "," + this.origin.y + "]");
 				//trace("distance: [" + distance_x + "," + distance_y + "]");
-				FlxVelocity.moveTowardsPoint(this, new FlxPoint(moving_to_tile.x + tile_offset_x, moving_to_tile.y + tile_offset_y), 0, TIME_TO_MOVE_TILES);
+				FlxVelocity.moveTowardsPoint(this, new FlxPoint(moving_to_tile.x + tile_offset.x, moving_to_tile.y + tile_offset.y), 0, TIME_TO_MOVE_TILES);
 				
 				if (distance_x >= -ARRIVAL_THRESHOLD && distance_x <= ARRIVAL_THRESHOLD && distance_y >= -ARRIVAL_THRESHOLD && distance_y <= ARRIVAL_THRESHOLD) {
 					setCurrentTile(moving_to_tile);
