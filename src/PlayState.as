@@ -12,6 +12,7 @@ package
 	public class PlayState extends FlxState
 	{
 		[Embed(source = "../assets/grid_tile.png")] private var gridTilePNG:Class;
+		[Embed(source = "../assets/UI_frame.png")] private var UIFramePNG:Class;
 		
 		[Embed(source = "../assets/cheer.wav", mimeType = "application/octet-stream")] private const WAVcheer:Class;
 		[Embed(source = "../assets/coins.wav", mimeType = "application/octet-stream")] private const WAVcoins:Class;
@@ -112,24 +113,27 @@ package
 			//starting_tile = new Tile(this, "room_cages_ns");
 			addTileAt(starting_tile, starting_point.x, starting_point.y - Tile.TILESIZE - Tile.TILESIZE);
 			
-			player_treasure_label = new FlxText(6, 6, 150, "Treasure: 0");
+			var UIFrame:FlxSprite = new FlxSprite(0, 0, UIFramePNG);
+			UIFrame.scrollFactor = new FlxPoint(0, 0);
+			guiGroup.add(UIFrame);
+			player_treasure_label = new FlxText(45, 15, 150, "Treasure: 0");
 			player_treasure_label.setFormat("Crushed", 30, 0xFFEAE2AC, "left", 0xFF6E533F);
 			player_treasure_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_treasure_label);
-			player_life_label = new FlxText(6, 40, 150, "Life: 5");
+			player_life_label = new FlxText(195, 15, 150, "Life: 5");
 			player_life_label.setFormat("Crushed", 30, 0xFFEAE2AC, "left", 0xFF6E533F);
 			player_life_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_life_label);
-			player_dread_label = new FlxText(FlxG.width - 150 - 6, 6, 150, "Dread: 0");
+			player_dread_label = new FlxText(FlxG.width - 150 - 45, 15, 150, "Dread: 0");
 			player_dread_label.setFormat("Crushed", 30, 0xFFFF8A8A, "right", 0xFFA82C2C);
 			player_dread_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_dread_label);
-			player_hope_label = new FlxText(FlxG.width - 150 - 6, 40, 150, "Hope: 0");
+			player_hope_label = new FlxText(FlxG.width - 150 - 165, 15, 150, "Hope: 0");
 			player_hope_label.setFormat("Crushed", 30, 0xFF8DCDF0, "right", 0xFF025E8F);
 			player_hope_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_hope_label);
 			
-			player_cards_label = new FlxText(36, 489, 250, "Play up to 3 more cards");
+			player_cards_label = new FlxText(36, 489, 350, "Play or discard up to 3 more cards");
 			player_cards_label.setFormat("Crushed", 24, 0xFFEAE2AC, "left", 0xFF6E533F);
 			player_cards_label.scrollFactor = new FlxPoint(0, 0);
 			player_cards_label.visible = false;
@@ -217,7 +221,7 @@ package
 				fillHand(); //todo use PHASE_CARDS_FILLING to animate (and show deck backs)
 				showCards();
 				cards_played = 0;
-				player_cards_label.text = "Play up to 3 more cards";
+				player_cards_label.text = "Play or discard up to 3 more cards";
 				cardsInHand.visible = true;
 				turn_phase = PHASE_CARDS_PLAY;
 			} 
@@ -606,9 +610,9 @@ package
 		public function incrementCardsPlayed():void {
 			cards_played += 1;
 			var cards_left:int = CARDS_PER_TURN - cards_played;
-			player_cards_label.text = "Play up to " + cards_left + " more cards";
+			player_cards_label.text = "Play or discard up to " + cards_left + " more cards";
 			if (cards_left <= 1) {
-				player_cards_label.text = "Play " + cards_left + " more card";
+				player_cards_label.text = "Play or discard " + cards_left + " more card";
 			}
 			
 			if (cards_played >= CARDS_PER_TURN) {
