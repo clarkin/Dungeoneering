@@ -53,10 +53,12 @@ package
 		public static const SCROLL_ACCELERATION:Number = 800;
 		public static const PLACING_OFFSET:FlxPoint = new FlxPoint(20, 20);
 		
-		public static const HAND_START:FlxPoint = new FlxPoint(36, 532);
-		public static const HAND_CARD_OFFSET:int = 200;
-		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(350, 220);
-		public static const SHRUNK_HAND_CARD_OFFSET:int = 100;
+		//public static const HAND_START:FlxPoint = new FlxPoint(36, 532);
+		//public static const HAND_CARD_OFFSET:int = 200;
+		public static const HAND_START:FlxPoint = new FlxPoint(235, 532);
+		public static const HAND_CARD_OFFSET:int = 155;
+		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(235, 682);
+		public static const SHRUNK_HAND_CARD_OFFSET:int = 155;
 		
 		public static const CARDS_PER_TURN:int = 3;
 		
@@ -115,7 +117,7 @@ package
 			
 			var UIFrame:FlxSprite = new FlxSprite(0, 0, UIFramePNG);
 			UIFrame.scrollFactor = new FlxPoint(0, 0);
-			guiGroup.add(UIFrame);
+			
 			player_treasure_label = new FlxText(45, 15, 150, "Treasure: 0");
 			player_treasure_label.setFormat("Crushed", 30, 0xFFEAE2AC, "left", 0xFF6E533F);
 			player_treasure_label.scrollFactor = new FlxPoint(0, 0);
@@ -172,6 +174,7 @@ package
 			add(hero);
 			add(highlights);
 			add(floatingTexts);
+			add(UIFrame);
 			add(guiGroup);
 			add(cardsInHand);
 			add(placingSprite);
