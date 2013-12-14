@@ -2,12 +2,12 @@ package
 {
     import org.flixel.system.FlxPreloader;
  
-	public class Preloader extends FlxPreloader
+	public class Preloader extends GambrinousPreloader
 	{
 		public function Preloader():void
 		{
 			className = "Dungeoneering";
-			myURL = "http://gambrinous.com/games/dungeoneering/";
+			myURL = "gambrinous.com/games/dungeoneering/";
 			super();
 		}
 	}

@@ -667,7 +667,7 @@ package org.flixel
 			
 			//Set up the view window and double buffering
 			stage.scaleMode = StageScaleMode.NO_SCALE;
-            stage.align = StageAlign.TOP_LEFT;
+            stage.align = ""; // StageAlign.TOP_LEFT;
             stage.frameRate = _flashFramerate;
 			
 			//Add basic input event listeners and mouse container
