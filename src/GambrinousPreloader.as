@@ -36,7 +36,7 @@ package
 		public var myURL:String;
 		public var minDisplayTime:Number;
 		
-		public var VERSION:Number = 0.6;
+		public var VERSION:String;
 		
 		public function GambrinousPreloader()
 		{
