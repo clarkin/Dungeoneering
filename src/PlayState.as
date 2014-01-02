@@ -680,7 +680,7 @@ package
 			for each (var this_highlight:Tile in highlights.members) {
 				if (this_highlight.x == X && this_highlight.y == Y) {
 					//trace("setting additional entrance for highlight at [" + Math.floor(X / Tile.TILESIZE) + "," + Math.floor(Y / Tile.TILESIZE) + "] with entrance " + from_direction + " " + Tile.directionName(from_direction));
-					this_highlight.setHighlightEntrance(from_direction);
+					this_highlight.setHighlightEntrance(Tile.oppositeDirection(from_direction));
 					filled = true;
 					break;
 				}
