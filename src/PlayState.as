@@ -70,9 +70,7 @@ package
 		
 		public var player_alive:Boolean = true;
 		public var player_treasure:int = 0;
-		public var player_life:int = 5;
-		public var player_treasure_label:FlxText;
-		public var player_life_label:FlxText;
+		public var player_stats_label:FlxText;
 		public var player_dread_label:FlxText;
 		public var player_hope_label:FlxText;
 		public var player_cards_label:FlxText;
@@ -118,14 +116,10 @@ package
 			var UIFrame:FlxSprite = new FlxSprite(0, 0, UIFramePNG);
 			UIFrame.scrollFactor = new FlxPoint(0, 0);
 			
-			player_treasure_label = new FlxText(45, 15, 150, "Treasure: 0");
-			player_treasure_label.setFormat("Crushed", 30, 0xFFEAE2AC, "left", 0xFF6E533F);
-			player_treasure_label.scrollFactor = new FlxPoint(0, 0);
-			guiGroup.add(player_treasure_label);
-			player_life_label = new FlxText(195, 15, 150, "Life: 5");
-			player_life_label.setFormat("Crushed", 30, 0xFFEAE2AC, "left", 0xFF6E533F);
-			player_life_label.scrollFactor = new FlxPoint(0, 0);
-			guiGroup.add(player_life_label);
+			player_stats_label = new FlxText(45, 15, 150, "stats");
+			player_stats_label.setFormat("Crushed", 30, 0xFFEAE2AC, "left", 0xFF6E533F);
+			player_stats_label.scrollFactor = new FlxPoint(0, 0);
+			guiGroup.add(player_stats_label);
 			player_dread_label = new FlxText(FlxG.width - 150 - 45, 15, 150, "Dread: 0");
 			player_dread_label.setFormat("Crushed", 30, 0xFFFF8A8A, "right", 0xFFA82C2C);
 			player_dread_label.scrollFactor = new FlxPoint(0, 0);
@@ -232,8 +226,11 @@ package
 		
 		public function updateLabels():void {
 			//TODO only update these if any change instead of every frame
-			player_treasure_label.text = "Treasure: " + player_treasure;
-			player_life_label.text = "Life: " + player_life;
+			player_stats_label.text = "Treasure: " + player_treasure + "\n"
+			                        + "Health: " + hero._health + "\n"
+			                        + "Strength: " + hero._strength + "\n"
+			                        + "Speed: " + hero._speed + "\n"
+			                        + "Armour: " + hero._armour + "\n";
 			player_dread_label.text = "Dread: " + dungeon._dread_level;
 			player_hope_label.text = "Hope: " + dungeon._hope_level;
 		}

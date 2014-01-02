@@ -23,12 +23,22 @@ package
 		public var thinking_timer:Number = 0;
 		public var card_timer:Number = 0;
 		
+		public var _health:int = 0;
+		public var _strength:int = 0;
+		public var _speed:int = 0;
+		public var _armour:int = 0;
+		
 		private var _playState:PlayState;
 		
 		public function Hero(playState:PlayState, X:int = 0, Y:int = 0) 
 		{
 			//trace("adding hero at [" + X + "," + Y + "]");
 			super(X + tile_offset.x, Y + tile_offset.y);
+			
+			_health = 10;
+			_strength = 2;
+			_speed = 2;
+			_armour = 0;
 			
 			loadGraphic(heroPNG, false, true, 64, 79);
 			
@@ -184,27 +194,69 @@ package
 				_playState.turn_phase = PlayState.PHASE_NEWTURN;
 			} else {
 				var next_card:Card = current_tile.cards.pop();
-				//trace("processing card " + next_card._title);
+				trace("processing card " + next_card._title);
 				
 				if (next_card._type == "TREASURE") {
 					_playState.sndCoins.play();
 					_playState.player_treasure += next_card._treasure._hope + 1;
 				} else if (next_card._type == "MONSTER") {
-					_playState.player_life -= 1;
-					_playState.dungeon._hope_level += 1;
-					if (_playState.player_life <= 0) {
-						_playState.player_alive = false;
-						_playState.leaveDungeon();
-					} else {
-						_playState.sndSwordkill.play();
-					}
+					var this_monster:Monster = next_card._monster;
+					trace("Stats for monster " + this_monster._type);
+					trace(this_monster.GetStats());
+					
+					FightMonster(this_monster);
 				}
 
 				is_processing_cards = true;
 				card_timer = CARD_TIME;				
 			}
+		}
+		
+		public function FightMonster(this_monster:Monster):void {
+			while (this_monster._health > 0 && _health > 0) {
+				if (_speed >= this_monster._speed) {
+					trace("hero attacks first")
+					HeroAttacksMonster(this_monster);
+					
+					if (this_monster._health > 0) {
+						MonsterAttacksHero(this_monster);
+					}
+				} else {
+					trace("monster attacks first")
+					MonsterAttacksHero(this_monster);
+					
+					HeroAttacksMonster(this_monster);
+				}
+			}
 			
+		}
+		
+		public function HeroAttacksMonster(this_monster:Monster):void {
+			trace("hero attacked monster");
+			if (_strength > this_monster._armour) {
+				this_monster._health -= (_strength - this_monster._armour);
+				_playState.sndSwordkill.play();
+			}
 			
+			if (this_monster._health <= 0) {
+				_playState.dungeon._hope_level += this_monster._dread + 1;
+			}
+		}
+		
+		public function MonsterAttacksHero(this_monster:Monster):void {
+			trace("monster attacked hero");
+			if (this_monster._strength > _armour) {
+				_health -= (this_monster._strength - _armour);
+				CheckHeroHealth();
+			}
+		}
+		
+		public function CheckHeroHealth():void {
+			if (_health <= 0) {
+				trace("hero dead");
+				_playState.player_alive = false;
+				_playState.leaveDungeon();
+			}
 		}
 
 	}
