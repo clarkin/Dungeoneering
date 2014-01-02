@@ -42,7 +42,10 @@ package
 		public var entry_south:Boolean = false;
 		public var entry_west:Boolean = false;
 		
-		public var highlight_entrance:int;
+		public var highlight_entry_north:Boolean = false;
+		public var highlight_entry_east:Boolean = false;
+		public var highlight_entry_south:Boolean = false;
+		public var highlight_entry_west:Boolean = false;
 		
 		public var type:String = "";
 		public var flashing:Boolean = false;
@@ -167,6 +170,53 @@ package
 			return valid_entrances;
 		}
 		
+		public function validHighlightEntrances():Array {
+			var valid_entrances:Array = new Array();
+			if (this.highlight_entry_north)
+				valid_entrances.push(NORTH);
+			if (this.highlight_entry_east)
+				valid_entrances.push(EAST);
+			if (this.highlight_entry_south)
+				valid_entrances.push(SOUTH);
+			if (this.highlight_entry_west)
+				valid_entrances.push(WEST);
+			return valid_entrances;
+		}
+		
+		public function setHighlightEntrance(direction:int):void {
+			//trace("setting highlight entrance at [" + Math.floor(x / Tile.TILESIZE) + "," + Math.floor(y / Tile.TILESIZE) + "] for direction " + direction + " " + Tile.directionName(direction));
+			switch (direction) {
+				case NORTH:
+					this.highlight_entry_north = true;
+					break;
+				case EAST:
+					this.highlight_entry_east = true;
+					break;
+				case SOUTH:
+					this.highlight_entry_south = true;
+					break;
+				case WEST:
+					this.highlight_entry_west = true;
+					break;
+				default:
+					throw new Error("invalid direction " + direction);
+			}
+		}
+		
+		public function validForHighlight(highlight:Tile):Boolean {
+			var valid_directions:Array = highlight.validHighlightEntrances();
+			//trace("checking tile vs highlight. tile entrances: " + validEntrances() + ". highlight directions: " + valid_directions);
+			
+			for each (var direction:int in valid_directions) {
+				if (checkExit(direction)) {
+					//trace("match found in direction " + direction + " " + Tile.directionName(direction));
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		
 		public function checkExit(direction:int):Boolean {
 			switch (direction) {
 				case NORTH:
@@ -202,11 +252,11 @@ package
 				case NORTH:
 					return "SOUTH";
 				case EAST:
-					return "WEST";
+					return "EAST";
 				case SOUTH:
 					return "NORTH";
 				case WEST:
-					return "EAST";
+					return "WEST";
 				default:
 					throw new Error("invalid direction " + direction);
 			}

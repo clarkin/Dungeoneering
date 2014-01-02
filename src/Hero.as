@@ -27,7 +27,7 @@ package
 		
 		public function Hero(playState:PlayState, X:int = 0, Y:int = 0) 
 		{
-			trace("adding hero at [" + X + "," + Y + "]");
+			//trace("adding hero at [" + X + "," + Y + "]");
 			super(X + tile_offset.x, Y + tile_offset.y);
 			
 			loadGraphic(heroPNG, false, true, 64, 79);

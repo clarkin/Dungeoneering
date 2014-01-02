@@ -40,7 +40,7 @@ package
 		
 		public function GambrinousPreloader()
 		{
-			minDisplayTime = 5;
+			minDisplayTime = 3;
 			
 			stop();
             stage.scaleMode = StageScaleMode.NO_SCALE;

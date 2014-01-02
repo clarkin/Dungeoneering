@@ -218,7 +218,7 @@ package
 		
 		public function checkNewTurn():void {
 			if (turn_phase == PHASE_NEWTURN) {
-				trace("newturn");
+				//trace("newturn");
 				turn_number++;
 				dungeon.IncreaseDread();
 				fillHand(); //todo use PHASE_CARDS_FILLING to animate (and show deck backs)
@@ -292,7 +292,7 @@ package
 									possible_spots = 0;
 									if (card_in_hand._type == "TILE") {
 										for each (var possible_highlight:Tile in highlights.members) {
-											if (possible_highlight.alive && card_in_hand._tile.checkExit(possible_highlight.highlight_entrance)) {
+											if (possible_highlight.alive && card_in_hand._tile.validForHighlight(possible_highlight)) {
 												possible_spots++;
 											}
 										}
@@ -318,7 +318,7 @@ package
 											highlights.setAll("visible", false);
 											highlights.setAll("alpha", 1);
 											for each (var possible_highlight2:Tile in highlights.members) {
-												if (possible_highlight2.alive && placing_card._tile.checkExit(possible_highlight2.highlight_entrance)) {
+												if (possible_highlight2.alive && placing_card._tile.validForHighlight(possible_highlight2)) {
 													possible_highlight2.visible = true;
 												}
 											}											
@@ -349,7 +349,7 @@ package
 						//trace("placing card " + placing_card._title);
 						if (placing_card._type == "TILE") {
 							for each (var highlight:Tile in highlights.members) {
-								if (highlight.alive && highlight.overlapsPoint(clicked_at) && placing_card._tile.checkExit(highlight.highlight_entrance)) {
+								if (highlight.alive && highlight.overlapsPoint(clicked_at) && placing_card._tile.validForHighlight(highlight)) {
 									var new_tile:Tile = new Tile(this, placing_card._tile.type);
 									var justAdded:Tile = addTileAt(new_tile, highlight.x, highlight.y);
 									highlight.kill()
@@ -534,8 +534,9 @@ package
 					var valid_entrances:Array = new Array();
 					for each (var h:Tile in highlights.members) {
 						if (h.alive) {
-							//trace("adding entrances for highlight at [" + Math.floor(h.x / Tile.TILESIZE) + "," + Math.floor(h.y / Tile.TILESIZE) + "]: " + Tile.directionName(h.highlight_entrance) );
-							valid_entrances.push(h.highlight_entrance);
+							//trace("adding entrances for highlight at [" + Math.floor(h.x / Tile.TILESIZE) + "," + Math.floor(h.y / Tile.TILESIZE) + "] with validHighlightEntrances(): " + h.validHighlightEntrances() );
+							valid_entrances = valid_entrances.concat(h.validHighlightEntrances());
+							//trace("after concat valid_entrances: " + valid_entrances);
 						}
 					}
 					var possible_tile:Tile = tileManager.GetRandomTile(valid_entrances);
@@ -642,7 +643,7 @@ package
 			
 			if (tile.type.indexOf("corr") == 0 || tile.type.indexOf("room") == 0) { 
 				for each (var direction:int in tileManager.all_directions) {
-					//trace ("checking " + direction + " for tile of type " + tile.type);
+					//trace ("(in addTileAt) checking " + direction + " for tile of type " + tile.type);
 					if (tile.checkExit(direction)) {
 						//trace("adding new highlight to " + direction);
 						var new_x:int = X;
@@ -656,14 +657,8 @@ package
 						else if (direction == TileManager.WEST)
 							new_x -= Tile.TILESIZE;
 						
-						//don't add highlight if that tile is already filled 
+						//don't add highlight if that tile is already filled with a tile
 						var filled:Boolean = false;
-						for each (var this_highlight:Tile in highlights.members) {
-							if (this_highlight.x == new_x && this_highlight.y == new_y) {
-								filled = true;
-								break;
-							}
-						}
 						for each (var this_tile:Tile in tiles.members) {
 							if (this_tile.x == new_x && this_tile.y == new_y) {
 								//trace("direction " + direction + " filled by " + this_tile.type);
@@ -683,10 +678,23 @@ package
 		}
 		
 		public function addHighlight(X:int, Y:int, from_direction:int):void {
-			var new_highlight:Tile = new Tile(this, "highlight", X, Y);
-			//trace("adding highlight at [" + X + "," + Y + "] with entrance " + from_direction);
-			new_highlight.highlight_entrance = Tile.oppositeDirection(from_direction);
-			highlights.add(new_highlight);
+			//don't add highlight new highlight tile if one already exists for that space
+			var filled:Boolean = false;
+			for each (var this_highlight:Tile in highlights.members) {
+				if (this_highlight.x == X && this_highlight.y == Y) {
+					//trace("setting additional entrance for highlight at [" + Math.floor(X / Tile.TILESIZE) + "," + Math.floor(Y / Tile.TILESIZE) + "] with entrance " + from_direction + " " + Tile.directionName(from_direction));
+					this_highlight.setHighlightEntrance(from_direction);
+					filled = true;
+					break;
+				}
+			}
+			
+			if (!filled) {
+				var new_highlight:Tile = new Tile(this, "highlight", X, Y);
+				//trace("adding highlight at [" + Math.floor(X / Tile.TILESIZE) + "," + Math.floor(Y / Tile.TILESIZE) + "] with entrance " + from_direction + " " + Tile.directionName(from_direction));
+				new_highlight.setHighlightEntrance(Tile.oppositeDirection(from_direction));
+				highlights.add(new_highlight);
+			}
 		}
 		
 		public function leaveDungeon():void {
