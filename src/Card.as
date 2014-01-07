@@ -6,12 +6,15 @@ package
 	public class Card extends FlxGroup
 	{
 		[Embed(source = "../assets/card_backgrounds.png")] private var cardBackgroundsPNG:Class;
+		[Embed(source = "../assets/card_white.png")] private var cardScrollsPNG:Class;
+		[Embed(source = "../assets/card_symbols.png")] private var cardSymbolsPNG:Class;
 		[Embed(source = "../assets/Crushed.ttf", fontFamily = "Crushed", embedAsCFF = "false")] public	var	FONTCrushed:String;
 		
 		public static const CARDS_WEIGHTED:Array = [
 			"MONSTER", "MONSTER", "MONSTER", "TREASURE", "TREASURE"];
 
 		private static const TITLE_OFFSET:FlxPoint = new FlxPoint(1, 1);
+		private static const SCROLLS_OFFSET:FlxPoint = new FlxPoint(16, 109);
 		private static const ICON_TILE_OFFSET:FlxPoint = new FlxPoint(50, 40);
 		private static const ICON_OFFSET:FlxPoint = new FlxPoint(63, 54);
 		private static const DESC_OFFSET:FlxPoint = new FlxPoint(1, 95);
@@ -25,6 +28,7 @@ package
 		public var _desc:String = "";
 		public var _type:String = "";
 		public var _background:FlxSprite;
+		public var _scrolls:FlxSprite;
 		private var _background_frame:int = 0;
 		private var _background_frame_back:int = 0;
 		private var _card_text_color:uint = 0xFF000000;
@@ -65,7 +69,7 @@ package
 						monster = _playState.dungeon.GetRandomMonster();
 					}
 					_background_frame = 0;
-					_background_frame_back = 4;
+					_background_frame_back = 3;
 					_card_text_color = 0xFF812222;
 					_title = monster._type;
 					_desc = monster._desc;
@@ -78,7 +82,7 @@ package
 						treasure = _playState.dungeon.GetRandomTreasure();
 					}
 					_background_frame = 2;
-					_background_frame_back = 6;
+					_background_frame_back = 5;
 					_card_text_color = 0xFF003399;
 					_title = treasure._type;
 					_desc = treasure._desc;
@@ -92,7 +96,7 @@ package
 					}
 					_title = tile.type;
 					_background_frame = 1;
-					_background_frame_back = 5;
+					_background_frame_back = 4;
 					_card_text_color = 0xFF5C3425;
 					_tile = new Tile(_playState, _title, X + ICON_TILE_OFFSET.x, Y + ICON_TILE_OFFSET.y);
 					_tile.scale = new FlxPoint(0.33, 0.33);
@@ -119,6 +123,9 @@ package
 			_background.loadGraphic(cardBackgroundsPNG, false, false, CARD_WIDTH, CARD_HEIGHT);
 			_background.frame = _background_frame;
 			this.add(_background);
+			
+			_scrolls = new FlxSprite(X + SCROLLS_OFFSET.x, Y + SCROLLS_OFFSET.y, cardScrollsPNG);
+			_card_front.add(_scrolls);
 			
 			_titleText = new FlxText(X + TITLE_OFFSET.x, Y + TITLE_OFFSET.y, 148, _title.toUpperCase());
 			_titleText.height = 32;
