@@ -32,7 +32,7 @@ package
 			loadGraphic(charactersPNG, false, true, 24, 24);
 			switch (_type) {
 				case "Runty Goblin":
-					_desc = "A small goblin. Shouldn't be much of a threat for a tough adventurer..";
+					_desc = "A small goblin. Not much of a threat..";
 					addAnimation(_type, [157]);		
 					_dread = 2;
 					_health = 3;
@@ -68,7 +68,7 @@ package
 					_armour = 0;
 					break;
 				case "Filthy Rat":
-					_desc = "Nasty spreader of pestilence, but no threat unless they swarm.";
+					_desc = "Nasty spreader of pestilence, and smelly too";
 					addAnimation(_type, [213]);
 					_dread = 1;
 					_health = 2;
@@ -77,7 +77,7 @@ package
 					_armour = 0;
 					break;
 				case "Skeleton":
-					_desc = "Once a hoplite, always a hoplite.";
+					_desc = "Once a hoplite, always a hoplite";
 					addAnimation(_type, [193]);
 					_dread = 4;
 					_health = 4;

@@ -192,6 +192,9 @@ package
 			addCardFromDeck("TILE");
 			addCardFromDeck("MONSTER");
 			addCardFromDeck("MONSTER");
+			//addCardFromDeck("TREASURE");
+			//addCardFromDeck("TREASURE");
+			//addCardFromDeck("TREASURE");
 						
 			sndCheer = new WavSound(new WAVcheer() as ByteArray);
 			sndCoins = new WavSound(new WAVcoins() as ByteArray);

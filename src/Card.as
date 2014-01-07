@@ -8,17 +8,18 @@ package
 		[Embed(source = "../assets/card_backgrounds.png")] private var cardBackgroundsPNG:Class;
 		[Embed(source = "../assets/card_white.png")] private var cardScrollsPNG:Class;
 		[Embed(source = "../assets/card_symbols.png")] private var cardSymbolsPNG:Class;
-		[Embed(source = "../assets/Crushed.ttf", fontFamily = "Crushed", embedAsCFF = "false")] public	var	FONTCrushed:String;
 		
 		public static const CARDS_WEIGHTED:Array = [
 			"MONSTER", "MONSTER", "MONSTER", "TREASURE", "TREASURE"];
 
-		private static const TITLE_OFFSET:FlxPoint = new FlxPoint(1, 1);
+		private static const TITLE_OFFSET:FlxPoint = new FlxPoint(17, 111);
 		private static const SCROLLS_OFFSET:FlxPoint = new FlxPoint(16, 109);
+		private static const TYPE_OFFSET:FlxPoint = new FlxPoint(4, 6);
+		private static const COST_ICON_OFFSET:FlxPoint = new FlxPoint(108, 6);
+		private static const COST_OFFSET:FlxPoint = new FlxPoint(116, 12);
 		private static const ICON_TILE_OFFSET:FlxPoint = new FlxPoint(50, 40);
 		private static const ICON_OFFSET:FlxPoint = new FlxPoint(63, 54);
-		private static const DESC_OFFSET:FlxPoint = new FlxPoint(1, 95);
-		private static const COST_OFFSET:FlxPoint = new FlxPoint(1, 180);
+		private static const DESC_OFFSET:FlxPoint = new FlxPoint(26, 138);
 		private static const DISCARD_OFFSET:FlxPoint = new FlxPoint(40, 203);
 		private static const CARD_WIDTH:int = 150;
 		private static const CARD_HEIGHT:int = 200;
@@ -28,9 +29,12 @@ package
 		public var _desc:String = "";
 		public var _type:String = "";
 		public var _background:FlxSprite;
+		public var _type_icon:FlxSprite;
 		public var _scrolls:FlxSprite;
+		public var _cost_icon:FlxSprite;
 		private var _background_frame:int = 0;
 		private var _background_frame_back:int = 0;
+		private var _type_icon_frame:int = 0;
 		private var _card_text_color:uint = 0xFF000000;
 		private var _titleText:FlxText;
 		private var _descText:FlxText;
@@ -70,6 +74,7 @@ package
 					}
 					_background_frame = 0;
 					_background_frame_back = 3;
+					_type_icon_frame = 0;
 					_card_text_color = 0xFF812222;
 					_title = monster._type;
 					_desc = monster._desc;
@@ -81,8 +86,9 @@ package
 					if (treasure == null) {
 						treasure = _playState.dungeon.GetRandomTreasure();
 					}
-					_background_frame = 2;
-					_background_frame_back = 5;
+					_background_frame = 1;
+					_background_frame_back = 4;
+					_type_icon_frame = 1;
 					_card_text_color = 0xFF003399;
 					_title = treasure._type;
 					_desc = treasure._desc;
@@ -95,8 +101,9 @@ package
 						tile = _playState.tileManager.GetRandomTile();
 					}
 					_title = tile.type;
-					_background_frame = 1;
-					_background_frame_back = 4;
+					_background_frame = 2;
+					_background_frame_back = 5;
+					_type_icon_frame = 2;
 					_card_text_color = 0xFF5C3425;
 					_tile = new Tile(_playState, _title, X + ICON_TILE_OFFSET.x, Y + ICON_TILE_OFFSET.y);
 					_tile.scale = new FlxPoint(0.33, 0.33);
@@ -124,28 +131,39 @@ package
 			_background.frame = _background_frame;
 			this.add(_background);
 			
+			_card_front.add(_iconHolder);
+			
+			_type_icon = new FlxSprite(X + TYPE_OFFSET.x, Y + TYPE_OFFSET.y);
+			_type_icon.loadGraphic(cardSymbolsPNG, false, false, 38, 50);
+			_type_icon.frame = _type_icon_frame;
+			_card_front.add(_type_icon);
+			
 			_scrolls = new FlxSprite(X + SCROLLS_OFFSET.x, Y + SCROLLS_OFFSET.y, cardScrollsPNG);
 			_card_front.add(_scrolls);
 			
-			_titleText = new FlxText(X + TITLE_OFFSET.x, Y + TITLE_OFFSET.y, 148, _title.toUpperCase());
-			_titleText.height = 32;
-			_titleText.setFormat("Crushed", 26, _card_text_color, "center");
+			_titleText = new FlxText(X + TITLE_OFFSET.x, Y + TITLE_OFFSET.y, 116, _title);
+			_titleText.height = 22;
+			_titleText.setFormat("CabinSketch", 18, _card_text_color, "center");
 			_card_front.add(_titleText);
 			
-			_descText = new FlxText(X + DESC_OFFSET.x, Y + DESC_OFFSET.y, 148, _desc.toUpperCase());
-			_descText.height = 104;
-			_descText.setFormat("Crushed", 18, _card_text_color, "center");
+			_descText = new FlxText(X + DESC_OFFSET.x, Y + DESC_OFFSET.y, 100, _desc);
+			_descText.height = 48;
+			_descText.setFormat("CabinSketch", 12, _card_text_color, "center");
 			_card_front.add(_descText);
 			
-			_costText = new FlxText(X + COST_OFFSET.x, Y + COST_OFFSET.y, 148, _desc.toUpperCase());
-			_costText.height = 24;
-			_costText.setFormat("Crushed", 16, _card_text_color, "left");
-			_costText.text = "Cost: " + _cost;
+			_cost_icon = new FlxSprite(X + COST_ICON_OFFSET.x, Y + COST_ICON_OFFSET.y);
+			_cost_icon.loadGraphic(cardSymbolsPNG, false, false, 38, 50);
+			_cost_icon.frame = 3;
+			_card_front.add(_cost_icon);
+			
+			_costText = new FlxText(X + COST_OFFSET.x, Y + COST_OFFSET.y, 20, _desc.toUpperCase());
+			_costText.height = 18;
+			_costText.setFormat("CabinSketch", 18, _card_text_color, "center");
+			_costText.text = _cost.toString();
 			if (_cost > 0) {
 				_card_front.add(_costText);
 			}
 			
-			_card_front.add(_iconHolder);
 			this.add(_card_front);
 			
 			_hoverEffect = new FlxSprite(X, Y);
@@ -206,6 +224,12 @@ package
 				_descText.y += change_y;
 				_costText.x += change_x;
 				_costText.y += change_y;
+				_scrolls.x += change_x;
+				_scrolls.y += change_y;
+				_cost_icon.x += change_x;
+				_cost_icon.y += change_y;
+				_type_icon.x += change_x;
+				_type_icon.y += change_y;
 				_hoverEffect.x += change_x;
 				_hoverEffect.y += change_y;
 				_discardBtn.x += change_x;
