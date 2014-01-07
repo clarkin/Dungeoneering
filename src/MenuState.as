@@ -9,6 +9,7 @@ package
 		[Embed(source = "../assets/play_button.png")] private var ARTplayBtn:Class;
 		[Embed(source = "../assets/play_button_on.png")] private var ARTplayBtnOn:Class;
 		[Embed(source = "../assets/Crushed.ttf", fontFamily = "Crushed", embedAsCFF = "false")] public	var	FONTCrushed:String;
+		[Embed(source = "../assets/CabinSketch-Bold.otf", fontFamily = "CabinSketch", embedAsCFF = "false")] public	var	FONTCabinSketch:String;
 		
 		public var showResults:Boolean = true;
 		public var survived:Boolean = true;

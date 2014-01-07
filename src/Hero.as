@@ -190,21 +190,19 @@ package
 		public function processNextCard():void {
 			if (current_tile.cards.length == 0) {
 				is_processing_cards = false;
-				_playState.following_hero = false;
-				_playState.turn_phase = PlayState.PHASE_NEWTURN;
+				if (_playState.turn_phase != PlayState.PHASE_HERO_BATTLE) {
+					_playState.following_hero = false;
+					_playState.turn_phase = PlayState.PHASE_NEWTURN;
+				}
 			} else {
 				var next_card:Card = current_tile.cards.pop();
-				trace("processing card " + next_card._title);
+				//trace("processing card " + next_card._title);
 				
 				if (next_card._type == "TREASURE") {
 					_playState.sndCoins.play();
 					_playState.player_treasure += next_card._treasure._hope + 1;
 				} else if (next_card._type == "MONSTER") {
-					var this_monster:Monster = next_card._monster;
-					trace("Stats for monster " + this_monster._type);
-					trace(this_monster.GetStats());
-					
-					FightMonster(this_monster);
+					_playState.StartBattle(next_card._monster);
 				}
 
 				is_processing_cards = true;
@@ -213,22 +211,21 @@ package
 		}
 		
 		public function FightMonster(this_monster:Monster):void {
-			while (this_monster._health > 0 && _health > 0) {
-				if (_speed >= this_monster._speed) {
-					trace("hero attacks first")
-					HeroAttacksMonster(this_monster);
-					
-					if (this_monster._health > 0) {
-						MonsterAttacksHero(this_monster);
-					}
-				} else {
-					trace("monster attacks first")
+			if (_speed >= this_monster._speed) {
+				trace("hero attacks first")
+				HeroAttacksMonster(this_monster);
+				
+				if (this_monster._health > 0) {
 					MonsterAttacksHero(this_monster);
-					
+				}
+			} else {
+				trace("monster attacks first")
+				MonsterAttacksHero(this_monster);
+				
+				if (_health > 0) {
 					HeroAttacksMonster(this_monster);
 				}
 			}
-			
 		}
 		
 		public function HeroAttacksMonster(this_monster:Monster):void {
@@ -257,6 +254,15 @@ package
 				_playState.player_alive = false;
 				_playState.leaveDungeon();
 			}
+		}
+		
+		public function GetStats():String {
+			var stats:String = "";
+			stats += "Health: " + _health + "\n";
+			stats += "Strength: " + _strength + "\n";
+			stats += "Speed: " + _speed + "\n";
+			stats += "Armour: " + _armour + "\n";
+			return stats;
 		}
 
 	}

@@ -13,6 +13,7 @@ package
 	{
 		[Embed(source = "../assets/grid_tile.png")] private var gridTilePNG:Class;
 		[Embed(source = "../assets/UI_frame.png")] private var UIFramePNG:Class;
+		[Embed(source = "../assets/small_paper.png")] private var UIPaperPNG:Class;
 		
 		[Embed(source = "../assets/cheer.wav", mimeType = "application/octet-stream")] private const WAVcheer:Class;
 		[Embed(source = "../assets/coins.wav", mimeType = "application/octet-stream")] private const WAVcoins:Class;
@@ -38,6 +39,7 @@ package
 		public var cardsInHand:FlxGroup = new FlxGroup();
 		public var placingSprite:FlxGroup = new FlxGroup();
 		public var floatingTexts:FlxGroup = new FlxGroup();
+		public var battleScreen:FlxGroup = new FlxGroup();
 		
 		public static const starting_point:Point = new Point(0, 0);
 		
@@ -47,6 +49,7 @@ package
 		public static const PHASE_HERO_THINK:int      = 3;
 		public static const PHASE_HERO_MOVING:int     = 4;
 		public static const PHASE_HERO_CARDS:int      = 5;
+		public static const PHASE_HERO_BATTLE:int     = 6;
 		public var turn_phase:int = PHASE_HERO_THINK;
 		
 		public static const SCROLL_MAXVELOCITY:Number = 800;
@@ -61,9 +64,11 @@ package
 		public static const SHRUNK_HAND_CARD_OFFSET:int = 155;
 		
 		public static const CARDS_PER_TURN:int = 3;
+		public static const BATTLE_TIME:Number = 2;
 		
 		public var placing_card:Card;
 		public var is_placing_card:Boolean = false;
+		public var battling_monster:Monster;
 		
 		public var choosingHighlight:Tile;
 		public var choosingTile:Boolean = false;
@@ -76,6 +81,10 @@ package
 		public var player_cards_label:FlxText;
 		public var endTurnBtn:FlxButtonPlus;
 		public var cancelPlacingBtn:FlxButtonPlus;
+		public var battle_hero_stats:FlxText;
+		public var battle_monster_stats:FlxText;
+		public var battle_hero_sprite:FlxSprite;
+		public var battle_monster_sprite:FlxSprite;
 				
 		public var hero:Hero;
 		public var camera_target:FlxSprite;
@@ -86,6 +95,7 @@ package
 		public var possible_spots:int = 0;
 		public var turn_number:int = 0;
 		public var cards_played:int = 0;
+		public var battle_timer:Number = 0;
 		
 		override public function create():void {
 			//FlxG.visualDebug = true;
@@ -115,6 +125,37 @@ package
 			
 			var UIFrame:FlxSprite = new FlxSprite(0, 0, UIFramePNG);
 			UIFrame.scrollFactor = new FlxPoint(0, 0);
+			
+			var paper_background:FlxSprite = new FlxSprite(200, 200, UIPaperPNG);
+			paper_background.scrollFactor = new FlxPoint(0, 0);
+			battleScreen.add(paper_background);
+			battle_hero_stats = new FlxText(230, 250, 200, "Strength: 2");
+			battle_hero_stats.setFormat("CabinSketch", 20, 0xFF000000, "left");
+			battle_hero_stats.scrollFactor = new FlxPoint(0, 0);
+			battle_hero_stats.angle = 4;
+			battle_hero_stats.antialiasing = true;
+			battleScreen.add(battle_hero_stats);
+			battle_hero_sprite = new FlxSprite(340, 260);
+			battle_hero_sprite.scrollFactor = new FlxPoint(0, 0);
+			battle_hero_sprite.angle = 4;
+			battle_hero_sprite.antialiasing = true;
+			battleScreen.add(battle_hero_sprite);
+			paper_background = new FlxSprite(600, 200, UIPaperPNG);
+			paper_background.scrollFactor = new FlxPoint(0, 0);
+			battleScreen.add(paper_background);
+			battle_monster_stats = new FlxText(630, 250, 200, "Strength: 2");
+			battle_monster_stats.setFormat("CabinSketch", 20, 0xFF000000, "left");
+			battle_monster_stats.scrollFactor = new FlxPoint(0, 0);
+			battle_monster_stats.angle = 4;
+			battle_monster_stats.antialiasing = true;
+			battleScreen.add(battle_monster_stats);
+			battle_monster_sprite = new FlxSprite(740, 260);
+			battle_monster_sprite.scrollFactor = new FlxPoint(0, 0);
+			battle_monster_sprite.angle = 4;
+			battle_monster_sprite.antialiasing = true;
+			battleScreen.add(battle_monster_sprite);
+			battleScreen.visible = false;
+			guiGroup.add(battleScreen);
 			
 			player_stats_label = new FlxText(45, 15, 150, "stats");
 			player_stats_label.setFormat("Crushed", 30, 0xFFEAE2AC, "left", 0xFF6E533F);
@@ -195,12 +236,46 @@ package
 				hero.startTurn();
 			} else if (turn_phase == PHASE_HERO_CARDS && !hero.is_processing_cards) {
 				hero.processNextCard();
+			} else if (turn_phase == PHASE_HERO_BATTLE) {
+				if (battle_timer > 0) {
+					battle_timer -= FlxG.elapsed;
+				} else {
+					battle_timer = BATTLE_TIME;
+					if (battling_monster._health > 0 && hero._health > 0) {
+						hero.FightMonster(battling_monster);
+						battle_hero_stats.text = hero.GetStats();
+						battle_monster_stats.text = battling_monster.GetStats();
+					} else {
+						battling_monster = null;
+						battleScreen.visible = false;
+						following_hero = false;
+						turn_phase = PlayState.PHASE_NEWTURN;
+					}
+				}
+				
 			}
 		}
 				
 		public function heroArrivedAt(tile:Tile):void {
 			//trace("heroArrivedAt, changing to PHASE_HERO_CARDS");
 			turn_phase = PlayState.PHASE_HERO_CARDS;
+		}
+		
+		public function StartBattle(this_monster:Monster):void {
+			turn_phase = PlayState.PHASE_HERO_BATTLE;
+			battle_timer = BATTLE_TIME;
+			battling_monster = this_monster;
+			
+			trace("Stats for monster " + this_monster._type);
+			trace(this_monster.GetStats());
+			
+			battle_hero_stats.text = hero.GetStats();
+			battle_monster_stats.text = this_monster.GetStats();
+			
+			battle_hero_sprite.pixels = hero.framePixels.clone();
+			battle_monster_sprite.pixels = this_monster.framePixels.clone();
+			
+			battleScreen.visible = true;
 		}
 		
 		public function checkPlacing():void {
@@ -227,10 +302,7 @@ package
 		public function updateLabels():void {
 			//TODO only update these if any change instead of every frame
 			player_stats_label.text = "Treasure: " + player_treasure + "\n"
-			                        + "Health: " + hero._health + "\n"
-			                        + "Strength: " + hero._strength + "\n"
-			                        + "Speed: " + hero._speed + "\n"
-			                        + "Armour: " + hero._armour + "\n";
+			                        + hero.GetStats();
 			player_dread_label.text = "Dread: " + dungeon._dread_level;
 			player_hope_label.text = "Hope: " + dungeon._hope_level;
 		}
