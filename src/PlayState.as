@@ -54,7 +54,7 @@ package
 		
 		public static const SCROLL_MAXVELOCITY:Number = 800;
 		public static const SCROLL_ACCELERATION:Number = 800;
-		public static const PLACING_OFFSET:FlxPoint = new FlxPoint(20, 20);
+		public static const PLACING_OFFSET:FlxPoint = new FlxPoint(10, 10);
 		
 		//public static const HAND_START:FlxPoint = new FlxPoint(36, 532);
 		//public static const HAND_CARD_OFFSET:int = 200;
@@ -186,15 +186,19 @@ package
 			
 			highlights.visible = false;
 			placingSprite.visible = true;
-			
+
 			addCardFromDeck("TILE");
 			addCardFromDeck("TILE");
 			addCardFromDeck("TILE");
 			addCardFromDeck("MONSTER");
 			addCardFromDeck("MONSTER");
-			//addCardFromDeck("TREASURE");
-			//addCardFromDeck("TREASURE");
-			//addCardFromDeck("TREASURE");
+			/*
+			addCardFromDeck("TREASURE");
+			addCardFromDeck("TREASURE");
+			addCardFromDeck("TREASURE");
+			addCardFromDeck("TREASURE");
+			addCardFromDeck("TREASURE");
+			*/
 						
 			sndCheer = new WavSound(new WAVcheer() as ByteArray);
 			sndCoins = new WavSound(new WAVcoins() as ByteArray);
@@ -290,7 +294,7 @@ package
 		
 		public function checkNewTurn():void {
 			if (turn_phase == PHASE_NEWTURN) {
-				//trace("newturn");
+				trace("** new turn **");
 				turn_number++;
 				dungeon.IncreaseDread();
 				fillHand(); //todo use PHASE_CARDS_FILLING to animate (and show deck backs)
@@ -384,7 +388,7 @@ package
 										
 										if (placing_card._type == "TILE") {
 											var new_placing_card_tile:Card = new Card(this, -1000, -1000, placing_card._type, placing_card._tile);
-											new_placing_card_tile._tile.alpha = 0.6;
+											//new_placing_card_tile._tile.alpha = 0.6;
 											placingSprite.add(new_placing_card_tile._tile);
 											highlights.visible = true;
 											highlights.setAll("visible", false);
@@ -397,11 +401,11 @@ package
 										} else {
 											if (placing_card._type == "MONSTER") {
 												var new_placing_card_monster:Card = new Card(this, -1000, -1000, placing_card._type, null, placing_card._monster);
-												new_placing_card_monster._monster.alpha = 0.6;
+												//new_placing_card_monster._monster.alpha = 0.6;
 												placingSprite.add(new_placing_card_monster._monster);
 											} else {
 												var new_placing_card_treasure:Card = new Card(this, -1000, -1000, placing_card._type, null, null, placing_card._treasure);
-												new_placing_card_treasure._treasure.alpha = 0.6;
+												//new_placing_card_treasure._treasure.alpha = 0.6;
 												placingSprite.add(new_placing_card_treasure._treasure);
 											}
 											for each (var possible_tile2:Tile in tiles.members) {

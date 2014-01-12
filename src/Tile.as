@@ -53,7 +53,7 @@ package
 		public static const TREASURE_CHANCE:Array = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 3];
 		public static const MONSTER_CHANCE:Array =  [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2];
 		
-		private static const ICON_OFFSET:FlxPoint = new FlxPoint(80, 45);
+		private static const ICON_OFFSET:FlxPoint = new FlxPoint(50, 30);
 		public var cards:Array = new Array();
 		
 		private var _playState:PlayState;

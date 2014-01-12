@@ -4,12 +4,12 @@ package
 	
 	public class Monster extends FlxSprite
 	{
-		[Embed(source = "../assets/ass_char_tran.png")] private var charactersPNG:Class;
+		[Embed(source = "../assets/monster_spritesheet.png")] private var charactersPNG:Class;
 		
 		public static const ICON_OFFSET:FlxPoint = new FlxPoint(10, 5);
 		
 		public static const ALL_MONSTERS:Array = [
-			"Runty Goblin", "Goblin Leader", "Giant Bat", "Chicken", "Filthy Rat", "Skeleton"];
+			"Sorceress", "Skeleton", "Rubber Ducky", "Gray Ooze", "Mummy", "Zombie"];
 		
 		public var _type:String = "";
 		public var _desc:String = "";
@@ -29,61 +29,61 @@ package
 			_playState = playState;
 			_type = type;
 			
-			loadGraphic(charactersPNG, false, true, 24, 24);
+			loadGraphic(charactersPNG, false, true, 80, 80);
 			switch (_type) {
-				case "Runty Goblin":
-					_desc = "A small goblin. Not much of a threat..";
-					addAnimation(_type, [157]);		
-					_dread = 2;
-					_health = 3;
-					_strength = 1;
+				case "Sorceress":
+					_desc = "She's got a wand and she's not afraid to use it";
+					addAnimation(_type, [0]);		
+					_dread = 3;
+					_health = 2;
+					_strength = 5;
 					_speed = 3;
 					_armour = 0;
 					break;
-				case "Goblin Leader":
-					_desc = "Bigger and meaner than the usual runt.";
-					addAnimation(_type, [162]);
-					_dread = 5;
-					_health = 6;
-					_strength = 4;
-					_speed = 2;
+				case "Skeleton":
+					_desc = "Once a hoplite, always a hoplite";
+					addAnimation(_type, [1]);
+					_dread = 2;
+					_health = 2;
+					_strength = 3;
+					_speed = 1;
 					_armour = 2;
 					break;
-				case "Giant Bat":
-					_desc = "Bats aren't scary. Unless they weigh more than you..";
-					addAnimation(_type, [217]);
-					_dread = 3;
-					_health = 1;
-					_strength = 2;
-					_speed = 4;
-					_armour = 0;
-					break;
-				case "Chicken":
-					_desc = "*cluck* *cluck*\nHow did this get in here?";
-					addAnimation(_type, [210]);
+				case "Rubber Ducky":
+					_desc = "OK this doesn't look dangerous AT ALL";
+					addAnimation(_type, [2]);
 					_dread = 0;
 					_health = 1;
 					_strength = 0;
 					_speed = 1;
 					_armour = 0;
 					break;
-				case "Filthy Rat":
-					_desc = "Nasty spreader of pestilence, and smelly too";
-					addAnimation(_type, [213]);
+				case "Gray Ooze":
+					_desc = "Gloopy stains on your armour a guarantee";
+					addAnimation(_type, [3]);
 					_dread = 1;
-					_health = 2;
+					_health = 4;
 					_strength = 1;
 					_speed = 1;
-					_armour = 0;
+					_armour = 1;
 					break;
-				case "Skeleton":
-					_desc = "Once a hoplite, always a hoplite";
-					addAnimation(_type, [193]);
+				case "Mummy":
+					_desc = "Never ever caught without any toilet paper";
+					addAnimation(_type, [4]);
 					_dread = 4;
-					_health = 4;
+					_health = 6;
 					_strength = 3;
 					_speed = 1;
 					_armour = 2;
+					break;
+				case "Zombie":
+					_desc = "*groan* *drool*\nI waaas like you .. once";
+					addAnimation(_type, [5]);
+					_dread = 1;
+					_health = 3;
+					_strength = 2;
+					_speed = 1;
+					_armour = 0;
 					break;
 				default:
 					throw new Error("no matching monster defined for " + _type);

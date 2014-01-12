@@ -12,7 +12,7 @@ package
 		public static const THINKING_TIME:Number = 2;
 		public static const CARD_TIME:Number = 2;
 		
-		public var tile_offset:FlxPoint = new FlxPoint(65, 62);
+		public var tile_offset:FlxPoint = new FlxPoint(60, 60);
 		private var thought_offset:FlxPoint = new FlxPoint(70, -20);
 		
 		public var current_tile:Tile;

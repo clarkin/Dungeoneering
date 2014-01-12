@@ -17,8 +17,8 @@ package
 		private static const TYPE_OFFSET:FlxPoint = new FlxPoint(4, 6);
 		private static const COST_ICON_OFFSET:FlxPoint = new FlxPoint(108, 6);
 		private static const COST_OFFSET:FlxPoint = new FlxPoint(116, 12);
-		private static const ICON_TILE_OFFSET:FlxPoint = new FlxPoint(50, 40);
-		private static const ICON_OFFSET:FlxPoint = new FlxPoint(63, 54);
+		private static const ICON_TILE_OFFSET:FlxPoint = new FlxPoint(37, 37); //new FlxPoint(50, 40);
+		private static const ICON_OFFSET:FlxPoint = new FlxPoint(35, 35);
 		private static const DESC_OFFSET:FlxPoint = new FlxPoint(26, 138);
 		private static const DISCARD_OFFSET:FlxPoint = new FlxPoint(40, 203);
 		private static const CARD_WIDTH:int = 150;
@@ -66,6 +66,7 @@ package
 				trace("WARNING: random card type added");
 			}
 			_type = type;
+			//trace("adding card " + type);
 			
 			switch (_type) {
 				case "MONSTER":
@@ -106,10 +107,11 @@ package
 					_type_icon_frame = 2;
 					_card_text_color = 0xFF5C3425;
 					_tile = new Tile(_playState, _title, X + ICON_TILE_OFFSET.x, Y + ICON_TILE_OFFSET.y);
-					_tile.scale = new FlxPoint(0.33, 0.33);
-					_tile.width = _tile.width * 0.33;
-					_tile.height = _tile.height * 0.33;
-					_tile.offset = new FlxPoint(_tile.width, _tile.height);
+					_tile.antialiasing = true;
+					_tile.scale = new FlxPoint(0.5, 0.5);
+					_tile.width = _tile.width * 0.5;
+					_tile.height = _tile.height * 0.5;
+					_tile.offset = new FlxPoint(_tile.width/2, _tile.height/2);
 					_iconHolder.add(_tile);
 					break;
 				default:
