@@ -187,17 +187,19 @@ package
 			highlights.visible = false;
 			placingSprite.visible = true;
 
+			
 			addCardFromDeck("TILE");
 			addCardFromDeck("TILE");
 			addCardFromDeck("TILE");
 			addCardFromDeck("MONSTER");
 			addCardFromDeck("MONSTER");
+			
 			/*
-			addCardFromDeck("TREASURE");
-			addCardFromDeck("TREASURE");
-			addCardFromDeck("TREASURE");
-			addCardFromDeck("TREASURE");
-			addCardFromDeck("TREASURE");
+			addCardFromDeck("MONSTER");
+			addCardFromDeck("MONSTER");
+			addCardFromDeck("MONSTER");
+			addCardFromDeck("MONSTER");
+			addCardFromDeck("MONSTER");
 			*/
 						
 			sndCheer = new WavSound(new WAVcheer() as ByteArray);
@@ -599,6 +601,7 @@ package
 				type = possible_types[Math.floor(Math.random() * (possible_types.length))]
 			}
 			
+			//trace("  adding card of type " + type);
 			var cards_so_far:int = cardsInHand.countLiving();
 			if (cards_so_far < 0) {
 				cards_so_far = 0;
@@ -620,6 +623,7 @@ package
 					break;
 				case "MONSTER":
 					var possible_monster:Monster = dungeon.GetRandomMonster();
+					//trace("genrating possible monster card " + possible_monster._type);
 					possible_card = new Card(this, card_point.x, card_point.y, "MONSTER", null, possible_monster);
 					break;
 				case "TREASURE":
@@ -633,7 +637,7 @@ package
 			//possible_card.toggleSize();
 			possible_card.setAll("scrollFactor", new FlxPoint(0, 0));
 			cardsInHand.add(possible_card);
-			
+			//trace("finished adding card to hand " + possible_card._title);
 		}
 		
 		public function selectedCard():void {
@@ -714,6 +718,7 @@ package
 		public function addTileAt(tile:Tile, X:int, Y:int):Tile {
 			tile.x = X;
 			tile.y = Y;
+			tile.has_visited = false;
 			tiles.add(tile);
 			//trace("adding tile at " + X + "," + Y);
 			

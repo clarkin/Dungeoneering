@@ -60,8 +60,9 @@ package
 			add(results);
 			add(startButton);
 			
-			if(FlxG.debug)
+			if (FlxG.debug) {
 				FlxG.switchState(new PlayState);
+			}
 		}
 
 		private function startGame():void {

@@ -43,7 +43,7 @@ package
 				case "Skeleton":
 					_desc = "Once a hoplite, always a hoplite";
 					addAnimation(_type, [1]);
-					_dread = 2;
+					_dread = 4;
 					_health = 2;
 					_strength = 3;
 					_speed = 1;
@@ -70,7 +70,7 @@ package
 				case "Mummy":
 					_desc = "Never ever caught without any toilet paper";
 					addAnimation(_type, [4]);
-					_dread = 4;
+					_dread = 5;
 					_health = 6;
 					_strength = 3;
 					_speed = 1;
@@ -79,7 +79,7 @@ package
 				case "Zombie":
 					_desc = "*groan* *drool*\nI waaas like you .. once";
 					addAnimation(_type, [5]);
-					_dread = 1;
+					_dread = 2;
 					_health = 3;
 					_strength = 2;
 					_speed = 1;

@@ -36,6 +36,7 @@ package
 		public static const WEST:int  = 8;
 		
 		public static const FLASH_SPEED:Number = 2;
+		public static const ICON_OFFSET:FlxPoint = new FlxPoint(50, 30);
 		
 		public var entry_north:Boolean = false;
 		public var entry_east:Boolean = false;
@@ -49,11 +50,7 @@ package
 		
 		public var type:String = "";
 		public var flashing:Boolean = false;
-		
-		public static const TREASURE_CHANCE:Array = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 3];
-		public static const MONSTER_CHANCE:Array =  [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2];
-		
-		private static const ICON_OFFSET:FlxPoint = new FlxPoint(50, 30);
+		public var has_visited:Boolean = true;
 		public var cards:Array = new Array();
 		
 		private var _playState:PlayState;
@@ -102,6 +99,8 @@ package
 				if (alpha < 0.5) {
 					alpha = 1;
 				}
+			} else if (!has_visited) {
+				alpha = 0.8;
 			} else {
 				alpha = 1;
 			}

@@ -114,7 +114,7 @@ package
 			var favorite_tile:Tile = valid_tiles[Math.floor(Math.random() * (valid_tiles.length))];
 			for each (var tile:Tile in valid_tiles) {
 				//check if this is preferable to current fave
-				if (tile.countCards("TREASURE") + tile.countCards("WEAPON") > favorite_tile.countCards("TREASURE") + favorite_tile.countCards("WEAPON")) {
+				if (tile.countCards("TREASURE") > favorite_tile.countCards("TREASURE") || (favorite_tile.has_visited && !tile.has_visited)) {
 					favorite_tile = tile;
 				}
 			}
@@ -171,6 +171,7 @@ package
 				FlxVelocity.moveTowardsPoint(this, new FlxPoint(moving_to_tile.x + tile_offset.x, moving_to_tile.y + tile_offset.y), 0, TIME_TO_MOVE_TILES);
 				
 				if (distance_x >= -ARRIVAL_THRESHOLD && distance_x <= ARRIVAL_THRESHOLD && distance_y >= -ARRIVAL_THRESHOLD && distance_y <= ARRIVAL_THRESHOLD) {
+					moving_to_tile.has_visited = true;
 					setCurrentTile(moving_to_tile);
 					is_taking_turn = false;
 					is_moving = false;
