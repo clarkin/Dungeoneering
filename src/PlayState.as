@@ -494,7 +494,7 @@ package
 		}
 		
 		public function checkMouseOverlapsGroup(object:*):FlxObject {
-			if (object == null) {
+			if (object == null || !object.visible) {
 				return null;
 			} else if (object is FlxGroup) {
 				//trace("flxgroup found, recursing. " + object);
@@ -506,8 +506,9 @@ package
 					}
 				}
 			} else {
-				//trace("object found, checking. " + object);
+				//trace("object checking. " + object + " at [" + object.x + "," + object.y + "]");
 				if (object.overlapsPoint(FlxG.mouse.getScreenPosition())) {
+					//trace("object overlaps. " + object + " at [" + object.x + "," + object.y + "]");
 					return object;
 				}
 			}
