@@ -104,7 +104,7 @@ package
 				} else if (moving_to_tile.x > current_tile.x) {
 					facing = RIGHT;
 				}
-				thinkSomething();
+				thinkSomething("movement");
 				_playState.turn_phase = PlayState.PHASE_HERO_THINK;
 			}
 		}
@@ -121,39 +121,51 @@ package
 			return favorite_tile;
 		}
 		
-		private function thinkSomething():void {
+		public function thinkSomething(thought_type:String):void {
 			var thought:String = "";
-			if (moving_to_tile.cards.length > 0) {
-				var top_card:Card = moving_to_tile.cards[moving_to_tile.cards.length - 1];
-				switch (top_card._type) {
-					case "MONSTER":
-						var monster_thoughts:Array = ["Grrr! I hate MONSTERs!!", "That MONSTER is going to get it",
-							"Yeah, I THINK I can take it..", "Oh god not a MONSTER", "Well lets get this over with",
-							"BANZAAAAAIIIIII", "MONSTERs drop loot, right?"];
-						thought = monster_thoughts[Math.floor(Math.random() * (monster_thoughts.length))];
-						thought = thought.replace(/MONSTER/g, top_card._title);
-						break;
-					case "TREASURE":
-						var treasure_thoughts:Array = ["SHINY", "That looks a bit like a TREASURE",
-							"Is that.. TREASURE!", "THIS is why I'm a dungeoneer!", "Om nyom nyom",
-							"Ooh gimme", "TREASURE? TREASURE!", "Cha-CHING!"];
-						thought = treasure_thoughts[Math.floor(Math.random() * (treasure_thoughts.length))];
-						thought = thought.replace(/TREASURE/g, top_card._title);
-						break;
-					case "WEAPON":
-						var weapon_thoughts:Array = ["Oh yeah I need me one of those", "That looks a bit like a WEAPON",
-							"Is that.. WEAPON!", "Another WEAPON? Jeez", "That looks useful..", "Yeah! #LOOT",
-							"Hm, is that an upgrade?", "That will look nice on my mantelpiece"];
-						thought = weapon_thoughts[Math.floor(Math.random() * (weapon_thoughts.length))];
-						thought = thought.replace(/WEAPON/g, top_card._title);
-						break;
+			
+			if (thought_type == "movement") {
+				if (moving_to_tile.cards.length > 0) {
+					var top_card:Card = moving_to_tile.cards[moving_to_tile.cards.length - 1];
+					switch (top_card._type) {
+						case "MONSTER":
+							var monster_thoughts:Array = ["Grrr! I hate MONSTERs!!", "That MONSTER is going to get it",
+								"Yeah, I THINK I can take it..", "Oh god not a MONSTER", "Well lets get this over with",
+								"BANZAAAAAIIIIII", "MONSTERs drop loot, right?"];
+							thought = monster_thoughts[Math.floor(Math.random() * (monster_thoughts.length))];
+							thought = thought.replace(/MONSTER/g, top_card._title);
+							break;
+						case "TREASURE":
+							var treasure_thoughts:Array = ["SHINY", "That looks a bit like a TREASURE",
+								"Is that.. TREASURE!", "THIS is why I'm a dungeoneer!", "Om nyom nyom",
+								"Ooh gimme", "TREASURE? TREASURE!", "Cha-CHING!"];
+							thought = treasure_thoughts[Math.floor(Math.random() * (treasure_thoughts.length))];
+							thought = thought.replace(/TREASURE/g, top_card._title);
+							break;
+						case "WEAPON":
+							var weapon_thoughts:Array = ["Oh yeah I need me one of those", "That looks a bit like a WEAPON",
+								"Is that.. WEAPON!", "Another WEAPON? Jeez", "That looks useful..", "Yeah! #LOOT",
+								"Hm, is that an upgrade?", "That will look nice on my mantelpiece"];
+							thought = weapon_thoughts[Math.floor(Math.random() * (weapon_thoughts.length))];
+							thought = thought.replace(/WEAPON/g, top_card._title);
+							break;
+					}
+					
+				} else {
+					var random_thoughts:Array = ["On we go..", "Hm.. was I already here?", "A dungeoneer's life is never dull..",
+						"I think I'm lost #DUNGEONEERING", "Eyes closed this time.. #YOLO", "This looks vaguely familiar", 
+						"The Guild isn't paying me enough for this", "Maybe over here", "I hope this place has a tavern"];
+					thought = random_thoughts[Math.floor(Math.random() * (random_thoughts.length))];
 				}
-				
-			} else {
-				var random_thoughts:Array = ["On we go..", "Hm.. was I already here?", "A dungeoneer's life is never dull..",
-					"I think I'm lost #DUNGEONEERING", "Eyes closed this time.. #YOLO", "This looks vaguely familiar", 
-					"The Guild isn't paying me enough for this", "Maybe over here", "I hope this place has a tavern"];
-				thought = random_thoughts[Math.floor(Math.random() * (random_thoughts.length))];
+			} else if (thought_type == "idle") {
+				var idle_thoughts:Array = ["Come on! Do SOMETHING!", "So.. bored", "Why can't I move now? Oh yeah you're playing those cards..",
+					"...", "zzzzZZZ", "*sigh*", "How about finding me something easy.. like a rubber ducky?", 
+					"I wish I was back at my nice warm room in the Guild", "*YAWN*", "Are you AFK?? Don't leave me here!"];
+				thought = idle_thoughts[Math.floor(Math.random() * (idle_thoughts.length))];
+			} else if (thought_type == "poked") {
+				var poked_thoughts:Array = ["Ow - that hurt!", "Please stop clicking me .. there", "What if I were to poke YOU instead!?",
+					"Stop that", "The rulebook clearly says that clicking me doesn't achieve anything", "Cut it out!"];
+				thought = poked_thoughts[Math.floor(Math.random() * (poked_thoughts.length))];
 			}
 			
 			_playState.floatingTexts.add(new FloatingText(x + thought_offset.x, y + thought_offset.y, thought));

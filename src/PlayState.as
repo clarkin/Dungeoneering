@@ -65,6 +65,7 @@ package
 		
 		public static const CARDS_PER_TURN:int = 3;
 		public static const BATTLE_TIME:Number = 2;
+		public static const IDLE_TIME:Number = 10;
 		
 		public var placing_card:Card;
 		public var is_placing_card:Boolean = false;
@@ -96,6 +97,7 @@ package
 		public var turn_number:int = 0;
 		public var cards_played:int = 0;
 		public var battle_timer:Number = 0;
+		public var idle_timer:Number = 0;
 		
 		override public function create():void {
 			//FlxG.visualDebug = true;
@@ -175,7 +177,7 @@ package
 			player_cards_label.scrollFactor = new FlxPoint(0, 0);
 			player_cards_label.visible = false;
 			guiGroup.add(player_cards_label);
-			cancelPlacingBtn = new FlxButtonPlus(893, 474, cancelPlacement, null, "Cancel", 92, 38);
+			cancelPlacingBtn = new FlxButtonPlus(893, 474, cancelPlacement, null, "Cancel", 70, 30);
 			cancelPlacingBtn.textNormal.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "center", 0xFF6E533F);
 			cancelPlacingBtn.textHighlight.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "center", 0xFF6E533F);
 			cancelPlacingBtn.borderColor = 0xFFEAE2AC;
@@ -262,12 +264,20 @@ package
 					}
 				}
 				
+			} else if (turn_phase == PHASE_CARDS_PLAY) {
+				if (idle_timer > 0) {
+					idle_timer -= FlxG.elapsed;
+				} else {
+					idle_timer = IDLE_TIME;
+					hero.thinkSomething("idle");
+				}
 			}
 		}
 				
 		public function heroArrivedAt(tile:Tile):void {
 			//trace("heroArrivedAt, changing to PHASE_HERO_CARDS");
 			turn_phase = PlayState.PHASE_HERO_CARDS;
+			idle_timer = IDLE_TIME;
 		}
 		
 		public function StartBattle(this_monster:Monster):void {
@@ -318,12 +328,17 @@ package
 		
 		public function checkMouseClick():void {
 			if (FlxG.mouse.justPressed()) {
+				idle_timer = IDLE_TIME;
 				if (checkMouseOverlapsGroup(guiGroup) == null && checkMouseOverlapsGroup(cardsInHand) == null) {
 					if (click_start == null) {
 						click_start = FlxG.mouse.getScreenPosition();
 						//trace("marking click start, waiting for movement from: [" + click_start.x + "," + click_start.y + "]");
 					}
 				} 
+				
+				if (hero.overlapsPoint(FlxG.mouse.getWorldPosition())) {
+					hero.thinkSomething("poked");
+				}
 			}
 			
 			if (click_start != null && !is_dragging) {
@@ -507,6 +522,7 @@ package
 				}
 			} else {
 				//trace("object checking. " + object + " at [" + object.x + "," + object.y + "]");
+				//trace("mouse at [" + FlxG.mouse.getScreenPosition().x + "," + FlxG.mouse.getScreenPosition().y + "]");
 				if (object.overlapsPoint(FlxG.mouse.getScreenPosition())) {
 					//trace("object overlaps. " + object + " at [" + object.x + "," + object.y + "]");
 					return object;
