@@ -9,11 +9,11 @@ package
 		
 		public static const TIME_TO_MOVE_TILES:int = 1000;
 		public static const ARRIVAL_THRESHOLD:int = 4;
-		public static const THINKING_TIME:Number = 2;
+		public static const THINKING_TIME:Number = 3;
 		public static const CARD_TIME:Number = 2;
 		
 		public var tile_offset:FlxPoint = new FlxPoint(60, 60);
-		private var thought_offset:FlxPoint = new FlxPoint(70, -20);
+		private var thought_offset:FlxPoint = new FlxPoint(29, -110);
 		
 		public var current_tile:Tile;
 		public var moving_to_tile:Tile;
