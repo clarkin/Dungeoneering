@@ -14,7 +14,7 @@ package
 		public function FloatingText(X:Number, Y:Number, Text:String=null) {
 			super(X, Y, 400, Text)
 			
-			setFormat("Crushed", 36, COLOR_THINKING, "left", COLOR_THINKING_SHADOW);
+			setFormat("LemonsCanFly", 40, COLOR_THINKING, "left", COLOR_THINKING_SHADOW);
 			alpha = 1;
 			_lifetime = FADETIME;
 		}

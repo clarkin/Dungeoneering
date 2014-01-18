@@ -8,8 +8,7 @@ package
 		[Embed(source = "../assets/title_screen.jpg")] private var ARTtitleScreen:Class;
 		[Embed(source = "../assets/play_button.png")] private var ARTplayBtn:Class;
 		[Embed(source = "../assets/play_button_on.png")] private var ARTplayBtnOn:Class;
-		[Embed(source = "../assets/Crushed.ttf", fontFamily = "Crushed", embedAsCFF = "false")] public	var	FONTCrushed:String;
-		[Embed(source = "../assets/CabinSketch-Bold.otf", fontFamily = "CabinSketch", embedAsCFF = "false")] public	var	FONTCabinSketch:String;
+		[Embed(source = "../assets/Lemons Can Fly.ttf", fontFamily = "LemonsCanFly", embedAsCFF = "false")] public var	FONTLemonsCanFly:String;
 		
 		public var showResults:Boolean = true;
 		public var survived:Boolean = true;
@@ -42,11 +41,11 @@ package
 			var titleScreen:FlxSprite = new FlxSprite(0, 0, ARTtitleScreen);
 			
 			var title:FlxText = new FlxText(0, 350, 1024, titleString);
-			title.setFormat("Crushed", 36, 0xFF6E533F, "center", 0xFFEAE2AC);
+			title.setFormat("LemonsCanFly", 36, 0xFF6E533F, "center", 0xFFEAE2AC);
 			title.visible = false;
 						
 			var results:FlxText = new FlxText(0, 390, 1024, resultsString);
-			results.setFormat("Crushed", 24, 0xFF6E533F, "center", 0xFFEAE2AC);	
+			results.setFormat("LemonsCanFly", 24, 0xFF6E533F, "center", 0xFFEAE2AC);	
 			results.visible = false;
 			
 			var startButton:FlxButtonPlus = new FlxButtonPlus(400, 650, startGame, null, "", 150, 62);

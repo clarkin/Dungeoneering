@@ -130,7 +130,7 @@ package
 			paper_background.scrollFactor = new FlxPoint(0, 0);
 			battleScreen.add(paper_background);
 			battle_hero_stats = new FlxText(230, 250, 200, "Strength: 2");
-			battle_hero_stats.setFormat("CabinSketch", 20, 0xFF000000, "left");
+			battle_hero_stats.setFormat("LemonsCanFly", 28, 0xFF000000, "left");
 			battle_hero_stats.scrollFactor = new FlxPoint(0, 0);
 			battle_hero_stats.angle = 4;
 			battle_hero_stats.antialiasing = true;
@@ -144,7 +144,7 @@ package
 			paper_background.scrollFactor = new FlxPoint(0, 0);
 			battleScreen.add(paper_background);
 			battle_monster_stats = new FlxText(630, 250, 200, "Strength: 2");
-			battle_monster_stats.setFormat("CabinSketch", 20, 0xFF000000, "left");
+			battle_monster_stats.setFormat("LemonsCanFly", 28, 0xFF000000, "left");
 			battle_monster_stats.scrollFactor = new FlxPoint(0, 0);
 			battle_monster_stats.angle = 4;
 			battle_monster_stats.antialiasing = true;
@@ -158,26 +158,26 @@ package
 			guiGroup.add(battleScreen);
 			
 			player_stats_label = new FlxText(45, 15, 150, "stats");
-			player_stats_label.setFormat("Crushed", 30, 0xFFEAE2AC, "left", 0xFF6E533F);
+			player_stats_label.setFormat("LemonsCanFly", 40, 0xFFEAE2AC, "left", 0xFF6E533F);
 			player_stats_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_stats_label);
 			player_dread_label = new FlxText(FlxG.width - 150 - 45, 15, 150, "Dread: 0");
-			player_dread_label.setFormat("Crushed", 30, 0xFFFF8A8A, "right", 0xFFA82C2C);
+			player_dread_label.setFormat("LemonsCanFly", 40, 0xFFFF8A8A, "right", 0xFFA82C2C);
 			player_dread_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_dread_label);
 			player_hope_label = new FlxText(FlxG.width - 150 - 165, 15, 150, "Hope: 0");
-			player_hope_label.setFormat("Crushed", 30, 0xFF8DCDF0, "right", 0xFF025E8F);
+			player_hope_label.setFormat("LemonsCanFly", 40, 0xFF8DCDF0, "right", 0xFF025E8F);
 			player_hope_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_hope_label);
 			
 			player_cards_label = new FlxText(36, 489, 350, "Play or discard up to 3 more cards");
-			player_cards_label.setFormat("Crushed", 24, 0xFFEAE2AC, "left", 0xFF6E533F);
+			player_cards_label.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "left", 0xFF6E533F);
 			player_cards_label.scrollFactor = new FlxPoint(0, 0);
 			player_cards_label.visible = false;
 			guiGroup.add(player_cards_label);
 			cancelPlacingBtn = new FlxButtonPlus(893, 474, cancelPlacement, null, "Cancel", 92, 38);
-			cancelPlacingBtn.textNormal.setFormat("Crushed", 24, 0xFFEAE2AC, "center", 0xFF6E533F);
-			cancelPlacingBtn.textHighlight.setFormat("Crushed", 24, 0xFFEAE2AC, "center", 0xFF6E533F);
+			cancelPlacingBtn.textNormal.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "center", 0xFF6E533F);
+			cancelPlacingBtn.textHighlight.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "center", 0xFF6E533F);
 			cancelPlacingBtn.borderColor = 0xFFEAE2AC;
 			cancelPlacingBtn.updateInactiveButtonColors([0xFFA38C69, 0xFFA38C69]);
 			cancelPlacingBtn.updateActiveButtonColors([0xFF6E533F, 0xFF6E533F]);   

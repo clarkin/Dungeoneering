@@ -145,12 +145,12 @@ package
 			
 			_titleText = new FlxText(X + TITLE_OFFSET.x, Y + TITLE_OFFSET.y, 116, _title);
 			_titleText.height = 22;
-			_titleText.setFormat("CabinSketch", 18, _card_text_color, "center");
+			_titleText.setFormat("LemonsCanFly", 30, _card_text_color, "center");
 			_card_front.add(_titleText);
 			
 			_descText = new FlxText(X + DESC_OFFSET.x, Y + DESC_OFFSET.y, 100, _desc);
 			_descText.height = 48;
-			_descText.setFormat("CabinSketch", 12, _card_text_color, "center");
+			_descText.setFormat("LemonsCanFly", 20, _card_text_color, "center");
 			_card_front.add(_descText);
 			
 			_cost_icon = new FlxSprite(X + COST_ICON_OFFSET.x, Y + COST_ICON_OFFSET.y);
@@ -160,7 +160,7 @@ package
 			
 			_costText = new FlxText(X + COST_OFFSET.x, Y + COST_OFFSET.y, 20, _desc.toUpperCase());
 			_costText.height = 18;
-			_costText.setFormat("CabinSketch", 18, _card_text_color, "center");
+			_costText.setFormat("LemonsCanFly", 30, _card_text_color, "center");
 			_costText.text = _cost.toString();
 			if (_cost > 0) {
 				_card_front.add(_costText);
@@ -175,8 +175,8 @@ package
 			this.add(_hoverEffect);
 			
 			_discardBtn = new FlxButtonPlus(X + DISCARD_OFFSET.x, Y + DISCARD_OFFSET.y, discardThisCard, null, "Discard", 70, 30);
-			_discardBtn.textNormal.setFormat("Crushed", 18, 0xFFEAE2AC, "center", 0xFF6E533F);
-			_discardBtn.textHighlight.setFormat("Crushed", 18, 0xFFEAE2AC, "center", 0xFF6E533F);
+			_discardBtn.textNormal.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "center", 0xFF6E533F);
+			_discardBtn.textHighlight.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "center", 0xFF6E533F);
 			_discardBtn.borderColor = 0xFFEAE2AC;
 			_discardBtn.updateInactiveButtonColors([0xFFA38C69, 0xFFA38C69]);
 			_discardBtn.updateActiveButtonColors([0xFF6E533F, 0xFF6E533F]);   
