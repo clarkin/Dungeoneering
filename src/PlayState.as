@@ -217,9 +217,9 @@ package
 			add(grid_backdrop);
 			add(tiles);
 			add(camera_target);
-			add(hero);
 			add(highlights);
 			add(floatingTexts);
+			add(hero);
 			add(UIFrame);
 			add(guiGroup);
 			add(cardsInHand);
