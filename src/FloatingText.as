@@ -1,6 +1,8 @@
 package  
 {
 	import org.flixel.*;
+	import com.greensock.*;
+	import com.greensock.easing.*;
 	
 	public class FloatingText extends FlxSprite
 	{
@@ -16,6 +18,7 @@ package
 		public static const FADE_IN_ANGLE:Number = -50;
 		
 		public var _lifetime:Number = 0;
+		public var _status:String = "FADING_IN";
 		
 		public function FloatingText(X:Number, Y:Number, Text:String = null) {
 			super(X, Y);
@@ -39,23 +42,23 @@ package
 			scale = new FlxPoint(0.0, 0.0);
 			
 			_lifetime = FADE_IN_TIME + DISPLAY_TIME + FADE_OUT_TIME;
+			
+			TweenLite.to(this, FADE_IN_TIME, { angle:ANGLE, ease:Back.easeOut.config(1) } );
+			TweenLite.to(this, FADE_IN_TIME, { alpha:1.0, ease:Back.easeOut.config(1) } );
+			TweenLite.to(this, FADE_IN_TIME, { bothScale:1.0, ease:Back.easeOut.config(1) } );
 		}
 		
 		override public function update():void {	
-			var tween:Number = 0;
 			_lifetime -= FlxG.elapsed;
-			if (_lifetime <= FADE_OUT_TIME) {
-				tween = _lifetime / FADE_OUT_TIME;
-				alpha = tween;
-				angle = (1 - tween) * FADE_IN_ANGLE + ANGLE;
-				scale.x = scale.y = tween;
-			} else if (_lifetime <= FADE_OUT_TIME + DISPLAY_TIME) {
-				
+			if (_lifetime <= FADE_OUT_TIME && _status == "SHOWING") {
+				_status = "FADING_OUT";
+				TweenLite.to(this, FADE_OUT_TIME, { angle:FADE_IN_ANGLE + ANGLE, ease:Back.easeIn.config(1) } );
+				TweenLite.to(this, FADE_OUT_TIME, { alpha:0.0, ease:Back.easeIn.config(1) } );
+				TweenLite.to(this, FADE_OUT_TIME, { bothScale:0.0, ease:Back.easeIn.config(1) } );
+			} else if (_lifetime <= FADE_OUT_TIME + DISPLAY_TIME && _status == "FADING_IN") {
+				_status = "SHOWING";
 			} else if (_lifetime <= FADE_OUT_TIME + DISPLAY_TIME + FADE_IN_TIME) {
-				tween = 1 - (_lifetime - FADE_OUT_TIME - DISPLAY_TIME) / FADE_IN_TIME;
-				alpha = tween;
-				angle = (1 - tween) * FADE_IN_ANGLE + ANGLE;
-				scale.x = scale.y = tween;
+				
 			}
 			
 			if (_lifetime <= 0) {
@@ -63,6 +66,14 @@ package
 			}
 			
 			super.update();
+		}
+		
+		public function get bothScale():Number {
+			return scale.x;
+		}
+		
+		public function set bothScale(newScale:Number):void {
+			scale.x = scale.y = newScale;
 		}
 	}
 
