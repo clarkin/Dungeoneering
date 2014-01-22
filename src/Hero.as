@@ -109,6 +109,7 @@ package
 				}
 				thinkSomething("movement");
 				_playState.turn_phase = PlayState.PHASE_HERO_THINK;
+				TweenMax.to(this, THINKING_TIME / 20, {x:x+1, y:y-2, repeat:5, yoyo:true});
 			}
 		}
 		
