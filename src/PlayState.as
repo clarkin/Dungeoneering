@@ -58,8 +58,6 @@ package
 		public static const SCROLL_ACCELERATION:Number = 800;
 		public static const PLACING_OFFSET:FlxPoint = new FlxPoint(10, 10);
 		
-		//public static const HAND_START:FlxPoint = new FlxPoint(36, 532);
-		//public static const HAND_CARD_OFFSET:int = 200;
 		public static const HAND_START:FlxPoint = new FlxPoint(235, 532);
 		public static const HAND_CARD_OFFSET:int = 155;
 		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(235, 682);
@@ -170,7 +168,7 @@ package
 			player_dread_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_dread_label);
 			player_hope_label = new FlxText(FlxG.width - 150 - 165, 15, 150, "Hope: 0");
-			player_hope_label.setFormat("LemonsCanFly", 40, 0xFF8DCDF0, "right", 0xFF025E8F);
+			player_hope_label.setFormat("LemonsCanFly", 40, 0xFFEAE2AC, "right", 0xFF999966);
 			player_hope_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(player_hope_label);
 			
@@ -574,8 +572,7 @@ package
 			var cards_so_far:int = 0;
 			for each (var card_in_hand:Card in cardsInHand.members) {
 				if (card_in_hand != null && card_in_hand.alive) {
-					card_in_hand._moving_to = new FlxPoint(HAND_START.x + cards_so_far * HAND_CARD_OFFSET, HAND_START.y);
-					card_in_hand._is_moving = true;
+					card_in_hand.MoveTo(new FlxPoint(HAND_START.x + cards_so_far * HAND_CARD_OFFSET, HAND_START.y), -20.0 + cards_so_far * 10);
 					//trace("moving card " + card_in_hand._title + " from x: " + card_in_hand._background.x + " to x: " + card_in_hand._moving_to.x + " for card slot " + cards_so_far);
 					//TODO occasional sorting issue
 					cards_so_far++;

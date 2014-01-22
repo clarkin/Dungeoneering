@@ -2,6 +2,8 @@ package
 {
 	import org.flixel.*;
 	import org.flixel.plugin.photonstorm.*;
+	import com.greensock.*;
+	import com.greensock.easing.*;
 	
 	public class Card extends FlxGroup
 	{
@@ -23,7 +25,7 @@ package
 		private static const DISCARD_OFFSET:FlxPoint = new FlxPoint(40, 203);
 		private static const CARD_WIDTH:int = 150;
 		private static const CARD_HEIGHT:int = 200;
-		private static const SPEED:int = 5;
+		public static const TIME_TO_MOVE:Number = 1.0;
 		
 		public var _title:String = "";
 		public var _desc:String = "";
@@ -76,7 +78,7 @@ package
 					_background_frame = 0;
 					_background_frame_back = 3;
 					_type_icon_frame = 0;
-					_card_text_color = 0xFF812222;
+					_card_text_color = 0xFF333333;
 					_title = monster._type;
 					_desc = monster._desc;
 					_monster = new Monster(_playState, _title, X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
@@ -90,7 +92,7 @@ package
 					_background_frame = 1;
 					_background_frame_back = 4;
 					_type_icon_frame = 1;
-					_card_text_color = 0xFF003399;
+					_card_text_color = 0xFF333333;
 					_title = treasure._type;
 					_desc = treasure._desc;
 					_treasure = new Treasure(_playState, _title, X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
@@ -105,7 +107,7 @@ package
 					_background_frame = 2;
 					_background_frame_back = 5;
 					_type_icon_frame = 2;
-					_card_text_color = 0xFF5C3425;
+					_card_text_color = 0xFF333333;
 					_tile = new Tile(_playState, _title, X + ICON_TILE_OFFSET.x, Y + ICON_TILE_OFFSET.y);
 					_tile.antialiasing = true;
 					_tile.scale = new FlxPoint(0.5, 0.5);
@@ -191,56 +193,92 @@ package
 			//trace("currently at : [" + x + "," + y + "], moving to [" + moving_to_tile.x + "," + moving_to_tile.y + "]");
 			
 			
-			checkMovement();
+			//checkMovement();
 			checkHover();
 			
 			super.update();
 		}
 		
-		private function checkMovement():void {
-			if (_is_moving) {
-				var distance_x:int = _moving_to.x - _background.x;
-				var distance_y:int = _moving_to.y - _background.y;
-				
-				var change_x:Number = FlxG.elapsed * (SPEED * distance_x);
-				var change_y:Number = FlxG.elapsed * (SPEED * distance_y);
-				//trace("change_x: " + change_x);
-				
-				_background.x += change_x;
-				_background.y += change_y;
-				if (_tile != null) {
-					_tile.x += change_x;
-					_tile.y += change_y;
-				}
-				if (_monster != null) {
-					_monster.x += change_x;
-					_monster.y += change_y;
-				}
-				if (_treasure != null) {
-					_treasure.x += change_x;
-					_treasure.y += change_y;
-				}
-				_titleText.x += change_x;
-				_titleText.y += change_y;
-				_descText.x += change_x;
-				_descText.y += change_y;
-				_costText.x += change_x;
-				_costText.y += change_y;
-				_scrolls.x += change_x;
-				_scrolls.y += change_y;
-				_cost_icon.x += change_x;
-				_cost_icon.y += change_y;
-				_type_icon.x += change_x;
-				_type_icon.y += change_y;
-				_hoverEffect.x += change_x;
-				_hoverEffect.y += change_y;
-				_discardBtn.x += change_x;
-				_discardBtn.y += change_y;
-				
-				if (distance_x >= -1 && distance_x <= 1 && distance_y >= -1 && distance_y <= 1) {
-					_is_moving = false;
-				}
+		public function MoveTo(move_to_point:FlxPoint, new_angle:Number):void {
+			TweenLite.to(this, Card.TIME_TO_MOVE, { x:move_to_point.x, y:move_to_point.y, ease:Back.easeInOut.config(0.8) } );
+			//card_in_hand._is_moving = true;
+		}
+		
+		public function get x():Number {
+			return _background.x;
+		}
+		
+		public function set x(new_x:Number):void {
+			var change_x:Number = new_x - x;
+			_background.x += change_x;
+			if (_tile != null) {
+				_tile.x += change_x;
 			}
+			if (_monster != null) {
+				_monster.x += change_x;
+			}
+			if (_treasure != null) {
+				_treasure.x += change_x;
+			}
+			_titleText.x += change_x;
+			_descText.x += change_x;
+			_costText.x += change_x;
+			_scrolls.x += change_x;
+			_cost_icon.x += change_x;
+			_type_icon.x += change_x;
+			_hoverEffect.x += change_x;
+			_discardBtn.x += change_x;
+		}
+		
+		public function get y():Number {
+			return _background.y;
+		}
+		
+		public function set y(new_y:Number):void {
+			var change_y:Number = new_y - y;
+			_background.y += change_y;
+			if (_tile != null) {
+				_tile.y += change_y;
+			}
+			if (_monster != null) {
+				_monster.y += change_y;
+			}
+			if (_treasure != null) {
+				_treasure.y += change_y;
+			}
+			_titleText.y += change_y;
+			_descText.y += change_y;
+			_costText.y += change_y;
+			_scrolls.y += change_y;
+			_cost_icon.y += change_y;
+			_type_icon.y += change_y;
+			_hoverEffect.y += change_y;
+			_discardBtn.y += change_y;
+		}
+		
+		public function get angle():Number {
+			return _background.angle;
+		}
+		
+		public function set angle(new_angle:Number):void {
+			_background.angle = new_angle;
+			if (_tile != null) {
+				_tile.angle = new_angle;
+			}
+			if (_monster != null) {
+				_monster.angle = new_angle;
+			}
+			if (_treasure != null) {
+				_treasure.angle = new_angle;
+			}
+			_titleText.angle = new_angle;
+			_descText.angle = new_angle;
+			_costText.angle = new_angle;
+			_scrolls.angle = new_angle;
+			_cost_icon.angle = new_angle;
+			_type_icon.angle = new_angle;
+			_hoverEffect.angle = new_angle;
+			//_discardBtn.angle = new_angle;
 		}
 		
 		public function checkHover():void {
