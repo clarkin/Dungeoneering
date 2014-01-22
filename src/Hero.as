@@ -2,13 +2,15 @@ package
 {
 	import org.flixel.*;
 	import org.flixel.plugin.photonstorm.*;
+	import com.greensock.*;
+	import com.greensock.easing.*;
 	
 	public class Hero extends FlxSprite
 	{
 		[Embed(source = "../assets/hero_sprite.png")] private var heroPNG:Class;
 		
-		public static const TIME_TO_MOVE_TILES:int = 1000;
-		public static const ARRIVAL_THRESHOLD:int = 4;
+		public static const TIME_TO_MOVE_TILES:Number = 1.0;
+		public static const ARRIVAL_THRESHOLD:int = 0;
 		public static const THINKING_TIME:Number = 3;
 		public static const CARD_TIME:Number = 2;
 		
@@ -62,6 +64,7 @@ package
 							_playState.sndFootsteps.play();
 						}
 						is_moving = true;
+						TweenLite.to(this, TIME_TO_MOVE_TILES, { x:moving_to_tile.x + tile_offset.x - origin.x, y:moving_to_tile.y + tile_offset.y - origin.y, ease:Back.easeInOut.config(0.8) } );
 					}
 					checkMovement();
 				}
@@ -177,17 +180,15 @@ package
 				var distance_x:int = moving_to_tile.x + tile_offset.x - (x + origin.x);
 				var distance_y:int = moving_to_tile.y + tile_offset.y - (y + origin.y);
 				
-				//trace("hero at [" + this.x + "," + this.y + "], moving_to_tile at [" + (moving_to_tile.x + tile_offset_x) + "," + (moving_to_tile.y + tile_offset_y) + "]");
+				//trace("hero at [" + this.x + "," + this.y + "], moving_to_tile at [" + (moving_to_tile.x + tile_offset.x - origin.x) + "," + (moving_to_tile.y + tile_offset.y - origin.y) + "]");
 				//trace("hero origin is [" + this.origin.x + "," + this.origin.y + "]");
 				//trace("distance: [" + distance_x + "," + distance_y + "]");
-				FlxVelocity.moveTowardsPoint(this, new FlxPoint(moving_to_tile.x + tile_offset.x, moving_to_tile.y + tile_offset.y), 0, TIME_TO_MOVE_TILES);
 				
 				if (distance_x >= -ARRIVAL_THRESHOLD && distance_x <= ARRIVAL_THRESHOLD && distance_y >= -ARRIVAL_THRESHOLD && distance_y <= ARRIVAL_THRESHOLD) {
 					moving_to_tile.has_visited = true;
 					setCurrentTile(moving_to_tile);
 					is_taking_turn = false;
 					is_moving = false;
-					velocity = new FlxPoint(0, 0);
 					_playState.heroArrivedAt(moving_to_tile);
 				}
 			}

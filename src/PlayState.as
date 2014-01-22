@@ -8,6 +8,8 @@ package
 	import org.as3wavsound.*;
 	import flash.utils.ByteArray;
 	import flash.utils.getQualifiedClassName;
+	import com.greensock.*;
+	import com.greensock.easing.*;
  
 	public class PlayState extends FlxState
 	{
