@@ -53,12 +53,15 @@ package
 			if (_dread_level > 5) {
 				_dread_level = 5;
 			}
+			_playState.BulgeLabel(_playState.player_dread_label);
 		}
 		
 		public function ReduceDread():void {
 			_dread_level--;
 			if (_dread_level < 0) {
 				_dread_level = 0;
+			} else {
+				_playState.BulgeLabel(_playState.player_dread_label);
 			}
 		}
 		

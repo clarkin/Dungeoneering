@@ -166,10 +166,12 @@ package
 			player_dread_label = new FlxText(FlxG.width - 150 - 45, 15, 150, "Dread: 0");
 			player_dread_label.setFormat("LemonsCanFly", 40, 0xFFFF8A8A, "right", 0xFFA82C2C);
 			player_dread_label.scrollFactor = new FlxPoint(0, 0);
+			player_dread_label.antialiasing = true;
 			guiGroup.add(player_dread_label);
 			player_hope_label = new FlxText(FlxG.width - 150 - 165, 15, 150, "Hope: 0");
 			player_hope_label.setFormat("LemonsCanFly", 40, 0xFFEAE2AC, "right", 0xFF999966);
 			player_hope_label.scrollFactor = new FlxPoint(0, 0);
+			player_hope_label.antialiasing = true;
 			guiGroup.add(player_hope_label);
 			
 			player_cards_label = new FlxText(36, 489, 350, "Play or discard up to 3 more cards");
@@ -379,61 +381,71 @@ package
 						clicked_at = FlxG.mouse.getScreenPosition();
 						for each (var card_in_hand:Card in cardsInHand.members) {
 							if (card_in_hand != null && card_in_hand.alive) {
-								if (card_in_hand._background.overlapsPoint(clicked_at) && canAfford(card_in_hand)) {
-									
-									//trace("clicked on card " + card_in_hand._title);
-									possible_spots = 0;
-									if (card_in_hand._type == "TILE") {
-										for each (var possible_highlight:Tile in highlights.members) {
-											if (possible_highlight.alive && card_in_hand._tile.validForHighlight(possible_highlight)) {
-												possible_spots++;
-											}
+								if (card_in_hand._background.overlapsPoint(clicked_at)) {
+									if (!canAfford(card_in_hand)) {
+										hero.thinkSomething("card_afford", card_in_hand);
+										if (card_in_hand._type == "MONSTER") {
+											BulgeLabel(player_dread_label);
+										} else {
+											BulgeLabel(player_hope_label);
 										}
 									} else {
-										for each (var possible_tile:Tile in tiles.members) {
-											if (possible_tile != hero.current_tile && possible_tile.validForCard(card_in_hand)) {
-												possible_spots++;
-											}
-										}
-									}
-									
-									if (possible_spots > 0) {
-										placing_card = card_in_hand;
-										is_placing_card = true;
-										card_in_hand.visible = false;
-										cleanUpPlacingSprite();
-										
-										if (placing_card._type == "TILE") {
-											var new_placing_card_tile:Card = new Card(this, -1000, -1000, placing_card._type, placing_card._tile);
-											//new_placing_card_tile._tile.alpha = 0.6;
-											placingSprite.add(new_placing_card_tile._tile);
-											highlights.visible = true;
-											highlights.setAll("visible", false);
-											highlights.setAll("alpha", 1);
-											for each (var possible_highlight2:Tile in highlights.members) {
-												if (possible_highlight2.alive && placing_card._tile.validForHighlight(possible_highlight2)) {
-													possible_highlight2.visible = true;
+										//trace("clicked on card " + card_in_hand._title);
+										possible_spots = 0;
+										if (card_in_hand._type == "TILE") {
+											for each (var possible_highlight:Tile in highlights.members) {
+												if (possible_highlight.alive && card_in_hand._tile.validForHighlight(possible_highlight)) {
+													possible_spots++;
 												}
-											}											
+											}
 										} else {
-											if (placing_card._type == "MONSTER") {
-												var new_placing_card_monster:Card = new Card(this, -1000, -1000, placing_card._type, null, placing_card._monster);
-												//new_placing_card_monster._monster.alpha = 0.6;
-												placingSprite.add(new_placing_card_monster._monster);
-											} else {
-												var new_placing_card_treasure:Card = new Card(this, -1000, -1000, placing_card._type, null, null, placing_card._treasure);
-												//new_placing_card_treasure._treasure.alpha = 0.6;
-												placingSprite.add(new_placing_card_treasure._treasure);
-											}
-											for each (var possible_tile2:Tile in tiles.members) {
-												if (possible_tile2 != hero.current_tile && possible_tile2.validForCard(placing_card)) {
-													possible_tile2.flashing = true;
+											for each (var possible_tile:Tile in tiles.members) {
+												if (possible_tile != hero.current_tile && possible_tile.validForCard(card_in_hand)) {
+													possible_spots++;
 												}
 											}
 										}
 										
-										selectedCard();
-										//trace("placingSprite.countLiving(): " + placingSprite.countLiving());
+										if (possible_spots <= 0) {
+											hero.thinkSomething("card_fit", card_in_hand);
+										} else {
+											placing_card = card_in_hand;
+											is_placing_card = true;
+											card_in_hand.visible = false;
+											cleanUpPlacingSprite();
+											
+											if (placing_card._type == "TILE") {
+												var new_placing_card_tile:Card = new Card(this, -1000, -1000, placing_card._type, placing_card._tile);
+												//new_placing_card_tile._tile.alpha = 0.6;
+												placingSprite.add(new_placing_card_tile._tile);
+												highlights.visible = true;
+												highlights.setAll("visible", false);
+												highlights.setAll("alpha", 1);
+												for each (var possible_highlight2:Tile in highlights.members) {
+													if (possible_highlight2.alive && placing_card._tile.validForHighlight(possible_highlight2)) {
+														possible_highlight2.visible = true;
+													}
+												}											
+											} else {
+												if (placing_card._type == "MONSTER") {
+													var new_placing_card_monster:Card = new Card(this, -1000, -1000, placing_card._type, null, placing_card._monster);
+													//new_placing_card_monster._monster.alpha = 0.6;
+													placingSprite.add(new_placing_card_monster._monster);
+												} else {
+													var new_placing_card_treasure:Card = new Card(this, -1000, -1000, placing_card._type, null, null, placing_card._treasure);
+													//new_placing_card_treasure._treasure.alpha = 0.6;
+													placingSprite.add(new_placing_card_treasure._treasure);
+												}
+												for each (var possible_tile2:Tile in tiles.members) {
+													if (possible_tile2 != hero.current_tile && possible_tile2.validForCard(placing_card)) {
+														possible_tile2.flashing = true;
+													}
+												}
+											}
+											
+											selectedCard();
+											//trace("placingSprite.countLiving(): " + placingSprite.countLiving());
+										}
 									}
 								}
 							}
@@ -547,8 +559,10 @@ package
 		public function payForCard(card:Card):void {
 			if (card._type == "MONSTER") {
 				dungeon._dread_level -= card._cost;
+				BulgeLabel(player_dread_label);
 			} else if (card._type == "TREASURE") {
 				dungeon._hope_level -= card._cost;
+				BulgeLabel(player_hope_label);
 			} 
 		}
 		
@@ -801,6 +815,12 @@ package
 				sndDeathscream.play();
 			}
 			FlxG.switchState(new MenuState(true, player_alive, player_treasure));
+		}
+		
+		public function BulgeLabel(label:FlxText):void {
+			var delay:Number = 0.3;
+			TweenLite.to(label, delay, { y:"-5", bothScale: 1.5 } );
+			TweenLite.to(label, delay, { y:"5", bothScale: 1.0, delay: delay } );
 		}
 	}
 }

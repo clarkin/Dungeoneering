@@ -68,13 +68,6 @@ package
 			super.update();
 		}
 		
-		public function get bothScale():Number {
-			return scale.x;
-		}
-		
-		public function set bothScale(newScale:Number):void {
-			scale.x = scale.y = newScale;
-		}
 	}
 
 }

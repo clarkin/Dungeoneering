@@ -109,7 +109,6 @@ package
 				}
 				thinkSomething("movement");
 				_playState.turn_phase = PlayState.PHASE_HERO_THINK;
-				TweenMax.to(this, THINKING_TIME / 20, {x:x+1, y:y-2, repeat:5, yoyo:true});
 			}
 		}
 		
@@ -125,7 +124,7 @@ package
 			return favorite_tile;
 		}
 		
-		public function thinkSomething(thought_type:String):void {
+		public function thinkSomething(thought_type:String, card_clicked:Card = null):void {
 			var thought:String = "";
 			
 			if (thought_type == "movement") {
@@ -170,8 +169,22 @@ package
 				var poked_thoughts:Array = ["Ow - that hurt!", "Please stop clicking me .. there", "What if I were to poke YOU instead!?",
 					"Stop that", "The rulebook clearly says that clicking me doesn't achieve anything", "Cut it out!"];
 				thought = poked_thoughts[Math.floor(Math.random() * (poked_thoughts.length))];
+			} else if (thought_type == "card_afford") {
+				var afford_thoughts:Array = ["No, silly, you need COST CURRENCY before you can play that!", "Playing a CARDNAME costs COST CURRENCY. Even I know that!!",
+					"Don't some cards have a cost? Did you skip reading the manual?! ohgodimdoomed", "You need more CURRENCY before you can play that CARDNAME..", 
+					"Maybe you need more CURRENCY for that?"];
+				thought = afford_thoughts[Math.floor(Math.random() * (afford_thoughts.length))];
+				thought = thought.replace(/COST/g, card_clicked._cost);
+				thought = thought.replace(/CURRENCY/g, card_clicked._type == "MONSTER" ? "DREAD" : "HOPE");
+				thought = thought.replace(/CARDNAME/g, card_clicked._title);
+			} else if (thought_type == "card_fit") {
+				var fit_thoughts:Array = ["I don't think that can fit anywhere right now..", "And just where would that CARDNAME fit?",
+					"There's nowhere that can fit that CARDNAME", "That won't fit anywhere!", "There's no space for that CARDNAME!"];
+				thought = fit_thoughts[Math.floor(Math.random() * (fit_thoughts.length))];
+				thought = thought.replace(/CARDNAME/g, card_clicked._title);
 			}
 			
+			TweenMax.to(this, THINKING_TIME / 20, {x:x+1, y:y-2, repeat:5, yoyo:true});
 			_playState.floatingTexts.add(new FloatingText(x + thought_offset.x, y + thought_offset.y, thought));
 		}
 		
@@ -252,6 +265,7 @@ package
 			
 			if (this_monster._health <= 0) {
 				_playState.dungeon._hope_level += this_monster._dread + 1;
+				_playState.BulgeLabel(_playState.player_hope_label);
 			}
 		}
 		

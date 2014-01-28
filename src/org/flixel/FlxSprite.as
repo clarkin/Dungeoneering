@@ -914,5 +914,13 @@ package org.flixel
 				_callback(((_curAnim != null)?(_curAnim.name):null),_curFrame,_curIndex);
 			dirty = false;
 		}
+		
+		public function get bothScale():Number {
+			return scale.x;
+		}
+		
+		public function set bothScale(newScale:Number):void {
+			scale.x = scale.y = newScale;
+		}
 	}
 }
