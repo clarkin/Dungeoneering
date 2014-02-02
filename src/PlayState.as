@@ -60,8 +60,8 @@ package
 		
 		public static const HAND_START:FlxPoint = new FlxPoint(235, 532);
 		public static const HAND_CARD_OFFSET:int = 155;
-		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(235, 682);
-		public static const SHRUNK_HAND_CARD_OFFSET:int = 155;
+		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(255, 632);
+		public static const SHRUNK_HAND_CARD_OFFSET:int = 80;
 		
 		public static const CARDS_PER_TURN:int = 3;
 		public static const BATTLE_TIME:Number = 2;
@@ -194,7 +194,8 @@ package
 			
 			addCardFromDeck("TILE");
 			addCardFromDeck("TILE");
-			addCardFromDeck("TILE");
+			//addCardFromDeck("TILE");
+			addCardFromDeck("TREASURE");
 			addCardFromDeck("MONSTER");
 			addCardFromDeck("MONSTER");
 			
@@ -313,9 +314,9 @@ package
 				dungeon.IncreaseDread();
 				fillHand(); //todo use PHASE_CARDS_FILLING to animate (and show deck backs)
 				showCards();
+				SetHandState("up");
 				cards_played = 0;
 				player_cards_label.text = "Play or discard up to 3 more cards";
-				cardsInHand.visible = true;
 				turn_phase = PHASE_CARDS_PLAY;
 			} 
 		}
@@ -381,7 +382,7 @@ package
 						clicked_at = FlxG.mouse.getScreenPosition();
 						for each (var card_in_hand:Card in cardsInHand.members) {
 							if (card_in_hand != null && card_in_hand.alive) {
-								if (card_in_hand._background.overlapsPoint(clicked_at)) {
+								if (card_in_hand._card_front.overlapsPoint(clicked_at)) {
 									if (!canAfford(card_in_hand)) {
 										hero.thinkSomething("card_afford", card_in_hand);
 										if (card_in_hand._type == "MONSTER") {
@@ -577,16 +578,18 @@ package
 			for (var i:int = 0; i < cards_to_add; i++) {
 				addCardFromDeck(); //TODO recycle members of flxgroup instead
 			}
-
-			//todo fill hand
-			cardsInHand.visible = true;
 		}
 		
-		public function sortHand():void {
+		public function SetHandState(state:String = "up"):void {
 			var cards_so_far:int = 0;
 			for each (var card_in_hand:Card in cardsInHand.members) {
 				if (card_in_hand != null && card_in_hand.alive) {
-					card_in_hand.MoveTo(new FlxPoint(HAND_START.x + cards_so_far * HAND_CARD_OFFSET, HAND_START.y), -20.0 + cards_so_far * 10);
+					if (state == "down") {
+						card_in_hand.MoveTo(new FlxPoint(SHRUNK_HAND_START.x + cards_so_far * SHRUNK_HAND_CARD_OFFSET, SHRUNK_HAND_START.y), -10.0 + cards_so_far * 5, 0.5);
+					} else {
+						card_in_hand.MoveTo(new FlxPoint(HAND_START.x + cards_so_far * HAND_CARD_OFFSET, HAND_START.y), 0, 1.0);
+					}
+					
 					//trace("moving card " + card_in_hand._title + " from x: " + card_in_hand._background.x + " to x: " + card_in_hand._moving_to.x + " for card slot " + cards_so_far);
 					//TODO occasional sorting issue
 					cards_so_far++;
@@ -706,7 +709,7 @@ package
 		
 		public function endCardPlaying():void {
 			hideCards();
-			sortHand();
+			SetHandState("down");
 			turn_phase = PHASE_HERO_THINK;
 		}
 		

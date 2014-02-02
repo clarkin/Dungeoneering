@@ -1,5 +1,6 @@
 package 
 {
+	import flash.geom.*;
 	import org.flixel.*;
 	import org.flixel.plugin.photonstorm.*;
 	import com.greensock.*;
@@ -7,14 +8,19 @@ package
 	
 	public class Card extends FlxGroup
 	{
-		[Embed(source = "../assets/card_backgrounds.png")] private var cardBackgroundsPNG:Class;
+		[Embed(source = "../assets/card_dread_back.png")] private var cardDreadBackPNG:Class;
+		[Embed(source = "../assets/card_dread_front.png")] private var cardDreadFrontPNG:Class;
+		[Embed(source = "../assets/card_hope_back.png")] private var cardHopeBackPNG:Class;
+		[Embed(source = "../assets/card_hope_front.png")] private var cardHopeFrontPNG:Class;
+		[Embed(source = "../assets/card_seek_back.png")] private var cardSeekBackPNG:Class;
+		[Embed(source = "../assets/card_seek_front.png")] private var cardSeekFrontPNG:Class;
 		[Embed(source = "../assets/card_white.png")] private var cardScrollsPNG:Class;
 		[Embed(source = "../assets/card_symbols.png")] private var cardSymbolsPNG:Class;
 		
 		public static const CARDS_WEIGHTED:Array = [
 			"MONSTER", "MONSTER", "MONSTER", "TREASURE", "TREASURE"];
 
-		private static const TITLE_OFFSET:FlxPoint = new FlxPoint(12, 113);
+		private static const TITLE_OFFSET:FlxPoint = new FlxPoint(19, 115);
 		private static const SCROLLS_OFFSET:FlxPoint = new FlxPoint(18, 111);
 		private static const TYPE_OFFSET:FlxPoint = new FlxPoint(6, 8);
 		private static const COST_ICON_OFFSET:FlxPoint = new FlxPoint(110, 8);
@@ -30,7 +36,6 @@ package
 		public var _title:String = "";
 		public var _desc:String = "";
 		public var _type:String = "";
-		public var _background:FlxSprite;
 		public var _type_icon:FlxSprite;
 		public var _scrolls:FlxSprite;
 		public var _cost_icon:FlxSprite;
@@ -71,51 +76,58 @@ package
 			_type = type;
 			//trace("adding card " + type);
 			
+			_card_front = new FlxSprite(X, Y);
+			_card_front.makeGraphic(CARD_WIDTH, CARD_HEIGHT, 0x00FFFFFF, true);
+			_card_front.antialiasing = true;
+			
+			_card_back = new FlxSprite(X, Y);
+			var _card_stamper:FlxSprite = new FlxSprite(X, Y);
+			
 			switch (_type) {
 				case "MONSTER":
 					if (monster == null) {
 						monster = _playState.dungeon.GetRandomMonster();
 					}
-					_background_frame = 0;
-					_background_frame_back = 3;
+					_card_stamper.loadGraphic(cardDreadFrontPNG, false, false, CARD_WIDTH, CARD_HEIGHT, true);
+					_card_back.loadGraphic(cardDreadBackPNG, false, false, CARD_WIDTH, CARD_HEIGHT);
 					_type_icon_frame = 0;
 					_card_text_color = 0xFF333333;
 					_title = monster._type;
 					_desc = monster._desc;
 					_monster = new Monster(_playState, _title, X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
+					_card_stamper.stamp(_monster, ICON_OFFSET.x, ICON_OFFSET.y);
 					_cost = _monster._dread;
-					_iconHolder.add(_monster);
 					break;
 				case "TREASURE":
 					if (treasure == null) {
 						treasure = _playState.dungeon.GetRandomTreasure();
 					}
-					_background_frame = 1;
-					_background_frame_back = 4;
+					_card_stamper.loadGraphic(cardHopeFrontPNG, false, false, CARD_WIDTH, CARD_HEIGHT, true);
+					_card_back.loadGraphic(cardHopeBackPNG, false, false, CARD_WIDTH, CARD_HEIGHT);
 					_type_icon_frame = 1;
 					_card_text_color = 0xFF333333;
 					_title = treasure._type;
 					_desc = treasure._desc;
 					_treasure = new Treasure(_playState, _title, X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
+					_card_stamper.stamp(_treasure, ICON_OFFSET.x, ICON_OFFSET.y);
 					_cost = _treasure._hope;
-					_iconHolder.add(_treasure);
 					break;
 				case "TILE":
 					if (tile == null) {
 						tile = _playState.tileManager.GetRandomTile();
 					}
-					_title = tile.type;
-					_background_frame = 2;
-					_background_frame_back = 5;
+					_card_stamper.loadGraphic(cardSeekFrontPNG, false, false, CARD_WIDTH, CARD_HEIGHT, true);
+					_card_back.loadGraphic(cardSeekBackPNG, false, false, CARD_WIDTH, CARD_HEIGHT);
 					_type_icon_frame = 2;
 					_card_text_color = 0xFF333333;
+					_title = tile.type;
 					_tile = new Tile(_playState, _title, X + ICON_TILE_OFFSET.x, Y + ICON_TILE_OFFSET.y);
 					_tile.antialiasing = true;
 					_tile.scale = new FlxPoint(0.5, 0.5);
 					_tile.width = _tile.width * 0.5;
 					_tile.height = _tile.height * 0.5;
 					_tile.offset = new FlxPoint(_tile.width/2, _tile.height/2);
-					_iconHolder.add(_tile);
+					_card_stamper.stamp(_tile, ICON_TILE_OFFSET.x - _tile.width * 0.5, ICON_TILE_OFFSET.y - _tile.height * 0.5);
 					break;
 				default:
 					throw new Error("no matching card type defined for " + type);
@@ -131,50 +143,45 @@ package
 				}
 			} 
 			
-			_background = new FlxSprite(X, Y);
-			_background.loadGraphic(cardBackgroundsPNG, false, false, CARD_WIDTH, CARD_HEIGHT);
-			_background.frame = _background_frame;
-			this.add(_background);
-			
-			_card_front.add(_iconHolder);
-			
 			_type_icon = new FlxSprite(X + TYPE_OFFSET.x, Y + TYPE_OFFSET.y);
 			_type_icon.loadGraphic(cardSymbolsPNG, false, false, 38, 50);
 			_type_icon.frame = _type_icon_frame;
-			_card_front.add(_type_icon);
+			_card_stamper.stamp(_type_icon, TYPE_OFFSET.x, TYPE_OFFSET.y);
 			
 			_scrolls = new FlxSprite(X + SCROLLS_OFFSET.x, Y + SCROLLS_OFFSET.y, cardScrollsPNG);
-			_card_front.add(_scrolls);
+			_card_stamper.stamp(_scrolls, SCROLLS_OFFSET.x, SCROLLS_OFFSET.y);
 			
 			_titleText = new FlxText(X + TITLE_OFFSET.x, Y + TITLE_OFFSET.y, 116, _title);
 			_titleText.height = 22;
 			_titleText.setFormat("LemonsCanFly", 30, _card_text_color, "center");
-			_card_front.add(_titleText);
+			_card_stamper.stamp(_titleText, TITLE_OFFSET.x, TITLE_OFFSET.y);
 			
 			_descText = new FlxText(X + DESC_OFFSET.x, Y + DESC_OFFSET.y, 100, _desc);
 			_descText.height = 48;
 			_descText.setFormat("LemonsCanFly", 20, _card_text_color, "center");
-			_card_front.add(_descText);
+			_card_stamper.stamp(_descText, DESC_OFFSET.x, DESC_OFFSET.y);
 			
 			_cost_icon = new FlxSprite(X + COST_ICON_OFFSET.x, Y + COST_ICON_OFFSET.y);
 			_cost_icon.loadGraphic(cardSymbolsPNG, false, false, 38, 50);
 			_cost_icon.frame = 3;
-			_card_front.add(_cost_icon);
+			_card_stamper.stamp(_cost_icon, COST_ICON_OFFSET.x, COST_ICON_OFFSET.y);
 			
-			_costText = new FlxText(X + COST_OFFSET.x, Y + COST_OFFSET.y, 20, _desc.toUpperCase());
+			_costText = new FlxText(X + COST_OFFSET.x, Y + COST_OFFSET.y, 20);
 			_costText.height = 18;
 			_costText.setFormat("LemonsCanFly", 30, _card_text_color, "center");
 			_costText.text = _cost.toString();
 			if (_cost > 0) {
-				_card_front.add(_costText);
+				_card_stamper.stamp(_costText, COST_OFFSET.x, COST_OFFSET.y);
 			}
 			
+			_card_front.stamp(_card_stamper, 0, 0);
 			this.add(_card_front);
 			
 			_hoverEffect = new FlxSprite(X, Y);
 			_hoverEffect.makeGraphic(CARD_WIDTH, CARD_HEIGHT, _card_text_color);
 			_hoverEffect.alpha = 0.3;
 			_hoverEffect.visible = false;
+			_hoverEffect.antialiasing = true;
 			this.add(_hoverEffect);
 			
 			_discardBtn = new FlxButtonPlus(X + DISCARD_OFFSET.x, Y + DISCARD_OFFSET.y, discardThisCard, null, "Discard", 70, 30);
@@ -183,7 +190,11 @@ package
 			_discardBtn.borderColor = 0xFFEAE2AC;
 			_discardBtn.updateInactiveButtonColors([0xFFA38C69, 0xFFA38C69]);
 			_discardBtn.updateActiveButtonColors([0xFF6E533F, 0xFF6E533F]);   
-			_card_front.add(_discardBtn);
+			this.add(_discardBtn);
+			
+			_card_back.visible = false;
+			_card_back.antialiasing = true;
+			this.add(_card_back);
 			
 			this.showBack();
 		}
@@ -200,90 +211,57 @@ package
 			super.update();
 		}
 		
-		public function MoveTo(move_to_point:FlxPoint, new_angle:Number):void {
-			TweenLite.to(this, Card.TIME_TO_MOVE, { x:move_to_point.x, y:move_to_point.y, ease:Back.easeInOut.config(0.8) } );
+		public function MoveTo(move_to_point:FlxPoint, new_angle:Number = 0, new_scale:Number = 1.0):void {
+			TweenLite.to(this, Card.TIME_TO_MOVE, { x:move_to_point.x, y:move_to_point.y, angle:new_angle, bothScale:new_scale, ease:Back.easeInOut.config(0.8) } );
 			//card_in_hand._is_moving = true;
 		}
 		
 		public function get x():Number {
-			return _background.x;
+			return _card_front.x;
 		}
 		
 		public function set x(new_x:Number):void {
 			var change_x:Number = new_x - x;
-			_background.x += change_x;
-			if (_tile != null) {
-				_tile.x += change_x;
-			}
-			if (_monster != null) {
-				_monster.x += change_x;
-			}
-			if (_treasure != null) {
-				_treasure.x += change_x;
-			}
-			_titleText.x += change_x;
-			_descText.x += change_x;
-			_costText.x += change_x;
-			_scrolls.x += change_x;
-			_cost_icon.x += change_x;
-			_type_icon.x += change_x;
+			_card_front.x += change_x;
+			_card_back.x += change_x;
 			_hoverEffect.x += change_x;
 			_discardBtn.x += change_x;
 		}
 		
 		public function get y():Number {
-			return _background.y;
+			return _card_front.y;
 		}
 		
 		public function set y(new_y:Number):void {
 			var change_y:Number = new_y - y;
-			_background.y += change_y;
-			if (_tile != null) {
-				_tile.y += change_y;
-			}
-			if (_monster != null) {
-				_monster.y += change_y;
-			}
-			if (_treasure != null) {
-				_treasure.y += change_y;
-			}
-			_titleText.y += change_y;
-			_descText.y += change_y;
-			_costText.y += change_y;
-			_scrolls.y += change_y;
-			_cost_icon.y += change_y;
-			_type_icon.y += change_y;
+			_card_front.y += change_y;
+			_card_back.y += change_y;
 			_hoverEffect.y += change_y;
 			_discardBtn.y += change_y;
 		}
 		
 		public function get angle():Number {
-			return _background.angle;
+			return _card_front.angle;
 		}
 		
 		public function set angle(new_angle:Number):void {
-			_background.angle = new_angle;
-			if (_tile != null) {
-				_tile.angle = new_angle;
-			}
-			if (_monster != null) {
-				_monster.angle = new_angle;
-			}
-			if (_treasure != null) {
-				_treasure.angle = new_angle;
-			}
-			_titleText.angle = new_angle;
-			_descText.angle = new_angle;
-			_costText.angle = new_angle;
-			_scrolls.angle = new_angle;
-			_cost_icon.angle = new_angle;
-			_type_icon.angle = new_angle;
+			_card_front.angle = new_angle;
+			_card_back.angle = new_angle;
 			_hoverEffect.angle = new_angle;
 			//_discardBtn.angle = new_angle;
 		}
 		
+		public function get bothScale():Number {
+			return _card_front.scale.x;
+		}
+		
+		public function set bothScale(newScale:Number):void {
+			_card_front.scale.x = _card_front.scale.y = newScale;
+			_card_back.scale.x = _card_back.scale.y = newScale;
+		}
+		
 		public function checkHover():void {
-			if (_hover_enabled && !_showing_back && _background.overlapsPoint(FlxG.mouse.getScreenPosition())) {
+			if (_hover_enabled && !_showing_back && _card_front.overlapsPoint(FlxG.mouse.getScreenPosition())) {
 				_hoverEffect.visible = true;
 			} else {
 				_hoverEffect.visible = false;
@@ -297,42 +275,18 @@ package
 			}
 		}
 		
-		public function flipCard():void {
-			_showing_back = !_showing_back;
-			//trace("now _showing_back: " + _showing_back);
-			
-			if (_showing_back) {
-				_background.frame = _background_frame_back;
-			} else {
-				_background.frame = _background_frame;
-			}
-			
-			_card_front.setAll("visible", !_showing_back);
-		}
-		
 		public function showBack():void {
 			_showing_back = true;
-			_background.frame = _background_frame_back;
-			_card_front.setAll("visible", false);
+			_discardBtn.visible = false;
+			_card_front.visible = false;
+			_card_back.visible = true;
 		}
 		
 		public function showFront():void {
 			_showing_back = false;
-			_background.frame = _background_frame;
-			_card_front.setAll("visible", true);
-			_discardBtn.resetToNormal();
-		}
-		
-		public function toggleSize():void {
-			_shrunk = !_shrunk;
-			
-			if (_shrunk) {
-				_background.scale = new FlxPoint(0.5, 0.5);
-				_hover_enabled = false;
-			} else {
-				_background.scale = new FlxPoint(1.0, 1.0);
-				_hover_enabled = true;
-			}
+			_discardBtn.visible = true;
+			_card_front.visible = true;
+			_card_back.visible = false;
 		}
 
 	}
