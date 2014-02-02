@@ -175,6 +175,7 @@ package
 			}
 			
 			_card_front.stamp(_card_stamper, 0, 0);
+			_card_front.scrollFactor = new FlxPoint(0, 0);
 			this.add(_card_front);
 			
 			_hoverEffect = new FlxSprite(X, Y);
@@ -182,6 +183,7 @@ package
 			_hoverEffect.alpha = 0.3;
 			_hoverEffect.visible = false;
 			_hoverEffect.antialiasing = true;
+			_hoverEffect.scrollFactor = new FlxPoint(0, 0);
 			this.add(_hoverEffect);
 			
 			_discardBtn = new FlxButtonPlus(X + DISCARD_OFFSET.x, Y + DISCARD_OFFSET.y, discardThisCard, null, "Discard", 70, 30);
@@ -189,11 +191,13 @@ package
 			_discardBtn.textHighlight.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "center", 0xFF6E533F);
 			_discardBtn.borderColor = 0xFFEAE2AC;
 			_discardBtn.updateInactiveButtonColors([0xFFA38C69, 0xFFA38C69]);
-			_discardBtn.updateActiveButtonColors([0xFF6E533F, 0xFF6E533F]);   
+			_discardBtn.updateActiveButtonColors([0xFF6E533F, 0xFF6E533F]); 
+			_discardBtn.setAll("scrollFactor", new FlxPoint(0, 0));
 			this.add(_discardBtn);
 			
 			_card_back.visible = false;
 			_card_back.antialiasing = true;
+			_card_back.scrollFactor = new FlxPoint(0, 0);
 			this.add(_card_back);
 			
 			this.showBack();

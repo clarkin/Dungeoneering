@@ -60,8 +60,8 @@ package
 		
 		public static const HAND_START:FlxPoint = new FlxPoint(235, 532);
 		public static const HAND_CARD_OFFSET:int = 155;
-		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(255, 632);
-		public static const SHRUNK_HAND_CARD_OFFSET:int = 80;
+		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(200, 600);
+		public static const SHRUNK_HAND_CARD_OFFSET:int = 50;
 		
 		public static const CARDS_PER_TURN:int = 3;
 		public static const BATTLE_TIME:Number = 2;
@@ -91,6 +91,7 @@ package
 		public var camera_target:FlxSprite;
 		public var following_hero:Boolean = false;
 		public var is_dragging:Boolean = false;
+		public var hand_shrunk:Boolean = true;
 		public var click_start:FlxPoint; //needs to be null at start
 		public var dragging_from:FlxPoint = new FlxPoint();
 		public var possible_spots:int = 0;
@@ -314,7 +315,8 @@ package
 				dungeon.IncreaseDread();
 				fillHand(); //todo use PHASE_CARDS_FILLING to animate (and show deck backs)
 				showCards();
-				SetHandState("up");
+				hand_shrunk = false;
+				SortAndMoveCards();
 				cards_played = 0;
 				player_cards_label.text = "Play or discard up to 3 more cards";
 				turn_phase = PHASE_CARDS_PLAY;
@@ -491,6 +493,7 @@ package
 		public function checkKeyboard():void {
 			if (FlxG.keys.justReleased("SPACE")) {
 				trace("*** RESET ***");
+				TweenMax.killAll();
 				FlxG.switchState(new MenuState);
 			} else if (FlxG.keys.justReleased("D")) {
 				trace("*** Toggle Debug ***");
@@ -580,11 +583,11 @@ package
 			}
 		}
 		
-		public function SetHandState(state:String = "up"):void {
+		public function SortAndMoveCards():void {
 			var cards_so_far:int = 0;
 			for each (var card_in_hand:Card in cardsInHand.members) {
 				if (card_in_hand != null && card_in_hand.alive) {
-					if (state == "down") {
+					if (hand_shrunk) {
 						card_in_hand.MoveTo(new FlxPoint(SHRUNK_HAND_START.x + cards_so_far * SHRUNK_HAND_CARD_OFFSET, SHRUNK_HAND_START.y), -10.0 + cards_so_far * 5, 0.5);
 					} else {
 						card_in_hand.MoveTo(new FlxPoint(HAND_START.x + cards_so_far * HAND_CARD_OFFSET, HAND_START.y), 0, 1.0);
@@ -667,8 +670,12 @@ package
 					throw new Error("no matching card type defined for " + type);
 			}
 			
-			//possible_card.toggleSize();
-			possible_card.setAll("scrollFactor", new FlxPoint(0, 0));
+			if (hand_shrunk) {
+				possible_card.x = SHRUNK_HAND_START.x + cards_so_far * SHRUNK_HAND_CARD_OFFSET;
+				possible_card.y = SHRUNK_HAND_START.y;
+				possible_card.angle = -10.0 + cards_so_far * 5;
+				possible_card.bothScale = 0.5;	
+			}
 			cardsInHand.add(possible_card);
 			//trace("finished adding card to hand " + possible_card._title);
 		}
@@ -709,7 +716,8 @@ package
 		
 		public function endCardPlaying():void {
 			hideCards();
-			SetHandState("down");
+			hand_shrunk = true;
+			SortAndMoveCards();
 			turn_phase = PHASE_HERO_THINK;
 		}
 		
