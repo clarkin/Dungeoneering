@@ -220,6 +220,12 @@ package
 			//card_in_hand._is_moving = true;
 		}
 		
+		public function Appear():void {
+			var final_scale:Number = bothScale;
+			bothScale = 0.0;
+			TweenLite.to(this, Card.TIME_TO_MOVE, { bothScale:final_scale, ease:Back.easeInOut.config(0.8) } );
+		}
+		
 		public function get x():Number {
 			return _card_front.x;
 		}

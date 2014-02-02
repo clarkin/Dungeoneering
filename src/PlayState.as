@@ -46,8 +46,8 @@ package
 		public static const starting_point:Point = new Point(0, 0);
 		
 		public static const PHASE_NEWTURN:int         = 0; 
-		public static const PHASE_CARDS_DEAL:int      = 1;
-		public static const PHASE_CARDS_PLAY:int      = 2;
+		public static const PHASE_CARDS_PLAY:int      = 1;
+		public static const PHASE_CARDS_DEAL:int      = 2;
 		public static const PHASE_HERO_THINK:int      = 3;
 		public static const PHASE_HERO_MOVING:int     = 4;
 		public static const PHASE_HERO_CARDS:int      = 5;
@@ -325,7 +325,6 @@ package
 				trace("** new turn **");
 				turn_number++;
 				dungeon.IncreaseDread();
-				fillHand(); //todo use PHASE_CARDS_FILLING to animate (and show deck backs)
 				showCards();
 				hand_shrunk = false;
 				SortAndMoveCards();
@@ -333,6 +332,10 @@ package
 				player_cards_label.text = "Play or discard up to 3 more cards";
 				turn_phase = PHASE_CARDS_PLAY;
 			} 
+		} 
+		
+		public function CardsDealOver():void {
+			turn_phase = PHASE_HERO_THINK;
 		}
 		
 		public function updateLabels():void {
@@ -600,7 +603,11 @@ package
 			for each (var card_in_hand:Card in cardsInHand.members) {
 				if (card_in_hand != null && card_in_hand.alive) {
 					if (hand_shrunk) {
-						card_in_hand.MoveTo(new FlxPoint(SHRUNK_HAND_START.x + cards_so_far * SHRUNK_HAND_CARD_OFFSET, SHRUNK_HAND_START.y), -10.0 + cards_so_far * 5, 0.5);
+						var y_offset:Number = -12 + Math.abs(cards_so_far - 2) * 6;
+						if ( -10.0 + cards_so_far * 5 == 0) {
+							y_offset += 3;
+						}
+						card_in_hand.MoveTo(new FlxPoint(SHRUNK_HAND_START.x + cards_so_far * SHRUNK_HAND_CARD_OFFSET, SHRUNK_HAND_START.y + y_offset), -10.0 + cards_so_far * 5, 0.5);
 					} else {
 						card_in_hand.MoveTo(new FlxPoint(HAND_START.x + cards_so_far * HAND_CARD_OFFSET, HAND_START.y), 0, 1.0);
 					}
@@ -692,6 +699,7 @@ package
 				possible_card.bothScale = 0.5;	
 			}
 			cardsInHand.add(possible_card);
+			possible_card.Appear();
 			//trace("finished adding card to hand " + possible_card._title);
 		}
 		
@@ -733,7 +741,10 @@ package
 			hideCards();
 			hand_shrunk = true;
 			SortAndMoveCards();
-			turn_phase = PHASE_HERO_THINK;
+			turn_phase = PHASE_CARDS_DEAL;
+			var missing_cards:Number = 5 - cardsInHand.countLiving();
+			fillHand();
+			TweenLite.delayedCall(1 + 1 * missing_cards, CardsDealOver);
 		}
 		
 		public function hideCards():void {
