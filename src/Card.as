@@ -32,6 +32,8 @@ package
 		private static const CARD_WIDTH:int = 154;
 		private static const CARD_HEIGHT:int = 204;
 		public static const TIME_TO_MOVE:Number = 1.0;
+		public static const TIME_TO_APPEAR:Number = 0.4;
+		public static const TIME_TO_DISAPPEAR:Number = 0.3;
 		
 		public var _title:String = "";
 		public var _desc:String = "";
@@ -180,10 +182,11 @@ package
 			
 			_hoverEffect = new FlxSprite(X, Y);
 			_hoverEffect.makeGraphic(CARD_WIDTH, CARD_HEIGHT, _card_text_color);
-			_hoverEffect.alpha = 0.3;
+			_hoverEffect.alpha = 0.6;
 			_hoverEffect.visible = false;
 			_hoverEffect.antialiasing = true;
 			_hoverEffect.scrollFactor = new FlxPoint(0, 0);
+			_hoverEffect.blend = "overlay";
 			this.add(_hoverEffect);
 			
 			_discardBtn = new FlxButtonPlus(X + DISCARD_OFFSET.x, Y + DISCARD_OFFSET.y, discardThisCard, null, "Discard", 70, 30);
@@ -216,14 +219,32 @@ package
 		}
 		
 		public function MoveTo(move_to_point:FlxPoint, new_angle:Number = 0, new_scale:Number = 1.0):void {
-			TweenLite.to(this, Card.TIME_TO_MOVE, { x:move_to_point.x, y:move_to_point.y, angle:new_angle, bothScale:new_scale, ease:Back.easeInOut.config(0.8) } );
+			TweenLite.to(this, TIME_TO_MOVE, { x:move_to_point.x, y:move_to_point.y, angle:new_angle, bothScale:new_scale, ease:Back.easeInOut.config(0.8) } );
 			//card_in_hand._is_moving = true;
 		}
 		
-		public function Appear():void {
+		public function Appear(delay:Number = 0):void {
 			var final_scale:Number = bothScale;
 			bothScale = 0.0;
-			TweenLite.to(this, Card.TIME_TO_MOVE, { bothScale:final_scale, ease:Back.easeInOut.config(0.8) } );
+			TweenLite.to(this, TIME_TO_APPEAR, { bothScale:final_scale, delay:delay, ease:Back.easeInOut.config(0.8) } );
+		}
+		
+		public function Disappear():void {
+			_discardBtn.visible = false;
+			TweenLite.to(this, TIME_TO_DISAPPEAR, { bothScale:0.0, ease:Back.easeInOut.config(0.8) } );
+			TweenLite.delayedCall(TIME_TO_DISAPPEAR, FinishedDisappear);
+		}
+		
+		public function FinishedDisappear():void {
+			_playState.discardCard(this);
+			kill();
+		}
+		
+		public function discardThisCard():void {
+			if (!_playState.is_placing_card) {
+				Disappear();
+				
+			}
 		}
 		
 		public function get x():Number {
@@ -277,12 +298,6 @@ package
 				_hoverEffect.visible = false;
 			}
 			//trace("mouse at [" + FlxG.mouse.x + "," + FlxG.mouse.y + "], visible: " + _hoverEffect.visible);
-		}
-		
-		public function discardThisCard():void {
-			if (!_playState.is_placing_card) {
-				_playState.discardCard(this);
-			}
 		}
 		
 		public function showBack():void {

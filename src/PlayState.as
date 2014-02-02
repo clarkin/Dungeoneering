@@ -205,12 +205,12 @@ package
 			placingSprite.visible = true;
 
 			
-			addCardFromDeck("TILE");
-			addCardFromDeck("TILE");
-			//addCardFromDeck("TILE");
-			addCardFromDeck("TREASURE");
-			addCardFromDeck("MONSTER");
-			addCardFromDeck("MONSTER");
+			addCardFromDeck("TILE", 0);
+			addCardFromDeck("TILE", 1);
+			addCardFromDeck("TILE", 2);
+			//addCardFromDeck("TREASURE", 2);
+			addCardFromDeck("MONSTER", 3);
+			addCardFromDeck("MONSTER", 4);
 			
 			/*
 			addCardFromDeck("MONSTER");
@@ -594,7 +594,7 @@ package
 			
 			var cards_to_add:int = 5 - cards_in_hand;
 			for (var i:int = 0; i < cards_to_add; i++) {
-				addCardFromDeck(); //TODO recycle members of flxgroup instead
+				addCardFromDeck("", i); //TODO recycle members of flxgroup instead
 			}
 		}
 		
@@ -619,7 +619,7 @@ package
 			}
 		}
 		
-		public function addCardFromDeck(type:String = ""):void {
+		public function addCardFromDeck(type:String = "", sequence:int = 0):void {
 			//trace("adding card from deck " + type);
 			//trace("cardsInHand.countLiving(): " + cardsInHand.countLiving());
 			
@@ -699,7 +699,7 @@ package
 				possible_card.bothScale = 0.5;	
 			}
 			cardsInHand.add(possible_card);
-			possible_card.Appear();
+			possible_card.Appear(sequence * Card.TIME_TO_APPEAR);
 			//trace("finished adding card to hand " + possible_card._title);
 		}
 		
@@ -729,10 +729,9 @@ package
 				object.kill();
 			}
 		}
-		
+
 		public function discardCard(card_to_discard:Card):void {
 			//trace("discarding card " + card_to_discard._title);
-			card_to_discard.kill();
 			cardsInHand.remove(card_to_discard, true);
 			incrementCardsPlayed();
 		}
@@ -743,8 +742,8 @@ package
 			SortAndMoveCards();
 			turn_phase = PHASE_CARDS_DEAL;
 			var missing_cards:Number = 5 - cardsInHand.countLiving();
-			fillHand();
-			TweenLite.delayedCall(1 + 1 * missing_cards, CardsDealOver);
+			TweenLite.delayedCall(Card.TIME_TO_MOVE, fillHand);
+			TweenLite.delayedCall(Card.TIME_TO_MOVE + Card.TIME_TO_APPEAR * missing_cards, CardsDealOver);
 		}
 		
 		public function hideCards():void {
