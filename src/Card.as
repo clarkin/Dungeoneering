@@ -265,7 +265,7 @@ package
 		}
 		
 		public function checkHover():void {
-			if (_hover_enabled && !_showing_back && _card_front.overlapsPoint(FlxG.mouse.getScreenPosition())) {
+			if (_hover_enabled && !_showing_back && bothScale == 1.0 && _card_front.overlapsPoint(FlxG.mouse.getScreenPosition())) {
 				_hoverEffect.visible = true;
 			} else {
 				_hoverEffect.visible = false;

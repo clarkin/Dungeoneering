@@ -58,10 +58,10 @@ package
 		public static const SCROLL_ACCELERATION:Number = 800;
 		public static const PLACING_OFFSET:FlxPoint = new FlxPoint(10, 10);
 		
-		public static const HAND_START:FlxPoint = new FlxPoint(235, 532);
-		public static const HAND_CARD_OFFSET:int = 155;
-		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(200, 600);
-		public static const SHRUNK_HAND_CARD_OFFSET:int = 50;
+		public static const HAND_START:FlxPoint = new FlxPoint(10, 532);
+		public static const HAND_CARD_OFFSET:int = 150;
+		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(210, 600);
+		public static const SHRUNK_HAND_CARD_OFFSET:int = 60;
 		
 		public static const CARDS_PER_TURN:int = 3;
 		public static const BATTLE_TIME:Number = 2;
@@ -86,6 +86,7 @@ package
 		public var battle_monster_stats:FlxText;
 		public var battle_hero_sprite:FlxSprite;
 		public var battle_monster_sprite:FlxSprite;
+		public var stats_hero_sprite:FlxSprite;
 				
 		public var hero:Hero;
 		public var camera_target:FlxSprite;
@@ -160,10 +161,21 @@ package
 			battleScreen.visible = false;
 			guiGroup.add(battleScreen);
 			
-			player_stats_label = new FlxText(45, 15, 150, "stats");
-			player_stats_label.setFormat("LemonsCanFly", 40, 0xFFEAE2AC, "left", 0xFF6E533F);
+			paper_background = new FlxSprite(775, 600, UIPaperPNG);
+			paper_background.scrollFactor = new FlxPoint(0, 0);
+			guiGroup.add(paper_background);
+			player_stats_label = new FlxText(805, 650, 200, "Strength: 2");
+			player_stats_label.setFormat("LemonsCanFly", 28, 0xFF000000, "left");
 			player_stats_label.scrollFactor = new FlxPoint(0, 0);
+			player_stats_label.angle = 4;
+			player_stats_label.antialiasing = true;
 			guiGroup.add(player_stats_label);
+			stats_hero_sprite = new FlxSprite(915, 660);
+			stats_hero_sprite.pixels = hero.framePixels.clone();
+			stats_hero_sprite.scrollFactor = new FlxPoint(0, 0);
+			stats_hero_sprite.angle = 4;
+			stats_hero_sprite.antialiasing = true;
+			guiGroup.add(stats_hero_sprite);
 			player_dread_label = new FlxText(FlxG.width - 150 - 45, 15, 150, "Dread: 0");
 			player_dread_label.setFormat("LemonsCanFly", 40, 0xFFFF8A8A, "right", 0xFFA82C2C);
 			player_dread_label.scrollFactor = new FlxPoint(0, 0);
@@ -175,12 +187,12 @@ package
 			player_hope_label.antialiasing = true;
 			guiGroup.add(player_hope_label);
 			
-			player_cards_label = new FlxText(36, 489, 350, "Play or discard up to 3 more cards");
+			player_cards_label = new FlxText(15, 507, 350, "Play or discard up to 3 more cards");
 			player_cards_label.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "left", 0xFF6E533F);
 			player_cards_label.scrollFactor = new FlxPoint(0, 0);
 			player_cards_label.visible = false;
 			guiGroup.add(player_cards_label);
-			cancelPlacingBtn = new FlxButtonPlus(893, 474, cancelPlacement, null, "Cancel", 70, 30);
+			cancelPlacingBtn = new FlxButtonPlus(693, 500, cancelPlacement, null, "Cancel", 70, 30);
 			cancelPlacingBtn.textNormal.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "center", 0xFF6E533F);
 			cancelPlacingBtn.textHighlight.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "center", 0xFF6E533F);
 			cancelPlacingBtn.borderColor = 0xFFEAE2AC;
@@ -384,7 +396,7 @@ package
 						clicked_at = FlxG.mouse.getScreenPosition();
 						for each (var card_in_hand:Card in cardsInHand.members) {
 							if (card_in_hand != null && card_in_hand.alive) {
-								if (card_in_hand._card_front.overlapsPoint(clicked_at)) {
+								if (card_in_hand.bothScale == 1.0 && card_in_hand._card_front.overlapsPoint(clicked_at)) {
 									if (!canAfford(card_in_hand)) {
 										hero.thinkSomething("card_afford", card_in_hand);
 										if (card_in_hand._type == "MONSTER") {
@@ -671,9 +683,12 @@ package
 			}
 			
 			if (hand_shrunk) {
-				possible_card.x = SHRUNK_HAND_START.x + cards_so_far * SHRUNK_HAND_CARD_OFFSET;
-				possible_card.y = SHRUNK_HAND_START.y;
 				possible_card.angle = -10.0 + cards_so_far * 5;
+				possible_card.x = SHRUNK_HAND_START.x + cards_so_far * SHRUNK_HAND_CARD_OFFSET;
+				possible_card.y = SHRUNK_HAND_START.y - 12 + Math.abs(cards_so_far - 2) * 6;
+				if (possible_card.angle == 0) {
+					possible_card.y += 3;
+				}
 				possible_card.bothScale = 0.5;	
 			}
 			cardsInHand.add(possible_card);
