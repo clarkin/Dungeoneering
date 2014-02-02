@@ -14,17 +14,17 @@ package
 		public static const CARDS_WEIGHTED:Array = [
 			"MONSTER", "MONSTER", "MONSTER", "TREASURE", "TREASURE"];
 
-		private static const TITLE_OFFSET:FlxPoint = new FlxPoint(17, 111);
-		private static const SCROLLS_OFFSET:FlxPoint = new FlxPoint(16, 109);
-		private static const TYPE_OFFSET:FlxPoint = new FlxPoint(4, 6);
-		private static const COST_ICON_OFFSET:FlxPoint = new FlxPoint(108, 6);
-		private static const COST_OFFSET:FlxPoint = new FlxPoint(116, 12);
-		private static const ICON_TILE_OFFSET:FlxPoint = new FlxPoint(37, 37); //new FlxPoint(50, 40);
-		private static const ICON_OFFSET:FlxPoint = new FlxPoint(35, 35);
-		private static const DESC_OFFSET:FlxPoint = new FlxPoint(26, 138);
-		private static const DISCARD_OFFSET:FlxPoint = new FlxPoint(40, 203);
-		private static const CARD_WIDTH:int = 150;
-		private static const CARD_HEIGHT:int = 200;
+		private static const TITLE_OFFSET:FlxPoint = new FlxPoint(12, 113);
+		private static const SCROLLS_OFFSET:FlxPoint = new FlxPoint(18, 111);
+		private static const TYPE_OFFSET:FlxPoint = new FlxPoint(6, 8);
+		private static const COST_ICON_OFFSET:FlxPoint = new FlxPoint(110, 8);
+		private static const COST_OFFSET:FlxPoint = new FlxPoint(118, 14);
+		private static const ICON_TILE_OFFSET:FlxPoint = new FlxPoint(39, 39); 
+		private static const ICON_OFFSET:FlxPoint = new FlxPoint(37, 37);
+		private static const DESC_OFFSET:FlxPoint = new FlxPoint(28, 140);
+		private static const DISCARD_OFFSET:FlxPoint = new FlxPoint(42, 205);
+		private static const CARD_WIDTH:int = 154;
+		private static const CARD_HEIGHT:int = 204;
 		public static const TIME_TO_MOVE:Number = 1.0;
 		
 		public var _title:String = "";
@@ -44,7 +44,8 @@ package
 		private var _hoverEffect:FlxSprite;
 		private var _hover_enabled:Boolean = true;
 		private var _iconHolder:FlxGroup = new FlxGroup();
-		public var _card_front:FlxGroup = new FlxGroup();
+		public var _card_front:FlxSprite;
+		public var _card_back:FlxSprite;
 		public var _tile:Tile;
 		public var _monster:Monster;
 		public var _treasure:Treasure;
