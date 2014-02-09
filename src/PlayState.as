@@ -204,22 +204,30 @@ package
 			highlights.visible = false;
 			placingSprite.visible = true;
 
-			/*
+			
 			addCardFromDeck("TILE", 0);
 			addCardFromDeck("TILE", 1);
-			//addCardFromDeck("TILE", 2);
-			addCardFromDeck("TREASURE", 2);
+			addCardFromDeck("TILE", 2);
+			//addCardFromDeck("TREASURE", 2);
 			addCardFromDeck("MONSTER", 3);
 			addCardFromDeck("MONSTER", 4);
-			*/
 			
 			
+			/*
 			addCardFromDeck("TREASURE", 0);
 			addCardFromDeck("TREASURE", 1);
 			addCardFromDeck("TREASURE", 2);
 			addCardFromDeck("TREASURE", 3);
 			addCardFromDeck("TREASURE", 4);
+			*/
 			
+			/*
+			addCardFromDeck("MONSTER", 0);
+			addCardFromDeck("MONSTER", 1);
+			addCardFromDeck("MONSTER", 2);
+			addCardFromDeck("MONSTER", 3);
+			addCardFromDeck("MONSTER", 4);
+			*/
 						
 			sndCheer = new WavSound(new WAVcheer() as ByteArray);
 			sndCoins = new WavSound(new WAVcoins() as ByteArray);

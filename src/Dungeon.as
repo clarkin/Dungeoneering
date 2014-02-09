@@ -7,7 +7,7 @@ package
 		public var all_monsters:Array = new Array();
 		public var all_treasures:Array = new Array();
 		public var _dread_level:Number = 1;
-		public var _hope_level:Number = 10;
+		public var _hope_level:Number = 1;
 		
 		private var _playState:PlayState;
 		
