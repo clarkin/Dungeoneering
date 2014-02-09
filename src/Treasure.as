@@ -12,7 +12,8 @@ package
 		
 		public static const ALL_TREASURES:Array = [
 			"Gold Coin", "Silver Coins", "Gold Pouch", "Candlestick", "Sapphire Ring", "Massive Gem", 
-			"Large Chest", "Leather Cap", "Spiked Helm", "Winged Fury"];
+			"Large Chest", "Leather Cap", "Spiked Helm", "Winged Fury", "Scale Mail", "Chainmail", "Breastplate",
+			"Wooden Shield", "Buckler", "Silver Shield", "Greatshield", "Club", "Spiked Mace", "Sword", "Battle Axe"];
 		
 		public var _type:String = "";
 		public var _desc:String = "";
@@ -88,7 +89,8 @@ package
 					addAnimation(_type, [8]);
 					_hope = 2;
 					_equippable_type = "helmet";
-					_equippable_armour = 2;
+					_equippable_strength = 1;
+					_equippable_armour = 1;
 					_equippables_frame = 12;
 					break;
 				case "Winged Fury":
@@ -96,9 +98,105 @@ package
 					addAnimation(_type, [9]);
 					_hope = 4;
 					_equippable_type = "helmet";
-					_equippable_armour = 2;
+					_equippable_armour = 1;
 					_equippable_speed = 1;
 					_equippables_frame = 13;
+					break;
+				case "Scale Mail":
+					_desc = "Layered scales. Works for dragons, right?";
+					addAnimation(_type, [10]);
+					_hope = 2;
+					_equippable_type = "armour";
+					_equippable_armour = 2;
+					_equippable_speed = -1;
+					_equippables_frame = 15;
+					break;
+				case "Chainmail":
+					_desc = "A shirt of linked rings. Seems comfortable";
+					addAnimation(_type, [11]);
+					_hope = 3;
+					_equippable_type = "armour";
+					_equippable_armour = 2;
+					_equippables_frame = 16;
+					break;
+				case "Breastplate":
+					_desc = "Awkward, but looks like it will keep you safe";
+					addAnimation(_type, [12]);
+					_hope = 4;
+					_equippable_type = "armour";
+					_equippable_armour = 3;
+					_equippable_speed = -1;
+					_equippables_frame = 17;
+					break;
+				case "Wooden Shield":
+					_desc = "Better than nothing.. maybe";
+					addAnimation(_type, [13]);
+					_hope = 0;
+					_equippable_type = "shield";
+					_equippable_armour = 1;
+					_equippable_strength = -1;
+					_equippables_frame = 18;
+					break;
+				case "Buckler":
+					_desc = "Buckles onto your arm, not under pressure!";
+					addAnimation(_type, [14]);
+					_hope = 1;
+					_equippable_type = "shield";
+					_equippable_armour = 1;
+					_equippables_frame = 19;
+					break;
+				case "Silver Shield":
+					_desc = "Shines with a bright inner light";
+					addAnimation(_type, [15]);
+					_hope = 4;
+					_equippable_type = "shield";
+					_equippable_armour = 2;
+					_equippable_strength = 1;
+					_equippables_frame = 20;
+					break;
+				case "Greatshield":
+					_desc = "A huge shield. Can you lift it?";
+					addAnimation(_type, [16]);
+					_hope = 3;
+					_equippable_type = "shield";
+					_equippable_armour = 3;
+					_equippable_speed = -2;
+					_equippables_frame = 21;
+					break;
+				case "Club":
+					_desc = "A heavy wooden club. ME SMASH NOW!";
+					addAnimation(_type, [17]);
+					_hope = 1;
+					_equippable_type = "weapon";
+					_equippable_strength = 2;
+					_equippable_speed = -2;
+					_equippables_frame = 22;
+					break;
+				case "Spiked Mace":
+					_desc = "Spiky metal on a stick";
+					addAnimation(_type, [18]);
+					_hope = 2;
+					_equippable_type = "weapon";
+					_equippable_strength = 2;
+					_equippable_speed = -1;
+					_equippables_frame = 23;
+					break;
+				case "Sword":
+					_desc = "Simple. Effective. BORING";
+					addAnimation(_type, [19]);
+					_hope = 2;
+					_equippable_type = "weapon";
+					_equippable_strength = 2;
+					_equippables_frame = 24;
+					break;
+				case "Battle Axe":
+					_desc = "Time to CLEAVE them to pieces!";
+					addAnimation(_type, [20]);
+					_hope = 4;
+					_equippable_type = "weapon";
+					_equippable_strength = 4;
+					_equippable_armour = -1;
+					_equippables_frame = 25;
 					break;
 				default:
 					throw new Error("no matching treasure defined for " + _type);

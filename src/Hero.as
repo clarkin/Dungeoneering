@@ -46,6 +46,8 @@ package
 			//trace("adding hero at [" + X + "," + Y + "]");
 			super(X + tile_offset.x, Y + tile_offset.y);
 			
+			_playState = playState;
+			
 			_health = 10;
 			_strength = 2;
 			_speed = 2;
@@ -55,8 +57,6 @@ package
 			_equippables.loadGraphic(heroPNG, true, false, TILE_SIZE, TILE_SIZE);
 			
 			RedoSprite();
-			
-			_playState = playState;
 		}
 		
 		override public function update():void {	
@@ -93,15 +93,38 @@ package
 		}
 		
 		public function RedoSprite():void {
-			trace("recalculating sprite");
 			loadGraphic(heroBasePNG, false, false, TILE_SIZE, TILE_SIZE, true);
+			
+			//expression
 			_equippables.frame = 1;
 			this.stamp(_equippables);
 			
 			if (_equipped_helmet != null) {
-				trace("stamping helmet frame " + _equipped_helmet._equippables_frame);
 				_equippables.frame = _equipped_helmet._equippables_frame;
 				this.stamp(_equippables);
+			}
+			
+			if (_equipped_armour != null) {
+				_equippables.frame = _equipped_armour._equippables_frame;
+				this.stamp(_equippables);
+			} else {
+				//tunic
+				_equippables.frame = 14;
+				this.stamp(_equippables);
+			}
+			
+			if (_equipped_shield != null) {
+				_equippables.frame = _equipped_shield._equippables_frame;
+				this.stamp(_equippables);
+			}
+			
+			if (_equipped_weapon != null) {
+				_equippables.frame = _equipped_weapon._equippables_frame;
+				this.stamp(_equippables);
+			}
+			
+			if (_playState.stats_hero_sprite != null) {
+				_playState.stats_hero_sprite.pixels = this.framePixels.clone();
 			}
 		}
 		
@@ -261,8 +284,29 @@ package
 								RedoSprite();
 							}
 							break;
+						case "armour":
+							if (_equipped_armour == null || next_card._treasure._hope > _equipped_armour._hope) {
+								sell_it = false;
+								_equipped_armour = next_card._treasure;
+								RedoSprite();
+							}
+							break;
+						case "shield":
+							if (_equipped_shield == null || next_card._treasure._hope > _equipped_shield._hope) {
+								sell_it = false;
+								_equipped_shield = next_card._treasure;
+								RedoSprite();
+							}
+							break;
+						case "weapon":
+							if (_equipped_weapon == null || next_card._treasure._hope > _equipped_weapon._hope) {
+								sell_it = false;
+								_equipped_weapon = next_card._treasure;
+								RedoSprite();
+							}
+							break;
 						default: 
-							
+							//nothing
 					}
 					if (sell_it) {
 						_playState.sndCoins.play();

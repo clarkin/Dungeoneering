@@ -170,7 +170,7 @@ package
 			player_stats_label.angle = 4;
 			player_stats_label.antialiasing = true;
 			guiGroup.add(player_stats_label);
-			stats_hero_sprite = new FlxSprite(915, 660);
+			stats_hero_sprite = new FlxSprite(910, 660);
 			stats_hero_sprite.pixels = hero.framePixels.clone();
 			stats_hero_sprite.scrollFactor = new FlxPoint(0, 0);
 			stats_hero_sprite.angle = 4;
