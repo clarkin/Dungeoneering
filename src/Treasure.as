@@ -11,12 +11,17 @@ package
 		public static const SPRITE_SIZE:int = 80;
 		
 		public static const ALL_TREASURES:Array = [
-			"Silver Coins", "Gold Pouch", "Candlestick", "Sapphire Ring", "Massive Gem", 
-			"Large Chest"];
+			"Gold Coin", "Silver Coins", "Gold Pouch", "Candlestick", "Sapphire Ring", "Massive Gem", 
+			"Large Chest", "Leather Cap", "Spiked Helm", "Winged Fury"];
 		
 		public var _type:String = "";
 		public var _desc:String = "";
 		public var _hope:Number = 0;
+		public var _equippable_type:String = "";
+		public var _equippable_strength:int = 0;
+		public var _equippable_speed:int = 0;
+		public var _equippable_armour:int = 0;
+		public var _equippables_frame:int = 0;
 		
 		private var _playState:PlayState;
 		
@@ -35,6 +40,11 @@ package
 			}
 			
 			switch (_type) {
+				case "Gold Coin":
+					_desc = "A single coin lying in the dirt";	
+					addAnimation(_type, [0]);
+					_hope = 0;
+					break;
 				case "Silver Coins":
 					_desc = "A handful of silver scattered aground";	
 					addAnimation(_type, [1]);
@@ -64,6 +74,31 @@ package
 					_desc = "A heavy wooden chest. What could be inside?";
 					addAnimation(_type, [6]);
 					_hope = 4;
+					break;
+				case "Leather Cap":
+					_desc = "A simple leather cap. Might warm you up.";
+					addAnimation(_type, [7]);
+					_hope = 1;
+					_equippable_type = "helmet";
+					_equippable_armour = 1;
+					_equippables_frame = 11;
+					break;
+				case "Spiked Helm":
+					_desc = "Spiky. Menacing. Stylish!";
+					addAnimation(_type, [8]);
+					_hope = 2;
+					_equippable_type = "helmet";
+					_equippable_armour = 2;
+					_equippables_frame = 12;
+					break;
+				case "Winged Fury":
+					_desc = "It gleams in the dark. Could it be magical?";
+					addAnimation(_type, [9]);
+					_hope = 4;
+					_equippable_type = "helmet";
+					_equippable_armour = 2;
+					_equippable_speed = 1;
+					_equippables_frame = 13;
 					break;
 				default:
 					throw new Error("no matching treasure defined for " + _type);

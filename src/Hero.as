@@ -7,12 +7,14 @@ package
 	
 	public class Hero extends FlxSprite
 	{
-		[Embed(source = "../assets/hero_sprite.png")] private var heroPNG:Class;
+		[Embed(source = "../assets/hero_base.png")] private var heroBasePNG:Class;
+		[Embed(source = "../assets/hero_spritesheet_80px_COL.png")] private var heroPNG:Class;
 		
 		public static const TIME_TO_MOVE_TILES:Number = 1.0;
 		public static const ARRIVAL_THRESHOLD:int = 0;
 		public static const THINKING_TIME:Number = 3;
 		public static const CARD_TIME:Number = 2;
+		public static const TILE_SIZE:int = 80;
 		
 		public var tile_offset:FlxPoint = new FlxPoint(60, 60);
 		private var thought_offset:FlxPoint = new FlxPoint(29, -110);
@@ -30,6 +32,13 @@ package
 		public var _speed:int = 0;
 		public var _armour:int = 0;
 		
+		public var _equipped_helmet:Treasure;
+		public var _equipped_armour:Treasure;
+		public var _equipped_weapon:Treasure;
+		public var _equipped_shield:Treasure;
+		
+		public var _equippables:FlxSprite;
+		
 		private var _playState:PlayState;
 		
 		public function Hero(playState:PlayState, X:int = 0, Y:int = 0) 
@@ -42,7 +51,10 @@ package
 			_speed = 2;
 			_armour = 0;
 			
-			loadGraphic(heroPNG, false, true, 64, 79);
+			_equippables = new FlxSprite(X, Y);
+			_equippables.loadGraphic(heroPNG, true, false, TILE_SIZE, TILE_SIZE);
+			
+			RedoSprite();
 			
 			_playState = playState;
 		}
@@ -78,6 +90,19 @@ package
 			}
 			
 			super.update();
+		}
+		
+		public function RedoSprite():void {
+			trace("recalculating sprite");
+			loadGraphic(heroBasePNG, false, false, TILE_SIZE, TILE_SIZE, true);
+			_equippables.frame = 1;
+			this.stamp(_equippables);
+			
+			if (_equipped_helmet != null) {
+				trace("stamping helmet frame " + _equipped_helmet._equippables_frame);
+				_equippables.frame = _equipped_helmet._equippables_frame;
+				this.stamp(_equippables);
+			}
 		}
 		
 		public function startTurn():void {
@@ -227,8 +252,22 @@ package
 				//trace("processing card " + next_card._title);
 				
 				if (next_card._type == "TREASURE") {
-					_playState.sndCoins.play();
-					_playState.player_treasure += next_card._treasure._hope + 1;
+					var sell_it:Boolean = true;
+					switch (next_card._treasure._equippable_type) {
+						case "helmet":
+							if (_equipped_helmet == null || next_card._treasure._hope > _equipped_helmet._hope) {
+								sell_it = false;
+								_equipped_helmet = next_card._treasure;
+								RedoSprite();
+							}
+							break;
+						default: 
+							
+					}
+					if (sell_it) {
+						_playState.sndCoins.play();
+						_playState.player_treasure += next_card._treasure._hope + 1;
+					}
 				} else if (next_card._type == "MONSTER") {
 					_playState.StartBattle(next_card._monster);
 				}
@@ -239,7 +278,7 @@ package
 		}
 		
 		public function FightMonster(this_monster:Monster):void {
-			if (_speed >= this_monster._speed) {
+			if (EquippedSpeed() >= this_monster._speed) {
 				trace("hero attacks first")
 				HeroAttacksMonster(this_monster);
 				
@@ -258,8 +297,8 @@ package
 		
 		public function HeroAttacksMonster(this_monster:Monster):void {
 			trace("hero attacked monster");
-			if (_strength > this_monster._armour) {
-				this_monster._health -= (_strength - this_monster._armour);
+			if (EquippedStrength() > this_monster._armour) {
+				this_monster._health -= (EquippedStrength() - this_monster._armour);
 				_playState.sndSwordkill.play();
 			}
 			
@@ -271,8 +310,8 @@ package
 		
 		public function MonsterAttacksHero(this_monster:Monster):void {
 			trace("monster attacked hero");
-			if (this_monster._strength > _armour) {
-				_health -= (this_monster._strength - _armour);
+			if (this_monster._strength > EquippedArmour()) {
+				_health -= (this_monster._strength - EquippedArmour());
 				CheckHeroHealth();
 			}
 		}
@@ -285,12 +324,66 @@ package
 			}
 		}
 		
+		public function EquippedStrength():int {
+			var equipped_strength_total:int = _strength;
+			if (_equipped_helmet != null) {
+				equipped_strength_total += _equipped_helmet._equippable_strength;
+			}
+			if (_equipped_shield != null) {
+				equipped_strength_total += _equipped_shield._equippable_strength;
+			}
+			if (_equipped_armour != null) {
+				equipped_strength_total += _equipped_armour._equippable_strength;
+			}
+			if (_equipped_weapon != null) {
+				equipped_strength_total += _equipped_weapon._equippable_strength;
+			}
+			
+			return equipped_strength_total;
+		}
+		
+		public function EquippedSpeed():int {
+			var equipped_speed_total:int = _speed;
+			if (_equipped_helmet != null) {
+				equipped_speed_total += _equipped_helmet._equippable_speed;
+			}
+			if (_equipped_shield != null) {
+				equipped_speed_total += _equipped_shield._equippable_speed;
+			}
+			if (_equipped_armour != null) {
+				equipped_speed_total += _equipped_armour._equippable_speed;
+			}
+			if (_equipped_weapon != null) {
+				equipped_speed_total += _equipped_weapon._equippable_speed;
+			}
+			
+			return equipped_speed_total;
+		}
+		
+		public function EquippedArmour():int {
+			var equipped_armour_total:int = _armour;
+			if (_equipped_helmet != null) {
+				equipped_armour_total += _equipped_helmet._equippable_armour;
+			}
+			if (_equipped_shield != null) {
+				equipped_armour_total += _equipped_shield._equippable_armour;
+			}
+			if (_equipped_armour != null) {
+				equipped_armour_total += _equipped_armour._equippable_armour;
+			}
+			if (_equipped_weapon != null) {
+				equipped_armour_total += _equipped_weapon._equippable_armour;
+			}
+			
+			return equipped_armour_total;
+		}
+		
 		public function GetStats():String {
 			var stats:String = "";
 			stats += "Health: " + _health + "\n";
-			stats += "Strength: " + _strength + "\n";
-			stats += "Speed: " + _speed + "\n";
-			stats += "Armour: " + _armour + "\n";
+			stats += "Strength: " + EquippedStrength() + "\n";
+			stats += "Speed: " + EquippedSpeed() + "\n";
+			stats += "Armour: " + EquippedArmour() + "\n";
 			return stats;
 		}
 
