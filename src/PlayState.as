@@ -204,22 +204,22 @@ package
 			highlights.visible = false;
 			placingSprite.visible = true;
 
-			/*
+			
 			addCardFromDeck("TILE", 0);
 			addCardFromDeck("TILE", 1);
-			addCardFromDeck("TILE", 2);
-			//addCardFromDeck("TREASURE", 2);
+			//addCardFromDeck("TILE", 2);
+			addCardFromDeck("TREASURE", 2);
 			addCardFromDeck("MONSTER", 3);
 			addCardFromDeck("MONSTER", 4);
-			*/
 			
 			
+			/*
 			addCardFromDeck("TREASURE", 0);
 			addCardFromDeck("TREASURE", 1);
 			addCardFromDeck("TREASURE", 2);
 			addCardFromDeck("TREASURE", 3);
 			addCardFromDeck("TREASURE", 4);
-			
+			*/
 						
 			sndCheer = new WavSound(new WAVcheer() as ByteArray);
 			sndCoins = new WavSound(new WAVcoins() as ByteArray);
@@ -447,13 +447,17 @@ package
 												}											
 											} else {
 												if (placing_card._type == "MONSTER") {
-													var new_placing_card_monster:Card = new Card(this, -1000, -1000, placing_card._type, null, placing_card._monster);
+													//var new_placing_card_monster:Card = new Card(this, -1000, -1000, placing_card._type, null, placing_card._monster);
 													//new_placing_card_monster._monster.alpha = 0.6;
-													placingSprite.add(new_placing_card_monster._monster);
+													//placingSprite.add(new_placing_card_monster._monster);
+													var new_placing_card_monster:Monster = new Monster(this, placing_card._monster._type, true);
+													placingSprite.add(new_placing_card_monster);
 												} else {
-													var new_placing_card_treasure:Card = new Card(this, -1000, -1000, placing_card._type, null, null, placing_card._treasure);
+													//var new_placing_card_treasure:Card = new Card(this, -1000, -1000, placing_card._type, null, null, placing_card._treasure);
 													//new_placing_card_treasure._treasure.alpha = 0.6;
-													placingSprite.add(new_placing_card_treasure._treasure);
+													//placingSprite.add(new_placing_card_treasure._treasure);
+													var new_placing_card_treasure:Treasure = new Treasure(this,placing_card._treasure._type, true);
+													placingSprite.add(new_placing_card_treasure);
 												}
 												for each (var possible_tile2:Tile in tiles.members) {
 													if (possible_tile2 != hero.current_tile && possible_tile2.validForCard(placing_card)) {

@@ -100,7 +100,7 @@ package
 					alpha = 1;
 				}
 			} else if (!has_visited) {
-				alpha = 0.8;
+				//alpha = 0.8;
 			} else {
 				alpha = 1;
 			}
@@ -135,10 +135,14 @@ package
 			//copy of given card
 			var newCard:Card = new Card(_playState, this.x, this.y, card._type, null, card._monster, card._treasure);
 			if (newCard._monster != null) {
+				var new_placing_card_monster:Monster = new Monster(this._playState, newCard._monster._type, true);
+				newCard._monster = new_placing_card_monster;
 				newCard._monster.x = this.x + ICON_OFFSET.x;
 				newCard._monster.y = this.y + ICON_OFFSET.y;
 			}
 			if (newCard._treasure != null) {
+				var new_placing_card_treasure:Treasure = new Treasure(this._playState, newCard._treasure._type, true);
+				newCard._treasure = new_placing_card_treasure;
 				newCard._treasure.x = this.x + ICON_OFFSET.x;
 				newCard._treasure.y = this.y + ICON_OFFSET.y;
 			}

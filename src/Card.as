@@ -96,7 +96,7 @@ package
 					_card_text_color = 0xFF333333;
 					_title = monster._type;
 					_desc = monster._desc;
-					_monster = new Monster(_playState, _title, X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
+					_monster = new Monster(_playState, _title, false, X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
 					_card_stamper.stamp(_monster, ICON_OFFSET.x, ICON_OFFSET.y);
 					_cost = _monster._dread;
 					break;
@@ -110,7 +110,7 @@ package
 					_card_text_color = 0xFF333333;
 					_title = treasure._type;
 					_desc = treasure._desc;
-					_treasure = new Treasure(_playState, _title, X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
+					_treasure = new Treasure(_playState, _title, false, X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
 					_card_stamper.stamp(_treasure, ICON_OFFSET.x, ICON_OFFSET.y);
 					_cost = _treasure._hope;
 					break;
