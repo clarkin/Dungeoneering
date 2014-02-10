@@ -366,7 +366,9 @@ package
 				} 
 				
 				if (hero.overlapsPoint(FlxG.mouse.getWorldPosition())) {
-					hero.thinkSomething("poked");
+					if (!TweenMax.isTweening(hero)) {
+						hero.thinkSomething("poked");
+					}
 				}
 			}
 			
