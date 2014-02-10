@@ -21,6 +21,8 @@ package
 		
 		public var current_tile:Tile;
 		public var moving_to_tile:Tile;
+		public var previous_tile:Tile;
+		public var processing_card:Card;
 		public var is_taking_turn:Boolean = false;
 		public var is_moving:Boolean = false;
 		public var is_processing_cards:Boolean = false;
@@ -76,6 +78,7 @@ package
 							_playState.sndFootsteps.play();
 						}
 						is_moving = true;
+						previous_tile = current_tile;
 						TweenLite.to(this, TIME_TO_MOVE_TILES, { x:moving_to_tile.x + tile_offset.x - origin.x, y:moving_to_tile.y + tile_offset.y - origin.y, ease:Back.easeInOut.config(0.8) } );
 					}
 					checkMovement();
@@ -272,6 +275,7 @@ package
 				}
 			} else {
 				var next_card:Card = current_tile.cards.pop();
+				processing_card = next_card;
 				//trace("processing card " + next_card._title);
 				
 				if (next_card._type == "TREASURE") {

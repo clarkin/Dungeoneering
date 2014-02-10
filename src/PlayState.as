@@ -99,6 +99,7 @@ package
 		public var turn_number:int = 0;
 		public var cards_played:int = 0;
 		public var battle_timer:Number = 0;
+		public var battle_turn:Number = 0;
 		public var idle_timer:Number = 0;
 		
 		override public function create():void {
@@ -217,6 +218,14 @@ package
 			addCardFromDeck("TREASURE", 0);
 			addCardFromDeck("TREASURE", 1);
 			addCardFromDeck("TREASURE", 2);
+			addCardFromDeck("MONSTER", 3);
+			addCardFromDeck("MONSTER", 4);
+			*/
+			
+			/*
+			addCardFromDeck("TREASURE", 0);
+			addCardFromDeck("TREASURE", 1);
+			addCardFromDeck("TREASURE", 2);
 			addCardFromDeck("TREASURE", 3);
 			addCardFromDeck("TREASURE", 4);
 			*/
@@ -277,10 +286,23 @@ package
 					battle_timer -= FlxG.elapsed;
 				} else {
 					battle_timer = BATTLE_TIME;
+					battle_turn++;
+					//trace("battle turn " + battle_turn);
 					if (battling_monster._health > 0 && hero._health > 0) {
-						hero.FightMonster(battling_monster);
-						battle_hero_stats.text = hero.GetStats();
-						battle_monster_stats.text = battling_monster.GetStats();
+						if (battle_turn > 5) {
+							//run away
+							battleScreen.visible = false;
+							hero.moving_to_tile = hero.previous_tile;
+							hero.current_tile.addCard(hero.processing_card);
+							//hero.thinkSomething("movement"); //TODO think something cowardly 
+							following_hero = true;
+							hero.is_taking_turn = true;
+							turn_phase = PlayState.PHASE_HERO_MOVING;
+						} else {
+							hero.FightMonster(battling_monster);
+							battle_hero_stats.text = hero.GetStats();
+							battle_monster_stats.text = battling_monster.GetStats();
+						}
 					} else {
 						battling_monster = null;
 						battleScreen.visible = false;
@@ -308,6 +330,7 @@ package
 		public function StartBattle(this_monster:Monster):void {
 			turn_phase = PlayState.PHASE_HERO_BATTLE;
 			battle_timer = BATTLE_TIME;
+			battle_turn = 0;
 			battling_monster = this_monster;
 			
 			trace("Stats for monster " + this_monster._type);
