@@ -46,13 +46,14 @@ package
 		public static const starting_point:Point = new Point(0, 0);
 		
 		public static const PHASE_FADING_IN:int       = 0; 
-		public static const PHASE_NEWTURN:int         = 1; 
-		public static const PHASE_CARDS_PLAY:int      = 2;
-		public static const PHASE_CARDS_DEAL:int      = 3;
-		public static const PHASE_HERO_THINK:int      = 4;
-		public static const PHASE_HERO_MOVING:int     = 5;
-		public static const PHASE_HERO_CARDS:int      = 6;
-		public static const PHASE_HERO_BATTLE:int     = 7;
+		public static const PHASE_NEWTURN:int         = 1;
+		public static const PHASE_BOSS_CHAT:int       = 2;
+		public static const PHASE_CARDS_PLAY:int      = 3;
+		public static const PHASE_CARDS_DEAL:int      = 4;
+		public static const PHASE_HERO_THINK:int      = 5;
+		public static const PHASE_HERO_MOVING:int     = 6;
+		public static const PHASE_HERO_CARDS:int      = 7;
+		public static const PHASE_HERO_BATTLE:int     = 8;
 		public var turn_phase:int = PHASE_FADING_IN;
 		
 		public static const SCROLL_MAXVELOCITY:Number = 800;
@@ -231,8 +232,7 @@ package
 			
 			boss_monster = new Monster(this, "Fire Demon", true, true, 12, 120);
 			boss_monster.scrollFactor = new FlxPoint(0, 0);
-			boss_monster.Appear(appearDelay);
-			//appearDelay += APPEAR_DELAY;
+			boss_monster.visible = false;
 			
 			highlights.visible = false;
 			placingSprite.visible = true;
@@ -285,7 +285,7 @@ package
 			add(camera_target);
 			add(highlights);
 			add(hero);
-			//add(boss_monster);
+			add(boss_monster);
 			add(floatingTexts);
 			add(UIFrame);
 			add(guiGroup);
@@ -394,17 +394,54 @@ package
 				trace("** new turn **");
 				turn_number++;
 				dungeon.IncreaseDread();
-				showCards();
-				hand_shrunk = false;
-				SortAndMoveCards();
-				cards_played = 0;
-				player_cards_label.text = "Play or discard up to 3 more cards";
-				turn_phase = PHASE_CARDS_PLAY;
+				
+				if (turn_number == 1) {
+					turn_phase = PHASE_BOSS_CHAT;
+					DoBossChat();
+				} else {
+					TimeToPlayCards();
+				}
 			} 
 		} 
 		
 		public function CardsDealOver():void {
 			turn_phase = PHASE_HERO_THINK;
+		}
+		
+		public function DoBossChat():void {
+			boss_monster.visible = true;
+			appearDelay = 0;
+			boss_monster.Appear(appearDelay);
+			appearDelay += FlxSprite.TIME_TO_APPEAR;
+			BossAddChat("WHO DARES INVADE THE HOT, HOT LAIR OF EMBRO, LORD OF FLAME?!", appearDelay);
+			appearDelay += FloatingText.FADE_IN_TIME * 2 + FloatingText.DISPLAY_TIME + FloatingText.FADE_OUT_TIME;
+			BossAddChat("Right in the middle of bath time, too. Look at this puddle.", appearDelay);
+			appearDelay += FloatingText.FADE_IN_TIME * 2 + FloatingText.DISPLAY_TIME + FloatingText.FADE_OUT_TIME;
+			BossAddChat("MINIONS! DESTROY THEM! BRING ME THEIR BONES!", appearDelay);
+			appearDelay += FloatingText.FADE_IN_TIME * 2 + FloatingText.DISPLAY_TIME + FloatingText.FADE_OUT_TIME;
+			TweenLite.delayedCall(appearDelay , BossChatOver);
+		}
+		
+		public function BossAddChat(chat:String, delay:Number = 0 ):void {
+			TweenMax.to(boss_monster, 0.15, { x:boss_monster.x + 1, y:boss_monster.y - 2, delay:delay, repeat:5, yoyo:true } );
+			var boss_shout:FloatingText = new FloatingText(boss_monster.x + 60, boss_monster.y - 86, chat, delay);
+			boss_shout.scrollFactor = new FlxPoint(0, 0);
+			floatingTexts.add(boss_shout);
+		}
+		
+		public function BossChatOver():void {
+			boss_monster.Disappear(0, false);
+			appearDelay = 0;
+			TimeToPlayCards();
+		}
+		
+		public function TimeToPlayCards():void {
+			showCards();
+			hand_shrunk = false;
+			SortAndMoveCards();
+			cards_played = 0;
+			player_cards_label.text = "Play or discard up to 3 more cards";
+			turn_phase = PHASE_CARDS_PLAY;
 		}
 		
 		public function updateLabels():void {

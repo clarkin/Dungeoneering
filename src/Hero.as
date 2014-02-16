@@ -17,7 +17,7 @@ package
 		public static const TILE_SIZE:int = 80;
 		
 		public var tile_offset:FlxPoint = new FlxPoint(60, 60);
-		private var thought_offset:FlxPoint = new FlxPoint(29, -110);
+		public var thought_offset:FlxPoint = new FlxPoint(29, -110);
 		
 		public var current_tile:Tile;
 		public var moving_to_tile:Tile;
