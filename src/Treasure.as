@@ -11,8 +11,6 @@ package
 				
 		public static const ICON_OFFSET:FlxPoint = new FlxPoint(10, 5);
 		public static const SPRITE_SIZE:int = 80;
-		public static const TIME_TO_APPEAR:Number = 0.4;
-		public static const TIME_TO_DISAPPEAR:Number = 0.3;
 		
 		public static const ALL_TREASURES:Array = [
 			"Gold Coin", "Silver Coins", "Gold Pouch", "Candlestick", "Sapphire Ring", "Massive Gem", 
@@ -206,21 +204,6 @@ package
 					throw new Error("no matching treasure defined for " + _type);
 			}
 			play(_type);
-		}
-		
-		public function Appear(delay:Number = 0):void {
-			var final_scale:Number = bothScale;
-			bothScale = 0.0;
-			TweenLite.to(this, TIME_TO_APPEAR, { bothScale:final_scale, delay:delay, ease:Back.easeInOut.config(0.8) } );
-		}
-		
-		public function Disappear():void {
-			TweenLite.to(this, TIME_TO_DISAPPEAR, { bothScale:0.0, ease:Back.easeInOut.config(0.8) } );
-			TweenLite.delayedCall(TIME_TO_DISAPPEAR, FinishedDisappear);
-		}
-		
-		public function FinishedDisappear():void {
-			kill();
 		}
 
 	}

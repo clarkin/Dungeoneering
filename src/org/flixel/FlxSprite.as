@@ -7,6 +7,8 @@ package org.flixel
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import com.greensock.*;
+	import com.greensock.easing.*;
 	
 	import org.flixel.system.FlxAnim;
 	
@@ -18,7 +20,9 @@ package org.flixel
 	 */
 	public class FlxSprite extends FlxObject
 	{
-		[Embed(source="data/default.png")] protected var ImgDefault:Class;
+		[Embed(source = "data/default.png")] protected var ImgDefault:Class;
+		public static const TIME_TO_APPEAR:Number = 0.4;
+		public static const TIME_TO_DISAPPEAR:Number = 0.3;
 		
 		/**
 		 * WARNING: The origin of the sprite will default to its center.
@@ -921,6 +925,35 @@ package org.flixel
 		
 		public function set bothScale(newScale:Number):void {
 			scale.x = scale.y = newScale;
+		}
+		
+		public function Appear(delay:Number = 0):void {
+			var final_scale:Number = bothScale;
+			bothScale = 0.0;
+			TweenLite.to(this, TIME_TO_APPEAR, { bothScale:final_scale, delay:delay, ease:Back.easeInOut.config(0.8) } );
+		}
+		
+		public function Disappear(delay:Number = 0, andKill:Boolean = true):void {
+			TweenLite.to(this, TIME_TO_DISAPPEAR, { bothScale:0.0, delay:delay, ease:Back.easeInOut.config(0.8) } );
+			if (andKill) {
+				TweenLite.delayedCall(TIME_TO_DISAPPEAR, FinishedDisappear);
+			}
+		}
+		
+		public function AppearAlpha(delay:Number = 0):void {
+			alpha = 0.0;
+			TweenLite.to(this, TIME_TO_APPEAR * 2, { alpha:1.0, delay:delay, ease:Sine.easeIn } );
+		}
+		
+		public function DisappearAlpha(delay:Number = 0, andKill:Boolean = true):void {
+			TweenLite.to(this, TIME_TO_DISAPPEAR * 2, { alpha:0.0, delay:delay, ease:Sine.easeOut } );
+			if (andKill) {
+				TweenLite.delayedCall(TIME_TO_DISAPPEAR * 2, FinishedDisappear);
+			}
+		}
+		
+		public function FinishedDisappear():void {
+			kill();
 		}
 	}
 }

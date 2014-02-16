@@ -2,6 +2,8 @@ package
 {
 	import org.flixel.*;
 	import org.flixel.plugin.photonstorm.*;
+	import com.greensock.*;
+	import com.greensock.easing.*;
 
 	public class MenuState extends FlxState
 	{
@@ -13,6 +15,7 @@ package
 		public var showResults:Boolean = true;
 		public var survived:Boolean = true;
 		public var finalScore:int = 0;
+		public var whiteFade:FlxSprite;
 
 		public function MenuState(showResults:Boolean = false, survived:Boolean = false, finalScore:int = 0)
 		{
@@ -54,21 +57,29 @@ package
 			startButton.loadGraphic(playButton, playButtonOn);
 			startButton.screenCenter();
 			
+			whiteFade = new FlxSprite(0, 0);
+			whiteFade.makeGraphic(FlxG.width, FlxG.height, 0xFFFFFFFF);
+			whiteFade.scrollFactor = new FlxPoint(0, 0);
+			whiteFade.DisappearAlpha(0, false);
+			
 			add(titleScreen);
 			add(title);
 			add(results);
 			add(startButton);
+			add(whiteFade);
 			
 			if (FlxG.debug) {
-				FlxG.switchState(new PlayState);
+				startGame();
 			}
 		}
 
 		private function startGame():void {
-			FlxG.fade(0xFFEEEEEE, 1, finishedFade);
+			whiteFade.AppearAlpha();
+			TweenLite.delayedCall(1.0, FinishedFade);
 		}
 		
-		private function finishedFade():void {
+		private function FinishedFade():void {
+			
 			FlxG.switchState(new PlayState);
 		}
 	}

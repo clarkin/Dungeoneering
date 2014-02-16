@@ -45,14 +45,15 @@ package
 		
 		public static const starting_point:Point = new Point(0, 0);
 		
-		public static const PHASE_NEWTURN:int         = 0; 
-		public static const PHASE_CARDS_PLAY:int      = 1;
-		public static const PHASE_CARDS_DEAL:int      = 2;
-		public static const PHASE_HERO_THINK:int      = 3;
-		public static const PHASE_HERO_MOVING:int     = 4;
-		public static const PHASE_HERO_CARDS:int      = 5;
-		public static const PHASE_HERO_BATTLE:int     = 6;
-		public var turn_phase:int = PHASE_HERO_THINK;
+		public static const PHASE_FADING_IN:int       = 0; 
+		public static const PHASE_NEWTURN:int         = 1; 
+		public static const PHASE_CARDS_PLAY:int      = 2;
+		public static const PHASE_CARDS_DEAL:int      = 3;
+		public static const PHASE_HERO_THINK:int      = 4;
+		public static const PHASE_HERO_MOVING:int     = 5;
+		public static const PHASE_HERO_CARDS:int      = 6;
+		public static const PHASE_HERO_BATTLE:int     = 7;
+		public var turn_phase:int = PHASE_FADING_IN;
 		
 		public static const SCROLL_MAXVELOCITY:Number = 800;
 		public static const SCROLL_ACCELERATION:Number = 800;
@@ -66,10 +67,12 @@ package
 		public static const CARDS_PER_TURN:int = 3;
 		public static const BATTLE_TIME:Number = 2;
 		public static const IDLE_TIME:Number = 10;
+		public static const APPEAR_DELAY:Number = 0.4;
 		
 		public var placing_card:Card;
 		public var is_placing_card:Boolean = false;
 		public var battling_monster:Monster;
+		public var boss_monster:Monster;
 		
 		public var choosingHighlight:Tile;
 		public var choosingTile:Boolean = false;
@@ -101,35 +104,27 @@ package
 		public var battle_timer:Number = 0;
 		public var battle_turn:Number = 0;
 		public var idle_timer:Number = 0;
+		public var appearDelay:Number = APPEAR_DELAY;
+		public var whiteFade:FlxSprite;
 		
 		override public function create():void {
 			//FlxG.visualDebug = true;
 			//FlxG.camera.setBounds(0, 0, 800, 600);
 			//FlxG.worldBounds = new FlxRect(0, 0, 800, 600);
 			
+			whiteFade = new FlxSprite(0, 0);
+			whiteFade.makeGraphic(FlxG.width, FlxG.height, 0xFFFFFFFF);
+			whiteFade.scrollFactor = new FlxPoint(0, 0);
+			whiteFade.DisappearAlpha(appearDelay, false);
+			appearDelay += APPEAR_DELAY;
+			
 			tileManager = new TileManager(this);
 			dungeon = new Dungeon(this);
 			
-			hero = new Hero(this, starting_point.x, starting_point.y - Tile.TILESIZE);
-			camera_target = new FlxSprite(hero.x, hero.y);
-			camera_target.width = camera_target.height = 0;
-			camera_target.maxVelocity = new FlxPoint(SCROLL_MAXVELOCITY, SCROLL_MAXVELOCITY);
-			camera_target.drag = new FlxPoint(SCROLL_ACCELERATION, SCROLL_ACCELERATION);
-			camera_target.visible = false;
-			FlxG.camera.follow(camera_target);
-
-			var starting_tile:Tile;
-			starting_tile = new Tile(this, "corr_grate_n", starting_point.x, starting_point.y - Tile.TILESIZE);
-			tiles.add(starting_tile);
-			hero.setCurrentTile(starting_tile);
-			hero.x = starting_tile.x + hero.tile_offset.x - hero.origin.x;
-			hero.y = starting_tile.y + hero.tile_offset.y - hero.origin.y;
-			starting_tile = new Tile(this, "corr_thin_nesw");
-			//starting_tile = new Tile(this, "room_cages_ns");
-			addTileAt(starting_tile, starting_point.x, starting_point.y - Tile.TILESIZE - Tile.TILESIZE);
-			
 			var UIFrame:FlxSprite = new FlxSprite(0, 0, UIFramePNG);
 			UIFrame.scrollFactor = new FlxPoint(0, 0);
+			UIFrame.AppearAlpha(appearDelay);
+			appearDelay += APPEAR_DELAY;
 			
 			var paper_background:FlxSprite = new FlxSprite(200, 200, UIPaperPNG);
 			paper_background.scrollFactor = new FlxPoint(0, 0);
@@ -162,30 +157,62 @@ package
 			battleScreen.visible = false;
 			guiGroup.add(battleScreen);
 			
+			hero = new Hero(this, starting_point.x, starting_point.y - Tile.TILESIZE);
+			camera_target = new FlxSprite(hero.x, hero.y);
+			camera_target.width = camera_target.height = 0;
+			camera_target.maxVelocity = new FlxPoint(SCROLL_MAXVELOCITY, SCROLL_MAXVELOCITY);
+			camera_target.drag = new FlxPoint(SCROLL_ACCELERATION, SCROLL_ACCELERATION);
+			camera_target.visible = false;
+			FlxG.camera.follow(camera_target);
+
+			var starting_tile:Tile = new Tile(this, "corr_grate_n");
+			addTileAt(starting_tile, starting_point.x, starting_point.y - Tile.TILESIZE, false);
+			starting_tile.AppearAlpha(appearDelay);
+			appearDelay += APPEAR_DELAY;
+			hero.setCurrentTile(starting_tile);
+			hero.x = starting_tile.x + hero.tile_offset.x - hero.origin.x;
+			hero.y = starting_tile.y + hero.tile_offset.y - hero.origin.y;
+			var second_tile:Tile = new Tile(this, "corr_thin_nesw");
+			addTileAt(second_tile, starting_point.x, starting_point.y - Tile.TILESIZE - Tile.TILESIZE);
+			second_tile.AppearAlpha(appearDelay);
+			appearDelay += APPEAR_DELAY;
+			hero.Appear(appearDelay);
+			appearDelay += APPEAR_DELAY;
+			
 			paper_background = new FlxSprite(775, 600, UIPaperPNG);
 			paper_background.scrollFactor = new FlxPoint(0, 0);
+			paper_background.Appear(appearDelay);
+			appearDelay += APPEAR_DELAY;
 			guiGroup.add(paper_background);
 			player_stats_label = new FlxText(805, 650, 200, "Strength: 2");
 			player_stats_label.setFormat("LemonsCanFly", 28, 0xFF000000, "left");
 			player_stats_label.scrollFactor = new FlxPoint(0, 0);
 			player_stats_label.angle = 4;
 			player_stats_label.antialiasing = true;
+			player_stats_label.Appear(appearDelay);
+			appearDelay += APPEAR_DELAY;
 			guiGroup.add(player_stats_label);
 			stats_hero_sprite = new FlxSprite(910, 660);
 			stats_hero_sprite.pixels = hero.framePixels.clone();
 			stats_hero_sprite.scrollFactor = new FlxPoint(0, 0);
 			stats_hero_sprite.angle = 4;
 			stats_hero_sprite.antialiasing = true;
+			stats_hero_sprite.Appear(appearDelay);
+			appearDelay += APPEAR_DELAY;
 			guiGroup.add(stats_hero_sprite);
 			player_dread_label = new FlxText(FlxG.width - 150 - 45, 15, 150, "Dread: 0");
 			player_dread_label.setFormat("LemonsCanFly", 40, 0xFFFF8A8A, "right", 0xFFA82C2C);
 			player_dread_label.scrollFactor = new FlxPoint(0, 0);
 			player_dread_label.antialiasing = true;
+			player_dread_label.Appear(appearDelay);
+			appearDelay += APPEAR_DELAY;
 			guiGroup.add(player_dread_label);
 			player_hope_label = new FlxText(FlxG.width - 150 - 165, 15, 150, "Hope: 0");
 			player_hope_label.setFormat("LemonsCanFly", 40, 0xFFEAE2AC, "right", 0xFF999966);
 			player_hope_label.scrollFactor = new FlxPoint(0, 0);
 			player_hope_label.antialiasing = true;
+			player_hope_label.Appear(appearDelay);
+			appearDelay += APPEAR_DELAY;
 			guiGroup.add(player_hope_label);
 			
 			player_cards_label = new FlxText(15, 507, 350, "Play or discard up to 3 more cards");
@@ -201,6 +228,11 @@ package
 			cancelPlacingBtn.updateActiveButtonColors([0xFF6E533F, 0xFF6E533F]);   
 			cancelPlacingBtn.visible = false;
 			guiGroup.add(cancelPlacingBtn);
+			
+			boss_monster = new Monster(this, "Fire Demon", true, true, 12, 120);
+			boss_monster.scrollFactor = new FlxPoint(0, 0);
+			boss_monster.Appear(appearDelay);
+			//appearDelay += APPEAR_DELAY;
 			
 			highlights.visible = false;
 			placingSprite.visible = true;
@@ -253,11 +285,16 @@ package
 			add(camera_target);
 			add(highlights);
 			add(hero);
+			//add(boss_monster);
 			add(floatingTexts);
 			add(UIFrame);
 			add(guiGroup);
 			add(cardsInHand);
 			add(placingSprite);
+			add(whiteFade);
+			
+			TweenLite.delayedCall(appearDelay, endFadeIn);
+			appearDelay = 0;
 		}
 		
 		override public function update():void {
@@ -513,8 +550,7 @@ package
 								if (highlight.alive && highlight.overlapsPoint(clicked_at) && placing_card._tile.validForHighlight(highlight)) {
 									var new_tile:Tile = new Tile(this, placing_card._tile.type);
 									var justAdded:Tile = addTileAt(new_tile, highlight.x, highlight.y);
-									justAdded.Appear();
-									//justAdded.
+									justAdded.AppearAlpha();
 									highlight.kill()
 									is_placing_card = false;
 									highlights.visible = false;
@@ -740,7 +776,7 @@ package
 				possible_card.bothScale = 0.5;	
 			}
 			cardsInHand.add(possible_card);
-			possible_card.Appear(sequence * Card.TIME_TO_APPEAR);
+			possible_card.Appear(sequence * Card.TIME_TO_APPEAR + appearDelay);
 			//trace("finished adding card to hand " + possible_card._title);
 		}
 		
@@ -811,6 +847,10 @@ package
 			}
 		}
 		
+		public function endFadeIn():void {
+			turn_phase = PHASE_HERO_THINK;
+		}
+		
 		public function getTileAt(point:FlxPoint):Tile {
 			for each (var t:Tile in tiles.members) {
 				//trace("checking tile " + t.type + " at [" + t.x + "," + t.y + "]");
@@ -822,14 +862,14 @@ package
 			return null;
 		}
 		
-		public function addTileAt(tile:Tile, X:int, Y:int):Tile {
+		public function addTileAt(tile:Tile, X:int, Y:int, checkExits:Boolean = true):Tile {
 			tile.x = X;
 			tile.y = Y;
-			tile.has_visited = false;
 			tiles.add(tile);
 			//trace("adding tile at " + X + "," + Y);
 			
-			if (tile.type.indexOf("corr") == 0 || tile.type.indexOf("room") == 0) { 
+			if (checkExits && (tile.type.indexOf("corr") == 0 || tile.type.indexOf("room") == 0)) { 
+				tile.has_visited = false;
 				for each (var direction:int in tileManager.all_directions) {
 					//trace ("(in addTileAt) checking " + direction + " for tile of type " + tile.type);
 					if (tile.checkExit(direction)) {
@@ -866,7 +906,7 @@ package
 		}
 		
 		public function addHighlight(X:int, Y:int, from_direction:int):void {
-			//don't add highlight new highlight tile if one already exists for that space
+			//don't add new highlight tile if one already exists for that space
 			var filled:Boolean = false;
 			for each (var this_highlight:Tile in highlights.members) {
 				if (this_highlight.x == X && this_highlight.y == Y) {
