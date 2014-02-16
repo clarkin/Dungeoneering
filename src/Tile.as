@@ -1,6 +1,8 @@
 package 
 {
 	import org.flixel.*;
+	import com.greensock.*;
+	import com.greensock.easing.*;
 	
 	public class Tile extends FlxSprite
 	{
@@ -8,6 +10,8 @@ package
 		[Embed(source = "../assets/tiles.png")] private var dungeonTilesPNG:Class;
 		
 		public static const TILESIZE:Number = 150;
+		public static const TIME_TO_APPEAR:Number = 0.8;
+		public static const TIME_TO_DISAPPEAR:Number = 0.3;
 		
 		public static const ALL_TILES:Array = 
 			["corr_fat_nesw", "corr_well_nesw", "corr_thin_nesw", "corr_hatch_nesw", "corr_carpet_ns",
@@ -139,12 +143,14 @@ package
 				newCard._monster = new_placing_card_monster;
 				newCard._monster.x = this.x + ICON_OFFSET.x;
 				newCard._monster.y = this.y + ICON_OFFSET.y;
+				newCard._monster.Appear();
 			}
 			if (newCard._treasure != null) {
 				var new_placing_card_treasure:Treasure = new Treasure(this._playState, newCard._treasure._type, true);
 				newCard._treasure = new_placing_card_treasure;
 				newCard._treasure.x = this.x + ICON_OFFSET.x;
 				newCard._treasure.y = this.y + ICON_OFFSET.y;
+				newCard._treasure.Appear();
 			}
 			//trace("added card " + newCard._type + ":" + newCard._title + " to tile " + this.type);
 			this.cards.push(newCard);
@@ -278,6 +284,20 @@ package
 				default:
 					throw new Error("invalid direction " + direction);
 			}
+		}
+		
+		public function Appear(delay:Number = 0):void {
+			alpha = 0.0;
+			TweenLite.to(this, TIME_TO_APPEAR, { alpha:1.0, delay:delay, ease:Sine.easeIn } );
+		}
+		
+		public function Disappear():void {
+			TweenLite.to(this, TIME_TO_DISAPPEAR, { alpha:0.0, ease:Sine.easeOut } );
+			TweenLite.delayedCall(TIME_TO_DISAPPEAR, FinishedDisappear);
+		}
+		
+		public function FinishedDisappear():void {
+			kill();
 		}
 		
 	}

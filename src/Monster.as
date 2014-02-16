@@ -1,18 +1,23 @@
 package 
 {
 	import org.flixel.*;
+	import com.greensock.*;
+	import com.greensock.easing.*;
 	
 	public class Monster extends FlxSprite
 	{
 		[Embed(source = "../assets/monster_spritesheet_80px_COLOUR.png")] private var charactersPNG:Class;
+		[Embed(source = "../assets/monster_spritesheet_120px_COLOUR.png")] private var charactersBossPNG:Class;
 		[Embed(source = "../assets/monster_spritesheet_80px_WHITE.png")] private var charactersWhitePNG:Class;
 		
 		public static const ICON_OFFSET:FlxPoint = new FlxPoint(10, 5);
 		public static const SPRITE_SIZE:int = 80;
+		public static const TIME_TO_APPEAR:Number = 0.4;
+		public static const TIME_TO_DISAPPEAR:Number = 0.3;
 		
 		public static const ALL_MONSTERS:Array = [
 			"Sorceress", "Skeleton", "Rubber Ducky", "Gray Ooze", "Mummy", "Zombie", "Bandito", "Cyclops",
-			"Fire Demon", "Ghost", "Giant Bat", "Scary Spider", "Goblin"];
+			"Orc Grunt", "Ghost", "Giant Bat", "Scary Spider", "Goblin"];
 		
 		public var _type:String = "";
 		public var _desc:String = "";
@@ -25,7 +30,7 @@ package
 		
 		private var _playState:PlayState;
 		
-		public function Monster(playState:PlayState, type:String, colour:Boolean = true, X:int = 0, Y:int = 0) 
+		public function Monster(playState:PlayState, type:String, colour:Boolean = true, boss:Boolean = false, X:int = 0, Y:int = 0) 
 		{
 			super(X, Y);
 			
@@ -33,7 +38,11 @@ package
 			_type = type;
 			
 			if (colour) {
-				loadGraphic(charactersPNG, false, true, SPRITE_SIZE, SPRITE_SIZE);
+				if (boss) {
+					loadGraphic(charactersBossPNG, false, true, SPRITE_SIZE + 40, SPRITE_SIZE + 40);
+				} else {
+					loadGraphic(charactersPNG, false, true, SPRITE_SIZE, SPRITE_SIZE);
+				}
 			} else {
 				loadGraphic(charactersWhitePNG, false, true, SPRITE_SIZE, SPRITE_SIZE);
 			}
@@ -105,8 +114,8 @@ package
 				case "Cyclops":
 					_desc = "I spy with my little eye.. FOOD";
 					addAnimation(_type, [7]);
-					_dread = 4;
-					_health = 9;
+					_dread = 5;
+					_health = 10;
 					_strength = 6;
 					_speed = 1;
 					_armour = 0;
@@ -115,9 +124,9 @@ package
 					_desc = "OW! This card is burning hot!";
 					addAnimation(_type, [8]);
 					_dread = 5;
-					_health = 6;
+					_health = 10;
 					_strength = 8;
-					_speed = 4;
+					_speed = 3;
 					_armour = 3;
 					break;
 				case "Ghost":
@@ -139,7 +148,7 @@ package
 					_armour = 0;
 					break;
 				case "Scary Spider":
-					_desc = "Woah - 8 dungeoneers!";
+					_desc = "Woah - EIGHT dungeoneers!";
 					addAnimation(_type, [13]);
 					_dread = 3;
 					_health = 4;
@@ -156,10 +165,34 @@ package
 					_speed = 2;
 					_armour = 0;
 					break;
+				case "Orc Grunt":
+					_desc = "ORCZ iz da best! *sigh* Must I do the voice?";
+					addAnimation(_type, [19]);
+					_dread = 4;
+					_health = 7;
+					_strength = 4;
+					_speed = 2;
+					_armour = 2;
+					break;
 				default:
 					throw new Error("no matching monster defined for " + _type);
 			}
 			play(_type);
+		}
+		
+		public function Appear(delay:Number = 0):void {
+			var final_scale:Number = bothScale;
+			bothScale = 0.0;
+			TweenLite.to(this, TIME_TO_APPEAR, { bothScale:final_scale, delay:delay, ease:Back.easeInOut.config(0.8) } );
+		}
+		
+		public function Disappear():void {
+			TweenLite.to(this, TIME_TO_DISAPPEAR, { bothScale:0.0, ease:Back.easeInOut.config(0.8) } );
+			TweenLite.delayedCall(TIME_TO_DISAPPEAR, FinishedDisappear);
+		}
+		
+		public function FinishedDisappear():void {
+			kill();
 		}
 		
 		public function GetStats():String {

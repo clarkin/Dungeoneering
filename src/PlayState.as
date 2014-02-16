@@ -483,7 +483,7 @@ package
 													//var new_placing_card_monster:Card = new Card(this, -1000, -1000, placing_card._type, null, placing_card._monster);
 													//new_placing_card_monster._monster.alpha = 0.6;
 													//placingSprite.add(new_placing_card_monster._monster);
-													var new_placing_card_monster:Monster = new Monster(this, placing_card._monster._type, true);
+													var new_placing_card_monster:Monster = new Monster(this, placing_card._monster._type, true, false);
 													placingSprite.add(new_placing_card_monster);
 												} else {
 													//var new_placing_card_treasure:Card = new Card(this, -1000, -1000, placing_card._type, null, null, placing_card._treasure);
@@ -513,6 +513,8 @@ package
 								if (highlight.alive && highlight.overlapsPoint(clicked_at) && placing_card._tile.validForHighlight(highlight)) {
 									var new_tile:Tile = new Tile(this, placing_card._tile.type);
 									var justAdded:Tile = addTileAt(new_tile, highlight.x, highlight.y);
+									justAdded.Appear();
+									//justAdded.
 									highlight.kill()
 									is_placing_card = false;
 									highlights.visible = false;
@@ -523,6 +525,7 @@ package
 								if (tile != hero.current_tile && tile.validForCard(placing_card) && tile.overlapsPoint(clicked_at)) {
 									//trace("clicked on tile " + tile.type + " at [" + tile.x + "," + tile.y + "]");
 									tile.addCard(placing_card);
+									
 									is_placing_card = false;
 									tiles.setAll("alpha", 1);
 									tiles.setAll("flashing", false);
