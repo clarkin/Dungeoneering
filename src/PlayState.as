@@ -17,13 +17,15 @@ package
 		[Embed(source = "../assets/UI_frame.png")] private var UIFramePNG:Class;
 		[Embed(source = "../assets/small_paper.png")] private var UIPaperPNG:Class;
 		
-		[Embed(source = "../assets/cheer.wav", mimeType = "application/octet-stream")] private const WAVcheer:Class;
-		[Embed(source = "../assets/coins.wav", mimeType = "application/octet-stream")] private const WAVcoins:Class;
-		[Embed(source = "../assets/deathscream.wav", mimeType = "application/octet-stream")] private const WAVdeathscream:Class;
-		[Embed(source = "../assets/doorcreak.wav", mimeType = "application/octet-stream")] private const WAVdoorcreak:Class;
-		[Embed(source = "../assets/footsteps.wav", mimeType = "application/octet-stream")] private const WAVfootsteps:Class;
-		[Embed(source = "../assets/lots_of_coins.wav", mimeType = "application/octet-stream")] private const WAVlotsofcoins:Class;
-		[Embed(source = "../assets/sword_kill.wav", mimeType = "application/octet-stream")] private const WAVswordkill:Class;
+		[Embed(source = "../assets/sfx/cheer.wav", mimeType = "application/octet-stream")] private const WAVcheer:Class;
+		[Embed(source = "../assets/sfx/coins.wav", mimeType = "application/octet-stream")] private const WAVcoins:Class;
+		[Embed(source = "../assets/sfx/deathscream.wav", mimeType = "application/octet-stream")] private const WAVdeathscream:Class;
+		[Embed(source = "../assets/sfx/doorcreak.wav", mimeType = "application/octet-stream")] private const WAVdoorcreak:Class;
+		[Embed(source = "../assets/sfx/footsteps.wav", mimeType = "application/octet-stream")] private const WAVfootsteps:Class;
+		[Embed(source = "../assets/sfx/lots_of_coins.wav", mimeType = "application/octet-stream")] private const WAVlotsofcoins:Class;
+		[Embed(source = "../assets/sfx/sword_kill.wav", mimeType = "application/octet-stream")] private const WAVswordkill:Class;
+		[Embed(source = "../assets/sfx/demon_talk1.wav", mimeType = "application/octet-stream")] private const WAVdemontalk1:Class;
+		[Embed(source = "../assets/sfx/demon_talk2.wav", mimeType = "application/octet-stream")] private const WAVdemontalk2:Class;
 		public var sndCheer:WavSound;
 		public var sndCoins:WavSound;
 		public var sndDeathscream:WavSound;
@@ -31,6 +33,8 @@ package
 		public var sndFootsteps:WavSound;
 		public var sndLotsofcoins:WavSound;
 		public var sndSwordkill:WavSound;
+		public var sndDemontalk1:WavSound;
+		public var sndDemontalk2:WavSound;
 		
 		public var tileManager:TileManager;
 		public var dungeon:Dungeon;
@@ -277,6 +281,8 @@ package
 			sndFootsteps = new WavSound(new WAVfootsteps() as ByteArray);
 			sndLotsofcoins = new WavSound(new WAVlotsofcoins() as ByteArray);
 			sndSwordkill = new WavSound(new WAVswordkill() as ByteArray);
+			sndDemontalk1 = new WavSound(new WAVdemontalk1() as ByteArray);
+			sndDemontalk2 = new WavSound(new WAVdemontalk2() as ByteArray);
 			
 			var grid_backdrop:FlxBackdrop = new FlxBackdrop(gridTilePNG, 1.0, 1.0, true, true);
 			
@@ -413,10 +419,13 @@ package
 			appearDelay = 0;
 			boss_monster.Appear(appearDelay);
 			appearDelay += FlxSprite.TIME_TO_APPEAR;
+			TweenLite.delayedCall(appearDelay , sndDemontalk1.play);
 			BossAddChat("WHO DARES INVADE THE HOT, HOT LAIR OF EMBRO, LORD OF FLAME?!", appearDelay);
 			appearDelay += FloatingText.FADE_IN_TIME * 2 + FloatingText.DISPLAY_TIME + FloatingText.FADE_OUT_TIME;
 			BossAddChat("Right in the middle of bath time, too. Look at this puddle.", appearDelay);
+			TweenLite.delayedCall(appearDelay , sndDemontalk2.play);
 			appearDelay += FloatingText.FADE_IN_TIME * 2 + FloatingText.DISPLAY_TIME + FloatingText.FADE_OUT_TIME;
+			TweenLite.delayedCall(appearDelay , sndDemontalk1.play);
 			BossAddChat("MINIONS! DESTROY THEM! BRING ME THEIR BONES!", appearDelay);
 			appearDelay += FloatingText.FADE_IN_TIME * 2 + FloatingText.DISPLAY_TIME + FloatingText.FADE_OUT_TIME;
 			TweenLite.delayedCall(appearDelay , BossChatOver);
