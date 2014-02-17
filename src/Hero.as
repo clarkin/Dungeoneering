@@ -235,7 +235,8 @@ package
 				thought = thought.replace(/CARDNAME/g, card_clicked._title);
 			}
 			
-			TweenMax.to(this, THINKING_TIME / 20, {x:x+1, y:y-2, repeat:5, yoyo:true});
+			TweenMax.to(this, THINKING_TIME / 20, { x:x + 1, y:y - 2, repeat:5, yoyo:true } );
+			_playState.sndDungeoneertalk1.play();
 			_playState.floatingTexts.add(new FloatingText(x + thought_offset.x, y + thought_offset.y, thought));
 		}
 		

@@ -26,6 +26,7 @@ package
 		[Embed(source = "../assets/sfx/sword_kill.wav", mimeType = "application/octet-stream")] private const WAVswordkill:Class;
 		[Embed(source = "../assets/sfx/demon_talk1.wav", mimeType = "application/octet-stream")] private const WAVdemontalk1:Class;
 		[Embed(source = "../assets/sfx/demon_talk2.wav", mimeType = "application/octet-stream")] private const WAVdemontalk2:Class;
+		[Embed(source = "../assets/sfx/dungeoneer_talk1.wav", mimeType = "application/octet-stream")] private const WAVdungeoneertalk1:Class;
 		public var sndCheer:WavSound;
 		public var sndCoins:WavSound;
 		public var sndDeathscream:WavSound;
@@ -35,6 +36,7 @@ package
 		public var sndSwordkill:WavSound;
 		public var sndDemontalk1:WavSound;
 		public var sndDemontalk2:WavSound;
+		public var sndDungeoneertalk1:WavSound;
 		
 		public var tileManager:TileManager;
 		public var dungeon:Dungeon;
@@ -283,6 +285,7 @@ package
 			sndSwordkill = new WavSound(new WAVswordkill() as ByteArray);
 			sndDemontalk1 = new WavSound(new WAVdemontalk1() as ByteArray);
 			sndDemontalk2 = new WavSound(new WAVdemontalk2() as ByteArray);
+			sndDungeoneertalk1 = new WavSound(new WAVdungeoneertalk1() as ByteArray);
 			
 			var grid_backdrop:FlxBackdrop = new FlxBackdrop(gridTilePNG, 1.0, 1.0, true, true);
 			

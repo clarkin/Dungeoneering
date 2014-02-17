@@ -15,7 +15,7 @@ package
 		public static const ALL_TREASURES:Array = [
 			"Gold Coin", "Silver Coins", "Gold Pouch", "Candlestick", "Sapphire Ring", "Massive Gem", 
 			"Large Chest", "Leather Cap", "Spiked Helm", "Winged Fury", "Scale Mail", "Chainmail", "Breastplate",
-			"Wooden Shield", "Buckler", "Silver Shield", "Greatshield", "Club", "Spiked Mace", "Sword", "Battle Axe"];
+			"Wood Shield", "Buckler", "Silver Shield", "Greatshield", "Club", "Spiked Mace", "Sword", "Battle Axe"];
 		
 		public var _type:String = "";
 		public var _desc:String = "";
@@ -130,7 +130,7 @@ package
 					_equippable_speed = -1;
 					_equippables_frame = 17;
 					break;
-				case "Wooden Shield":
+				case "Wood Shield":
 					_desc = "Better than nothing.. maybe";
 					addAnimation(_type, [13]);
 					_hope = 0;
