@@ -79,7 +79,7 @@ package
 		public var placing_card:Card;
 		public var is_placing_card:Boolean = false;
 		public var battling_monster:Monster;
-		public var boss_monster:Monster;
+		public var boss_monster:BossMonster;
 		
 		public var choosingHighlight:Tile;
 		public var choosingTile:Boolean = false;
@@ -108,6 +108,7 @@ package
 		public var possible_spots:int = 0;
 		public var turn_number:int = 0;
 		public var cards_played:int = 0;
+		public var monsters_killed:int = 0;
 		public var battle_timer:Number = 0;
 		public var battle_turn:Number = 0;
 		public var idle_timer:Number = 0;
@@ -142,7 +143,7 @@ package
 			battle_hero_stats.angle = 4;
 			battle_hero_stats.antialiasing = true;
 			battleScreen.add(battle_hero_stats);
-			battle_hero_sprite = new FlxSprite(340, 260);
+			battle_hero_sprite = new FlxSprite(335, 260);
 			battle_hero_sprite.scrollFactor = new FlxPoint(0, 0);
 			battle_hero_sprite.angle = 4;
 			battle_hero_sprite.antialiasing = true;
@@ -236,9 +237,8 @@ package
 			cancelPlacingBtn.visible = false;
 			guiGroup.add(cancelPlacingBtn);
 			
-			boss_monster = new Monster(this, "Fire Demon", true, true, 12, 120);
+			boss_monster = new BossMonster(this, "Fire Demon", BossMonster.OFFSCREEN_POINT.x, BossMonster.OFFSCREEN_POINT.y);
 			boss_monster.scrollFactor = new FlxPoint(0, 0);
-			boss_monster.visible = false;
 			
 			highlights.visible = false;
 			placingSprite.visible = true;
@@ -350,7 +350,8 @@ package
 							battle_monster_stats.text = battling_monster.GetStats();
 						}
 					} else {
-						battling_monster = null;
+						//battling_monster = null;
+						monsters_killed += 1;
 						battleScreen.visible = false;
 						following_hero = false;
 						turn_phase = PlayState.PHASE_NEWTURN;
@@ -403,47 +404,18 @@ package
 				trace("** new turn **");
 				turn_number++;
 				dungeon.IncreaseDread();
+				turn_phase = PHASE_BOSS_CHAT;
+				boss_monster.CheckChat();
+			} else if (turn_phase == PHASE_BOSS_CHAT) {
 				
-				if (turn_number == 1) {
-					turn_phase = PHASE_BOSS_CHAT;
-					DoBossChat();
-				} else {
-					TimeToPlayCards();
-				}
-			} 
+			}
 		} 
 		
 		public function CardsDealOver():void {
 			turn_phase = PHASE_HERO_THINK;
 		}
 		
-		public function DoBossChat():void {
-			boss_monster.visible = true;
-			appearDelay = 0;
-			boss_monster.Appear(appearDelay);
-			appearDelay += FlxSprite.TIME_TO_APPEAR;
-			TweenLite.delayedCall(appearDelay , sndDemontalk1.play);
-			BossAddChat("WHO DARES INVADE THE HOT, HOT LAIR OF EMBRO, LORD OF FLAME?!", appearDelay);
-			appearDelay += FloatingText.FADE_IN_TIME * 2 + FloatingText.DISPLAY_TIME + FloatingText.FADE_OUT_TIME;
-			BossAddChat("Right in the middle of bath time, too. Look at this puddle.", appearDelay);
-			TweenLite.delayedCall(appearDelay , sndDemontalk2.play);
-			appearDelay += FloatingText.FADE_IN_TIME * 2 + FloatingText.DISPLAY_TIME + FloatingText.FADE_OUT_TIME;
-			TweenLite.delayedCall(appearDelay , sndDemontalk1.play);
-			BossAddChat("MINIONS! DESTROY THEM! BRING ME THEIR BONES!", appearDelay);
-			appearDelay += FloatingText.FADE_IN_TIME * 2 + FloatingText.DISPLAY_TIME + FloatingText.FADE_OUT_TIME;
-			TweenLite.delayedCall(appearDelay , BossChatOver);
-		}
-		
-		public function BossAddChat(chat:String, delay:Number = 0 ):void {
-			TweenMax.to(boss_monster, 0.15, { x:boss_monster.x + 1, y:boss_monster.y - 2, delay:delay, repeat:5, yoyo:true } );
-			var boss_shout:FloatingText = new FloatingText(boss_monster.x + 60, boss_monster.y - 86, chat, delay);
-			boss_shout.scrollFactor = new FlxPoint(0, 0);
-			floatingTexts.add(boss_shout);
-		}
-		
 		public function BossChatOver():void {
-			boss_monster.Disappear(0, false);
-			appearDelay = 0;
 			TimeToPlayCards();
 		}
 		
@@ -569,7 +541,7 @@ package
 													//var new_placing_card_monster:Card = new Card(this, -1000, -1000, placing_card._type, null, placing_card._monster);
 													//new_placing_card_monster._monster.alpha = 0.6;
 													//placingSprite.add(new_placing_card_monster._monster);
-													var new_placing_card_monster:Monster = new Monster(this, placing_card._monster._type, true, false);
+													var new_placing_card_monster:Monster = new Monster(this, placing_card._monster._type, true);
 													placingSprite.add(new_placing_card_monster);
 												} else {
 													//var new_placing_card_treasure:Card = new Card(this, -1000, -1000, placing_card._type, null, null, placing_card._treasure);

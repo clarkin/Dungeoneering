@@ -7,7 +7,6 @@ package
 	public class Monster extends FlxSprite
 	{
 		[Embed(source = "../assets/monster_spritesheet_80px_COLOUR.png")] private var charactersPNG:Class;
-		[Embed(source = "../assets/monster_spritesheet_120px_COLOUR.png")] private var charactersBossPNG:Class;
 		[Embed(source = "../assets/monster_spritesheet_80px_WHITE.png")] private var charactersWhitePNG:Class;
 		
 		public static const ICON_OFFSET:FlxPoint = new FlxPoint(10, 5);
@@ -28,7 +27,7 @@ package
 		
 		private var _playState:PlayState;
 		
-		public function Monster(playState:PlayState, type:String, colour:Boolean = true, boss:Boolean = false, X:int = 0, Y:int = 0) 
+		public function Monster(playState:PlayState, type:String, colour:Boolean = true, X:int = 0, Y:int = 0) 
 		{
 			super(X, Y);
 			
@@ -36,11 +35,7 @@ package
 			_type = type;
 			
 			if (colour) {
-				if (boss) {
-					loadGraphic(charactersBossPNG, false, true, SPRITE_SIZE + 40, SPRITE_SIZE + 40);
-				} else {
-					loadGraphic(charactersPNG, false, true, SPRITE_SIZE, SPRITE_SIZE);
-				}
+				loadGraphic(charactersPNG, false, true, SPRITE_SIZE, SPRITE_SIZE);
 			} else {
 				loadGraphic(charactersWhitePNG, false, true, SPRITE_SIZE, SPRITE_SIZE);
 			}

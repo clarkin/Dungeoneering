@@ -96,7 +96,7 @@ package
 					_card_text_color = 0xFF333333;
 					_title = monster._type;
 					_desc = monster._desc;
-					_monster = new Monster(_playState, _title, false, false, X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
+					_monster = new Monster(_playState, _title, false, X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
 					_card_stamper.stamp(_monster, ICON_OFFSET.x, ICON_OFFSET.y);
 					_cost = _monster._dread;
 					break;
