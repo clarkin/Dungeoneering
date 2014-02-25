@@ -936,7 +936,7 @@ package org.flixel
 		public function Disappear(delay:Number = 0, andKill:Boolean = true):void {
 			TweenLite.to(this, TIME_TO_DISAPPEAR, { bothScale:0.0, delay:delay, ease:Back.easeInOut.config(0.8) } );
 			if (andKill) {
-				TweenLite.delayedCall(TIME_TO_DISAPPEAR, FinishedDisappear);
+				TweenLite.delayedCall(delay + TIME_TO_DISAPPEAR, FinishedDisappear);
 			}
 		}
 		
@@ -948,7 +948,7 @@ package org.flixel
 		public function DisappearAlpha(delay:Number = 0, andKill:Boolean = true):void {
 			TweenLite.to(this, TIME_TO_DISAPPEAR * 2, { alpha:0.0, delay:delay, ease:Sine.easeOut } );
 			if (andKill) {
-				TweenLite.delayedCall(TIME_TO_DISAPPEAR * 2, FinishedDisappear);
+				TweenLite.delayedCall(delay + TIME_TO_DISAPPEAR * 2, FinishedDisappear);
 			}
 		}
 		
