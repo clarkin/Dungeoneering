@@ -37,7 +37,7 @@ package
 		override public function create():void {
 			FlxG.mouse.show();
 			FlxG.bgColor = 0xFF333333;
-
+			
 			titleScreen = new FlxSprite(0, 0, ARTtitleScreen);
 			
 			startButton = new FlxButtonPlus(400, 650, startGame, null, "", 150, 62);
@@ -49,7 +49,6 @@ package
 			whiteFade = new FlxSprite(0, 0);
 			whiteFade.makeGraphic(FlxG.width, FlxG.height, 0xFFFFFFFF);
 			whiteFade.scrollFactor = new FlxPoint(0, 0);
-			//whiteFade.DisappearAlpha(0, false);
 			
 			deathScreen = new FlxSprite(43, 115, ARTdeathScreen);
 			deathScreen.visible = false;
@@ -65,24 +64,25 @@ package
 					resultsString = "You had found " + finalScore.toString() + " treasure so far..";
 				}
 			}
-			title = new FlxText(0, 350, 1024, titleString);
-			title.setFormat("LemonsCanFly", 120, 0xFF333333, "center");
+			title = new FlxText(500, 220, 400, titleString);
+			title.setFormat("LemonsCanFly", 120, 0xFF333333, "center", 0xFF999999);
 			title.visible = false;
 			
-			results = new FlxText(0, 390, 1024, resultsString);
-			results.setFormat("LemonsCanFly", 24, 0xFF333333, "center");	
+			results = new FlxText(500, 340, 400, resultsString);
+			results.setFormat("LemonsCanFly", 80, 0xFF333333, "center", 0xFF999999);	
 			results.visible = false;
 			
 			add(titleScreen);
-			
+			add(startButton);
+			add(whiteFade);
 			add(deathScreen);
 			add(title);
 			add(results);
-			add(whiteFade);
-			
-			add(startButton);
 			
 			if (showResults) {
+				TweenLite.to(whiteFade, FlxSprite.TIME_TO_DISAPPEAR * 2, { alpha:0.7, delay:appearDelay, ease:Sine.easeOut } );
+				appearDelay += APPEAR_DELAY;
+				
 				deathScreen.visible = true;
 				deathScreen.AppearAlpha(appearDelay);
 				appearDelay += APPEAR_DELAY;
@@ -94,22 +94,22 @@ package
 				results.visible = true;
 				results.AppearAlpha(appearDelay);
 				appearDelay += APPEAR_DELAY;
+				
+				startButton.visible = false;
 			} else {
+				whiteFade.visible = true;
 				whiteFade.DisappearAlpha(0, false);
-				TweenLite.delayedCall(appearDelay, resetStartBtn);
+				appearDelay += FlxSprite.TIME_TO_DISAPPEAR * 2;
 			}
 			
-			
-			
-			
-			if (FlxG.debug) {
-				//startGame();
+			if (FlxG.debug && !showResults) {
+				TweenLite.delayedCall(appearDelay, startGame);
 			}
 		}
 
 		private function startGame():void {
 			whiteFade.AppearAlpha();
-			TweenLite.delayedCall(1.0, FinishedFade);
+			TweenLite.delayedCall(FlxSprite.TIME_TO_APPEAR * 2 + APPEAR_DELAY, FinishedFade);
 		}
 		
 		private function FinishedFade():void {
@@ -117,10 +117,9 @@ package
 		}
 		
 		override public function update():void {
+
 			if (FlxG.mouse.justReleased() && showResults) {
-				trace('hiding results');
 				showResults = false;
-				
 				appearDelay = 0;
 				
 				results.DisappearAlpha(appearDelay, false);
@@ -137,15 +136,12 @@ package
 				
 				TweenLite.delayedCall(appearDelay, resetStartBtn);
 			}
+			
+			super.update();
 		}
 		
 		public function resetStartBtn():void {
-			results.visible = false;
-			title.visible = false;
-			deathScreen.visible = false;
-			whiteFade.visible = false;
-			startButton.resetToNormal();
+			startButton.visible = true;
 		}
-
 	}
 }
