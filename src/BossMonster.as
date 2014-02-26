@@ -58,6 +58,8 @@ package
 				DoBossChat("intruder");
 			} else if (_playState.monsters_killed == 1 && _usedChats.indexOf("first_kill") == -1) {
 				DoBossChat("first_kill");
+			} else if (_playState.monsters_killed == 5 && _usedChats.indexOf("fifth_kill") == -1) {
+				DoBossChat("fifth_kill");
 			} else {
 				_playState.BossChatOver();
 			}
@@ -86,6 +88,16 @@ package
 				appearDelay += oneChatCycle;
 				
 				BossAddChat("NO! HE WAS MY LEAST FAVORITE MINION!", appearDelay);
+				appearDelay += oneChatCycle;
+			} else if (chat_type == "fifth_kill") {
+				
+				BossAddChat("*sigh* As usual my minions are bumbling fools..", appearDelay, false);
+				appearDelay += oneChatCycle;
+				
+				BossAddChat("If only those sharks with spears attached to their heads had arrived.", appearDelay, false);
+				appearDelay += oneChatCycle;
+				
+				BossAddChat("Oh well. SEND MORE RUBBER DUCKIES!", appearDelay);
 				appearDelay += oneChatCycle;
 			}
 			
