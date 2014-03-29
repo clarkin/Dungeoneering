@@ -16,6 +16,7 @@ package
 		[Embed(source = "../assets/grid_tile.png")] private var gridTilePNG:Class;
 		[Embed(source = "../assets/UI_frame.png")] private var UIFramePNG:Class;
 		[Embed(source = "../assets/small_paper.png")] private var UIPaperPNG:Class;
+		[Embed(source = "../assets/battle_scroll.png")] private var UIBattleScrollPNG:Class;
 		
 		[Embed(source = "../assets/sfx/cheer.wav", mimeType = "application/octet-stream")] private const WAVcheer:Class;
 		[Embed(source = "../assets/sfx/coins.wav", mimeType = "application/octet-stream")] private const WAVcoins:Class;
@@ -92,6 +93,9 @@ package
 		public var player_cards_label:FlxText;
 		public var endTurnBtn:FlxButtonPlus;
 		public var cancelPlacingBtn:FlxButtonPlus;
+		public var battle_scroll:FlxSprite;
+		public var battle_title:FlxText;
+		public var battle_stat_names:FlxText;
 		public var battle_hero_stats:FlxText;
 		public var battle_monster_stats:FlxText;
 		public var battle_hero_sprite:FlxSprite;
@@ -114,6 +118,7 @@ package
 		public var idle_timer:Number = 0;
 		public var appearDelay:Number = APPEAR_DELAY;
 		public var whiteFade:FlxSprite;
+		public var greyOut:FlxSprite;
 		
 		override public function create():void {
 			//FlxG.visualDebug = true;
@@ -134,13 +139,26 @@ package
 			UIFrame.AppearAlpha(appearDelay);
 			appearDelay += APPEAR_DELAY;
 			
-			var paper_background:FlxSprite = new FlxSprite(200, 200, UIPaperPNG);
-			paper_background.scrollFactor = new FlxPoint(0, 0);
-			battleScreen.add(paper_background);
-			battle_hero_stats = new FlxText(230, 250, 200, "Strength: 2");
-			battle_hero_stats.setFormat("LemonsCanFly", 28, 0xFF000000, "left");
+			greyOut = new FlxSprite(0, 0);
+			greyOut.makeGraphic(FlxG.width, FlxG.height, 0x99000000);
+			greyOut.scrollFactor = new FlxPoint(0, 0);
+			battleScreen.add(greyOut);
+			battle_scroll = new FlxSprite(79, 95, UIBattleScrollPNG);
+			battle_scroll.scrollFactor = new FlxPoint(0, 0);
+			battleScreen.add(battle_scroll);
+			battle_title = new FlxText(170, 235, 680, "Hero vs Goblin");
+			battle_title.setFormat("LemonsCanFly", 100, 0xFF000000, "center");
+			battle_title.scrollFactor = new FlxPoint(0, 0);
+			battle_title.antialiasing = true;
+			battleScreen.add(battle_title);
+			battle_stat_names = new FlxText(432, 327, 160, "Health\nStrength\nSpeed\nArmour");
+			battle_stat_names.setFormat("LemonsCanFly", 60, 0xFF000000, "center");
+			battle_stat_names.scrollFactor = new FlxPoint(0, 0);
+			battle_stat_names.antialiasing = true;
+			battleScreen.add(battle_stat_names);
+			battle_hero_stats = new FlxText(382, 327, 50, "10\n8\n-1\n0");
+			battle_hero_stats.setFormat("LemonsCanFly", 60, 0xFF000000, "center");
 			battle_hero_stats.scrollFactor = new FlxPoint(0, 0);
-			battle_hero_stats.angle = 4;
 			battle_hero_stats.antialiasing = true;
 			battleScreen.add(battle_hero_stats);
 			battle_hero_sprite = new FlxSprite(335, 260);
@@ -148,13 +166,9 @@ package
 			battle_hero_sprite.angle = 4;
 			battle_hero_sprite.antialiasing = true;
 			battleScreen.add(battle_hero_sprite);
-			paper_background = new FlxSprite(600, 200, UIPaperPNG);
-			paper_background.scrollFactor = new FlxPoint(0, 0);
-			battleScreen.add(paper_background);
-			battle_monster_stats = new FlxText(630, 250, 200, "Strength: 2");
-			battle_monster_stats.setFormat("LemonsCanFly", 28, 0xFF000000, "left");
+			battle_monster_stats = new FlxText(592, 327, 50, "10\n8\n-1\n0");
+			battle_monster_stats.setFormat("LemonsCanFly", 60, 0xFF000000, "center");
 			battle_monster_stats.scrollFactor = new FlxPoint(0, 0);
-			battle_monster_stats.angle = 4;
 			battle_monster_stats.antialiasing = true;
 			battleScreen.add(battle_monster_stats);
 			battle_monster_sprite = new FlxSprite(740, 260);
@@ -162,8 +176,8 @@ package
 			battle_monster_sprite.angle = 4;
 			battle_monster_sprite.antialiasing = true;
 			battleScreen.add(battle_monster_sprite);
-			battleScreen.visible = false;
-			guiGroup.add(battleScreen);
+			//battleScreen.visible = false;
+			//guiGroup.add(battleScreen);
 			
 			hero = new Hero(this, starting_point.x, starting_point.y - Tile.TILESIZE);
 			camera_target = new FlxSprite(hero.x, hero.y);
@@ -187,7 +201,7 @@ package
 			hero.Appear(appearDelay);
 			appearDelay += APPEAR_DELAY;
 			
-			paper_background = new FlxSprite(775, 600, UIPaperPNG);
+			var paper_background:FlxSprite = new FlxSprite(775, 600, UIPaperPNG);
 			paper_background.scrollFactor = new FlxPoint(0, 0);
 			paper_background.Appear(appearDelay);
 			appearDelay += APPEAR_DELAY;
@@ -299,6 +313,7 @@ package
 			add(UIFrame);
 			add(guiGroup);
 			add(cardsInHand);
+			add(battleScreen);
 			add(placingSprite);
 			add(whiteFade);
 			
