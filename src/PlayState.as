@@ -139,6 +139,14 @@ package
 			UIFrame.AppearAlpha(appearDelay);
 			appearDelay += APPEAR_DELAY;
 			
+			hero = new Hero(this, starting_point.x, starting_point.y - Tile.TILESIZE);
+			camera_target = new FlxSprite(hero.x, hero.y);
+			camera_target.width = camera_target.height = 0;
+			camera_target.maxVelocity = new FlxPoint(SCROLL_MAXVELOCITY, SCROLL_MAXVELOCITY);
+			camera_target.drag = new FlxPoint(SCROLL_ACCELERATION, SCROLL_ACCELERATION);
+			camera_target.visible = false;
+			FlxG.camera.follow(camera_target);
+			
 			greyOut = new FlxSprite(0, 0);
 			greyOut.makeGraphic(FlxG.width, FlxG.height, 0x99000000);
 			greyOut.scrollFactor = new FlxPoint(0, 0);
@@ -161,9 +169,9 @@ package
 			battle_hero_stats.scrollFactor = new FlxPoint(0, 0);
 			battle_hero_stats.antialiasing = true;
 			battleScreen.add(battle_hero_stats);
-			battle_hero_sprite = new FlxSprite(335, 260);
+			battle_hero_sprite = new FlxSprite(230, 373);
 			battle_hero_sprite.scrollFactor = new FlxPoint(0, 0);
-			battle_hero_sprite.angle = 4;
+			battle_hero_sprite.pixels = hero.framePixels.clone();
 			battle_hero_sprite.antialiasing = true;
 			battleScreen.add(battle_hero_sprite);
 			battle_monster_stats = new FlxText(592, 327, 50, "10\n8\n-1\n0");
@@ -171,21 +179,12 @@ package
 			battle_monster_stats.scrollFactor = new FlxPoint(0, 0);
 			battle_monster_stats.antialiasing = true;
 			battleScreen.add(battle_monster_stats);
-			battle_monster_sprite = new FlxSprite(740, 260);
+			battle_monster_sprite = new FlxSprite(714, 373);
 			battle_monster_sprite.scrollFactor = new FlxPoint(0, 0);
-			battle_monster_sprite.angle = 4;
+			battle_monster_sprite.pixels = hero.framePixels.clone();
 			battle_monster_sprite.antialiasing = true;
 			battleScreen.add(battle_monster_sprite);
-			//battleScreen.visible = false;
-			//guiGroup.add(battleScreen);
-			
-			hero = new Hero(this, starting_point.x, starting_point.y - Tile.TILESIZE);
-			camera_target = new FlxSprite(hero.x, hero.y);
-			camera_target.width = camera_target.height = 0;
-			camera_target.maxVelocity = new FlxPoint(SCROLL_MAXVELOCITY, SCROLL_MAXVELOCITY);
-			camera_target.drag = new FlxPoint(SCROLL_ACCELERATION, SCROLL_ACCELERATION);
-			camera_target.visible = false;
-			FlxG.camera.follow(camera_target);
+			battleScreen.visible = false;
 
 			var starting_tile:Tile = new Tile(this, "corr_grate_n");
 			addTileAt(starting_tile, starting_point.x, starting_point.y - Tile.TILESIZE, false);
@@ -361,8 +360,8 @@ package
 							turn_phase = PlayState.PHASE_HERO_MOVING;
 						} else {
 							hero.FightMonster(battling_monster);
-							battle_hero_stats.text = hero.GetStats();
-							battle_monster_stats.text = battling_monster.GetStats();
+							battle_hero_stats.text = hero.GetStatsNumbers();
+							battle_monster_stats.text = battling_monster.GetStatsNumbers();
 						}
 					} else {
 						//battling_monster = null;
@@ -394,15 +393,14 @@ package
 			battle_timer = BATTLE_TIME;
 			battle_turn = 0;
 			battling_monster = this_monster;
+
+			battle_title.text = "Hero vs " + battling_monster._type;
 			
-			trace("Stats for monster " + this_monster._type);
-			trace(this_monster.GetStats());
-			
-			battle_hero_stats.text = hero.GetStats();
-			battle_monster_stats.text = this_monster.GetStats();
+			battle_hero_stats.text = hero.GetStatsNumbers();
+			battle_monster_stats.text = battling_monster.GetStatsNumbers();
 			
 			battle_hero_sprite.pixels = hero.framePixels.clone();
-			battle_monster_sprite.pixels = this_monster.framePixels.clone();
+			battle_monster_sprite.pixels = battling_monster.framePixels.clone();
 			
 			battleScreen.visible = true;
 		}

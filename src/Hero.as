@@ -435,6 +435,15 @@ package
 			stats += "Armour: " + EquippedArmour() + "\n";
 			return stats;
 		}
+		
+		public function GetStatsNumbers():String {
+			var stats:String = "";
+			stats += _health + "\n";
+			stats += EquippedStrength() + "\n";
+			stats += EquippedSpeed() + "\n";
+			stats += EquippedArmour() + "\n";
+			return stats;
+		}
 
 	}
 }

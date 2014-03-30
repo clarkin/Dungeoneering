@@ -182,6 +182,13 @@ package
 			return stats;
 		}
 		
-
+		public function GetStatsNumbers():String {
+			var stats:String = "";
+			stats += _health + "\n";
+			stats += _strength + "\n";
+			stats += _speed + "\n";
+			stats += _armour + "\n";
+			return stats;
+		}
 	}
 }
