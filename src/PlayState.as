@@ -366,9 +366,23 @@ package
 					} else {
 						//battling_monster = null;
 						monsters_killed += 1;
-						battleScreen.visible = false;
-						following_hero = false;
-						turn_phase = PlayState.PHASE_NEWTURN;
+						
+						appearDelay = 0;
+						battle_hero_sprite.Disappear(appearDelay, false);
+						battle_monster_sprite.Disappear(appearDelay, false);
+						appearDelay += APPEAR_DELAY / 2;
+						battle_stat_names.Disappear(appearDelay, false);
+						battle_hero_stats.Disappear(appearDelay, false);
+						battle_monster_stats.Disappear(appearDelay, false);
+						appearDelay += APPEAR_DELAY / 2;
+						battle_title.Disappear(appearDelay, false);
+						appearDelay += APPEAR_DELAY / 2;
+						battle_scroll.Disappear(appearDelay, false);
+						appearDelay += APPEAR_DELAY / 2;
+						greyOut.DisappearAlpha(appearDelay, false);
+						appearDelay += APPEAR_DELAY;
+						
+						TweenLite.delayedCall(appearDelay, EndFighting);
 					}
 				}
 				
@@ -389,7 +403,6 @@ package
 		}
 		
 		public function StartBattle(this_monster:Monster):void {
-			turn_phase = PlayState.PHASE_HERO_BATTLE;
 			battle_timer = BATTLE_TIME;
 			battle_turn = 0;
 			battling_monster = this_monster;
@@ -403,6 +416,39 @@ package
 			battle_monster_sprite.pixels = battling_monster.framePixels.clone();
 			
 			battleScreen.visible = true;
+			
+			appearDelay = 0;
+			greyOut.AppearAlpha(appearDelay);
+			appearDelay += APPEAR_DELAY;
+			battle_scroll.bothScale = 1.0;
+			battle_scroll.Appear(appearDelay);
+			appearDelay += APPEAR_DELAY;
+			battle_title.bothScale = 1.0;
+			battle_title.Appear(appearDelay);
+			appearDelay += APPEAR_DELAY;
+			battle_stat_names.bothScale = 1.0;
+			battle_hero_stats.bothScale = 1.0;
+			battle_monster_stats.bothScale = 1.0;
+			battle_stat_names.Appear(appearDelay);
+			battle_hero_stats.Appear(appearDelay);
+			battle_monster_stats.Appear(appearDelay);
+			appearDelay += APPEAR_DELAY;
+			battle_hero_sprite.bothScale = 1.0;
+			battle_monster_sprite.bothScale = 1.0;
+			battle_hero_sprite.Appear(appearDelay);
+			battle_monster_sprite.Appear(appearDelay);
+			
+			TweenLite.delayedCall(appearDelay, StartFighting);
+		}
+		
+		public function StartFighting():void {
+			turn_phase = PlayState.PHASE_HERO_BATTLE;
+		}
+		
+		public function EndFighting():void {
+			battleScreen.visible = false;
+			following_hero = false;
+			turn_phase = PlayState.PHASE_NEWTURN;
 		}
 		
 		public function checkPlacing():void {
