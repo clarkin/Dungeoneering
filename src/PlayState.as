@@ -101,6 +101,7 @@ package
 		public var battle_hero_sprite:FlxSprite;
 		public var battle_monster_sprite:FlxSprite;
 		public var stats_hero_sprite:FlxSprite;
+		public var UIFrame:FlxSprite;
 				
 		public var hero:Hero;
 		public var camera_target:FlxSprite;
@@ -134,7 +135,7 @@ package
 			tileManager = new TileManager(this);
 			dungeon = new Dungeon(this);
 			
-			var UIFrame:FlxSprite = new FlxSprite(0, 0, UIFramePNG);
+			UIFrame = new FlxSprite(0, 0, UIFramePNG);
 			UIFrame.scrollFactor = new FlxPoint(0, 0);
 			UIFrame.AppearAlpha(appearDelay);
 			appearDelay += APPEAR_DELAY;
@@ -670,10 +671,14 @@ package
 			} else if (FlxG.keys.justReleased("D")) {
 				trace("*** Toggle Debug ***");
 				FlxG.visualDebug = !FlxG.visualDebug;
-			} else if (FlxG.keys.justReleased("X")) {
-				if (turn_phase == PHASE_CARDS_PLAY) {
-					//discardAndContinue();
-				}
+			} else if (FlxG.keys.justReleased("S")) {
+				trace("*** Toggle Sound ***");
+				FlxG.mute = !FlxG.mute;
+			} else if (FlxG.keys.justReleased("C")) {
+				trace("*** Toggle CLEARSCREEN ***");
+				UIFrame.visible = !UIFrame.visible;
+				cardsInHand.visible = !cardsInHand.visible;
+				guiGroup.visible = !guiGroup.visible;
 			}
 			
 			//camera movement

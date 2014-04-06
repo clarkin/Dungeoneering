@@ -55,8 +55,7 @@ package
 		
 		public function CheckChat():void {
 			if (_playState.turn_number == 1 && _usedChats.indexOf("intruder") == -1) {
-				//DoBossChat("intruder");
-				_playState.BossChatOver();
+				DoBossChat("intruder");
 			} else if (_playState.monsters_killed == 1 && _usedChats.indexOf("first_kill") == -1) {
 				DoBossChat("first_kill");
 			} else if (_playState.monsters_killed == 5 && _usedChats.indexOf("fifth_kill") == -1) {
