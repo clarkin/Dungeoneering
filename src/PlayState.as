@@ -74,7 +74,7 @@ package
 		
 		public static const CARDS_PER_TURN:int = 3;
 		public static const BATTLE_TIME:Number = 2;
-		public static const IDLE_TIME:Number = 10;
+		public static const IDLE_TIME:Number = 20;
 		public static const APPEAR_DELAY:Number = 0.4;
 		
 		public var placing_card:Card;
