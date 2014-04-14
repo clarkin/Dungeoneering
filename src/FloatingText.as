@@ -9,7 +9,7 @@ package
 		[Embed(source = "../assets/speech_bubble.png")] private var speechBubblePNG:Class;
 		
 		public static const FADE_IN_TIME:Number = 0.3;
-		public static const DISPLAY_TIME:Number = 2.5;
+		public static const DISPLAY_TIME:Number = 3.5;
 		public static const FADE_OUT_TIME:Number = 0.5;
 		public static const COLOR_THINKING:uint = 0xFF3333333;
 		public static const COLOR_THINKING_SHADOW:uint = 0xFF666666;

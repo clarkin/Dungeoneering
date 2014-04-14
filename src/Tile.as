@@ -154,10 +154,10 @@ package
 			this.cards.push(newCard);
 		}
 		
-		public function countCards(type:String):int {
+		public function countCards(type:String = ""):int {
 			var total:int = 0;
 			for each (var card:Card in cards) {
-				if (card._type == type) {
+				if (card._type == type || type == "") {
 					total++;
 				}
 			}
