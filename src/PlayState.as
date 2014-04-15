@@ -474,14 +474,12 @@ package
 		
 		public function checkNewTurn():void {
 			if (turn_phase == PHASE_NEWTURN) {
-				trace("** new turn **");
 				turn_number++;
+				trace("** new turn: " + turn_number + " **");
 				dungeon.IncreaseDread();
 				turn_phase = PHASE_BOSS_CHAT;
 				boss_monster.CheckChat();
-			} else if (turn_phase == PHASE_BOSS_CHAT) {
-				
-			}
+			} 
 		} 
 		
 		public function CardsDealOver():void {

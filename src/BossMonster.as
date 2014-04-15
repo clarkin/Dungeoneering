@@ -170,8 +170,9 @@ package
 				numberOfChecks += 1;
 			}
 			_current_tile = possible_tile;
-			_current_tile.cards = [];
-			_current_tile.cards.push(_bossCard);
+			//_current_tile.cards = [];
+			//_current_tile.cards.push(_bossCard);
+			SetBossCardOnTile(_current_tile);
 			//trace('picked tile at world [' + current_tile.x + ',' + current_tile.y + '], screen [' + current_tile.getScreenXY().x + ',' + current_tile.getScreenXY().y + ']')
 		}
 		
@@ -216,6 +217,7 @@ package
 				}
 				//thinkSomething("movement");
 				//_playState.turn_phase = PlayState.PHASE_HERO_THINK;
+				_current_tile.cards = [];
 				TweenLite.to(this, TIME_TO_MOVE, { x:_moving_to_tile.x + TILE_OFFSET.x, y:_moving_to_tile.y + TILE_OFFSET.y, ease:Back.easeInOut.config(0.8) } );
 				TweenLite.delayedCall(TIME_TO_MOVE, FinishedMove);
 			}
@@ -224,7 +226,14 @@ package
 		public function FinishedMove():void {
 			//trace('arrived at tile at [' + _moving_to_tile.x + ',' + _moving_to_tile.y + ']');
 			_current_tile = _moving_to_tile;
+			//_current_tile.cards = [];
+			//_current_tile.cards.push(_bossCard);
+			SetBossCardOnTile(_current_tile);
 			EndTurn();
+			if (_current_tile == _playState.hero.current_tile) {
+				trace('** arrived at hero! **');
+				_playState.turn_phase = PlayState.PHASE_HERO_CARDS;
+			}
 		}
 		
 		public function EndTurn():void {
@@ -243,6 +252,15 @@ package
 				}
 			} */
 			return favorite_tile;
+		}
+		
+		public function SetBossCardOnTile(tile:Tile):void {
+			var bossMonster:Monster = new Monster(_playState, "Fire Demon");
+			bossMonster.visible = false;
+			var bossCard:Card = new Card(_playState, 0, 0, "MONSTER", null, bossMonster); 
+			bossCard._monster = bossMonster;
+			tile.cards = [];
+			tile.cards.push(bossCard);
 		}
 		
 		public function BossTraceXY():void {
