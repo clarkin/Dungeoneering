@@ -150,7 +150,8 @@ package
 			}
 			
 			if (valid_tiles.length == 0) {
-				_playState.turn_phase = PlayState.PHASE_NEWTURN;
+				_playState.turn_phase = PlayState.PHASE_BOSS_MOVE;
+				trace('** WARNING: no valid tiles to move to **');
 			} else {
 				moving_to_tile = chooseTile(valid_tiles);
 				if (moving_to_tile.x < current_tile.x) {
@@ -274,7 +275,7 @@ package
 				is_processing_cards = false;
 				if (_playState.turn_phase != PlayState.PHASE_HERO_BATTLE) {
 					_playState.following_hero = false;
-					_playState.turn_phase = PlayState.PHASE_NEWTURN;
+					_playState.turn_phase = PlayState.PHASE_BOSS_MOVE;
 				}
 			} else {
 				var next_card:Card = current_tile.cards.pop();

@@ -61,6 +61,7 @@ package
 		public static const PHASE_HERO_MOVING:int     = 6;
 		public static const PHASE_HERO_CARDS:int      = 7;
 		public static const PHASE_HERO_BATTLE:int     = 8;
+		public static const PHASE_BOSS_MOVE:int       = 9;
 		public var turn_phase:int = PHASE_FADING_IN;
 		
 		public static const SCROLL_MAXVELOCITY:Number = 800;
@@ -325,6 +326,7 @@ package
 			
 			checkNewTurn();
 			checkHero();
+			checkBoss();
 			checkPlacing();
 			checkMouseClick();
 			checkKeyboard();
@@ -396,6 +398,17 @@ package
 				}
 			}
 		}
+		
+		public function checkBoss():void {
+			if (turn_phase == PHASE_BOSS_MOVE) {
+				if (boss_monster._onBoard && !boss_monster._is_taking_turn) {
+					trace('starting boss turn')
+					boss_monster.StartTurn();
+				} else {
+					turn_phase = PHASE_NEWTURN;
+				}
+			}
+		}
 				
 		public function heroArrivedAt(tile:Tile):void {
 			//trace("heroArrivedAt, changing to PHASE_HERO_CARDS");
@@ -449,7 +462,7 @@ package
 		public function EndFighting():void {
 			battleScreen.visible = false;
 			following_hero = false;
-			turn_phase = PlayState.PHASE_NEWTURN;
+			turn_phase = PlayState.PHASE_BOSS_MOVE;
 		}
 		
 		public function checkPlacing():void {

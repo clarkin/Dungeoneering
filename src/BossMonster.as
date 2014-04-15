@@ -25,10 +25,11 @@ package
 		public var _armour:int = 0;
 		
 		public var _onBoard:Boolean = false;
-		public var current_tile:Tile;
-		public var moving_to_tile:Tile;
-		public var previous_tile:Tile;
+		public var _current_tile:Tile;
+		public var _moving_to_tile:Tile;
+		public var _previous_tile:Tile;
 		public var _bossCard:Card;
+		public var _is_taking_turn:Boolean = true;
 		
 		private var _playState:PlayState;
 		
@@ -66,6 +67,11 @@ package
 		}
 		
 		public function CheckChat():void {
+			if (_onBoard) {
+				_playState.BossChatOver();
+				return;
+			}
+			
 			if (_playState.turn_number == 1 && _usedChats.indexOf("intruder") == -1) {
 				DoBossChat("intruder");
 			} else if (_playState.monsters_killed == 1 && _usedChats.indexOf("first_kill") == -1) {
@@ -85,6 +91,7 @@ package
 			appearDelay += TIME_TO_MOVE;
 			
 			var oneChatCycle:Number = FloatingText.FADE_IN_TIME * 2 + FloatingText.DISPLAY_TIME + FloatingText.FADE_OUT_TIME;
+			var moveToBoard:Boolean = false;
 			
 			if (chat_type == "intruder") {
 				BossAddChat("WHO DARES INVADE THE HOT, HOT LAIR OF EMBRO, LORD OF FLAME?!", appearDelay);
@@ -95,7 +102,7 @@ package
 				
 				BossAddChat("MINIONS! DESTROY THEM! BRING ME THEIR BONES!", appearDelay);
 				appearDelay += oneChatCycle;
-				_onBoard = true;
+				moveToBoard = true; //todo: remove
 			} else if (chat_type == "first_kill") {
 				BossAddChat("HAR HAR! YOU THINK I'LL MISS THAT " + _playState.battling_monster._type.toUpperCase() + "?", appearDelay);
 				appearDelay += oneChatCycle;
@@ -118,13 +125,13 @@ package
 				BossAddChat("Time to deal with you myself!!", appearDelay, false);
 				appearDelay += oneChatCycle;
 				
-				_onBoard = true;
+				moveToBoard = true;
 			}
 			
-			if (_onBoard) {
+			if (moveToBoard) {
 				PickBossRoom();
 				TweenLite.delayedCall(appearDelay + 0.05, BossNowOnBoard);
-				TweenLite.to(this, TIME_TO_MOVE, { x:current_tile.x + TILE_OFFSET.x, y:current_tile.y + TILE_OFFSET.y, delay:appearDelay + 0.1, ease:Back.easeInOut.config(0.8) } );
+				TweenLite.to(this, TIME_TO_MOVE, { x:_current_tile.x + TILE_OFFSET.x, y:_current_tile.y + TILE_OFFSET.y, delay:appearDelay + 0.1, ease:Back.easeInOut.config(0.8) } );
 				appearDelay += TIME_TO_MOVE;
 			} else {
 				TweenLite.to(this, TIME_TO_MOVE, { x:OFFSCREEN_POINT.x, y:OFFSCREEN_POINT.y, delay:appearDelay, ease:Back.easeInOut.config(0.8) } );
@@ -162,9 +169,9 @@ package
 				}
 				numberOfChecks += 1;
 			}
-			current_tile = possible_tile;
-			current_tile.cards = [];
-			current_tile.cards.push(_bossCard);
+			_current_tile = possible_tile;
+			_current_tile.cards = [];
+			_current_tile.cards.push(_bossCard);
 			//trace('picked tile at world [' + current_tile.x + ',' + current_tile.y + '], screen [' + current_tile.getScreenXY().x + ',' + current_tile.getScreenXY().y + ']')
 		}
 		
@@ -174,12 +181,73 @@ package
 			x = old_point.x + FlxG.camera.scroll.x;
 			y = old_point.y + FlxG.camera.scroll.y;
 			scrollFactor = new FlxPoint(1.0, 1.0);
+			_is_taking_turn = false;
+			_onBoard = true;
 			//BossTraceXY();
+		}
+		
+		public function StartTurn():void {
+			//_playState.following_hero = true;
+			_is_taking_turn = true;
+			//thinking_timer = THINKING_TIME;
+			var possible_directions:Array = _current_tile.validEntrances();
+			var valid_tiles:Array = new Array();
+			//trace("picking tile from possible directions: " + possible_directions);
+			for each (var dir:int in possible_directions) {
+				var coords:FlxPoint = _current_tile.getTileCoordsThroughExit(dir);
+				//trace("current_tile at [" + current_tile.x + "," + current_tile.y + "]");
+				//trace("checking for tile in direction " + dir + " at [" + coords.x + "," + coords.y + "]");
+				var possible_tile:Tile = _playState.getTileAt(coords);
+				//trace("possible_tile: " + possible_tile);
+				if (possible_tile != null && possible_tile.checkExit(Tile.oppositeDirection(dir))) {
+					valid_tiles.push(possible_tile);
+				}
+			}
+			
+			if (valid_tiles.length == 0) {
+				EndTurn();
+				trace('** WARNING: no valid tiles to move to **');
+			} else {
+				_moving_to_tile = chooseTile(valid_tiles);
+				if (_moving_to_tile.x < _current_tile.x) {
+					facing = LEFT;
+				} else if (_moving_to_tile.x > _current_tile.x) {
+					facing = RIGHT;
+				}
+				//thinkSomething("movement");
+				//_playState.turn_phase = PlayState.PHASE_HERO_THINK;
+				TweenLite.to(this, TIME_TO_MOVE, { x:_moving_to_tile.x + TILE_OFFSET.x, y:_moving_to_tile.y + TILE_OFFSET.y, ease:Back.easeInOut.config(0.8) } );
+				TweenLite.delayedCall(TIME_TO_MOVE, FinishedMove);
+			}
+		}
+		
+		public function FinishedMove():void {
+			//trace('arrived at tile at [' + _moving_to_tile.x + ',' + _moving_to_tile.y + ']');
+			_current_tile = _moving_to_tile;
+			EndTurn();
+		}
+		
+		public function EndTurn():void {
+			_playState.turn_phase = PlayState.PHASE_NEWTURN;
+			_is_taking_turn = false;
+		}
+		
+		private function chooseTile(valid_tiles:Array):Tile {
+			//default: random tile
+			var favorite_tile:Tile = valid_tiles[Math.floor(Math.random() * (valid_tiles.length))];
+			/*
+			for each (var tile:Tile in valid_tiles) {
+				//check if this is preferable to current fave
+				if (tile.countCards("TREASURE") > favorite_tile.countCards("TREASURE") || (favorite_tile.has_visited && !tile.has_visited)) {
+					favorite_tile = tile;
+				}
+			} */
+			return favorite_tile;
 		}
 		
 		public function BossTraceXY():void {
 			trace('boss at world [' + x + ',' + y +'], screen [' + getScreenXY().x + ',' + getScreenXY().y + ']');
-			trace('boss.current_tile at world [' + current_tile.x + ',' + current_tile.y + '], screen [' + current_tile.getScreenXY().x + ',' + current_tile.getScreenXY().y + ']')
+			trace('boss.current_tile at world [' + _current_tile.x + ',' + _current_tile.y + '], screen [' + _current_tile.getScreenXY().x + ',' + _current_tile.getScreenXY().y + ']')
 		}
 		
 		public function GetStats():String {
