@@ -28,6 +28,7 @@ package
 		public var current_tile:Tile;
 		public var moving_to_tile:Tile;
 		public var previous_tile:Tile;
+		public var _bossCard:Card;
 		
 		private var _playState:PlayState;
 		
@@ -57,6 +58,11 @@ package
 					throw new Error("no matching monster defined for " + _type);
 			}
 			play(_type);
+			
+			var bossMonster:Monster = new Monster(_playState, "Fire Demon");
+			bossMonster.visible = false;
+			_bossCard = new Card(_playState, X, Y, "MONSTER", null, bossMonster); 
+			_bossCard._monster = bossMonster;
 		}
 		
 		public function CheckChat():void {
@@ -157,7 +163,8 @@ package
 				numberOfChecks += 1;
 			}
 			current_tile = possible_tile;
-			//current_tile.cards.
+			current_tile.cards = [];
+			current_tile.cards.push(_bossCard);
 			//trace('picked tile at world [' + current_tile.x + ',' + current_tile.y + '], screen [' + current_tile.getScreenXY().x + ',' + current_tile.getScreenXY().y + ']')
 		}
 		

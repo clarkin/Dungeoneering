@@ -167,6 +167,15 @@ package
 					_speed = 2;
 					_armour = 2;
 					break;
+				case "Fire Demon":
+					_desc = "OW! This card is burning hot!";
+					addAnimation(_type, [8]);
+					_dread = 5;
+					_health = 12;
+					_strength = 8;
+					_speed = 4;
+					_armour = 4;
+					break;
 				default:
 					throw new Error("no matching monster defined for " + _type);
 			}
