@@ -117,13 +117,9 @@ package
 			
 			if (_onBoard) {
 				PickBossRoom();
-				trace('moving onto board')
-				//TODO fix below + to y (something to do with the getScreenXY of the tile..)
-				TweenLite.to(this, TIME_TO_MOVE, { x:(current_tile.getScreenXY().x + TILE_OFFSET.x), y:(current_tile.getScreenXY().y + TILE_OFFSET.y + 25), delay:appearDelay, ease:Back.easeInOut.config(0.8) } );
+				TweenLite.delayedCall(appearDelay + 0.05, BossNowOnBoard);
+				TweenLite.to(this, TIME_TO_MOVE, { x:current_tile.x + TILE_OFFSET.x, y:current_tile.y + TILE_OFFSET.y, delay:appearDelay + 0.1, ease:Back.easeInOut.config(0.8) } );
 				appearDelay += TIME_TO_MOVE;
-				BossTraceXY();
-				TweenLite.delayedCall(appearDelay + 1, BossTraceXY);
-				TweenLite.delayedCall(appearDelay + 3, BossNowOnBoard);
 			} else {
 				TweenLite.to(this, TIME_TO_MOVE, { x:OFFSCREEN_POINT.x, y:OFFSCREEN_POINT.y, delay:appearDelay, ease:Back.easeInOut.config(0.8) } );
 				appearDelay += TIME_TO_MOVE;
@@ -162,18 +158,21 @@ package
 			}
 			current_tile = possible_tile;
 			//current_tile.cards.
-			trace('picked tile at world [' + current_tile.x + ',' + current_tile.y + '], screen [' + current_tile.getScreenXY().x + ',' + current_tile.getScreenXY().y + ']')
+			//trace('picked tile at world [' + current_tile.x + ',' + current_tile.y + '], screen [' + current_tile.getScreenXY().x + ',' + current_tile.getScreenXY().y + ']')
 		}
 		
 		public function BossNowOnBoard():void {
+			//BossTraceXY();
+			var old_point:FlxPoint = new FlxPoint(x, y);
+			x = old_point.x + FlxG.camera.scroll.x;
+			y = old_point.y + FlxG.camera.scroll.y;
 			scrollFactor = new FlxPoint(1.0, 1.0);
-			x = current_tile.x + TILE_OFFSET.x;
-			y = current_tile.y + TILE_OFFSET.y;
-			BossTraceXY();
+			//BossTraceXY();
 		}
 		
 		public function BossTraceXY():void {
 			trace('boss at world [' + x + ',' + y +'], screen [' + getScreenXY().x + ',' + getScreenXY().y + ']');
+			trace('boss.current_tile at world [' + current_tile.x + ',' + current_tile.y + '], screen [' + current_tile.getScreenXY().x + ',' + current_tile.getScreenXY().y + ']')
 		}
 		
 		public function GetStats():String {
