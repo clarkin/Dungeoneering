@@ -11,9 +11,11 @@ package
 		
 		public static const SPRITE_SIZE:int = 120;
 		public static const TIME_TO_MOVE:Number = 1.0;
+		public static const THINKING_TIME:Number = FloatingText.FADE_IN_TIME + FloatingText.DISPLAY_TIME + FloatingText.FADE_OUT_TIME;
 		public static const OFFSCREEN_POINT:FlxPoint = new FlxPoint(-150, 120);
 		public static const ONSCREEN_POINT:FlxPoint = new FlxPoint(12, 120);
 		public static const TILE_OFFSET:FlxPoint = new FlxPoint(20, 20); 
+		public static const THOUGHT_OFFSET:FlxPoint = new FlxPoint(60, -86);
 		
 		public var _type:String = "";
 		public var _desc:String = "";
@@ -96,13 +98,13 @@ package
 				
 				BossAddChat("MINIONS! DESTROY THEM! BRING ME THEIR BONES!", appearDelay);
 				appearDelay += oneChatCycle;
-				moveToBoard = true; //todo: remove
 			} else if (chat_type == "first_kill") {
 				BossAddChat("HAR HAR! YOU THINK I'LL MISS THAT " + _playState.battling_monster._type.toUpperCase() + "?", appearDelay);
 				appearDelay += oneChatCycle;
 				
 				BossAddChat("NO! HE WAS MY LEAST FAVORITE MINION!", appearDelay);
 				appearDelay += oneChatCycle;
+				moveToBoard = true; //todo: remove
 			} else if (chat_type == "fifth_kill") {
 				BossAddChat("*sigh* As usual my minions are bumbling fools..", appearDelay, false);
 				appearDelay += oneChatCycle;
@@ -137,9 +139,16 @@ package
 		}
 		
 		public function BossAddChat(chat:String, delay:Number = 0, angry:Boolean = true):void {
-			TweenMax.to(this, 0.15, { x:ONSCREEN_POINT.x + 1, y:ONSCREEN_POINT.y - 2, bothScale:bothScale + 0.1, delay:delay, repeat:5, yoyo:true } );
-			var boss_shout:FloatingText = new FloatingText(ONSCREEN_POINT.x + 60, ONSCREEN_POINT.y - 86, chat, delay);
-			boss_shout.scrollFactor = new FlxPoint(0, 0);
+			var eventualPosition:FlxPoint = new FlxPoint(ONSCREEN_POINT.x, ONSCREEN_POINT.y);
+			if (_onBoard) {
+				eventualPosition = new FlxPoint(x, y);
+			}
+			
+			TweenMax.to(this, 0.15, { x:eventualPosition.x + 1, y:eventualPosition.y - 2, bothScale:bothScale + 0.1, delay:delay, repeat:5, yoyo:true } );
+			var boss_shout:FloatingText = new FloatingText(eventualPosition.x + THOUGHT_OFFSET.x, eventualPosition.y + THOUGHT_OFFSET.y, chat, delay);
+			if (!_onBoard) {
+				boss_shout.scrollFactor = new FlxPoint(0, 0);
+			}
 			_playState.floatingTexts.add(boss_shout);
 			
 			if (angry) {
@@ -147,6 +156,43 @@ package
 			} else {
 				TweenLite.delayedCall(delay, _playState.sndDemontalk2.play);
 			}
+		}
+		
+		public function thinkSomething(thought_type:String, card_clicked:Card = null):void {
+			var thought:String = "";
+			var angry:Boolean = true;
+			
+			if (thought_type == "movement") {
+				if (_moving_to_tile.cards.length > 0) {
+					var top_card:Card = _moving_to_tile.cards[_moving_to_tile.cards.length - 1];
+					switch (top_card._type) {
+						case "MONSTER":
+							var monster_thoughts:Array = ["OUT OF MY WAY MINION!", "GET OUT OF MY SIGHT MONSTER",
+								"BURN MONSTER, BURN! You only gave him hope!", "Remind me not to stock any more MONSTERs..", "Oh look another useless MONSTER",
+								"RROOAAARRRGH!!", "*sigh* more useless minions.."];
+							thought = monster_thoughts[Math.floor(Math.random() * (monster_thoughts.length))];
+							thought = thought.replace(/MONSTER/g, top_card._title);
+							break;
+						case "TREASURE":
+							var treasure_thoughts:Array = ["Who left this here?!", "TREASURE? Where did that come from?",
+								"TREASURE! Back into my loot box with you!", "Look at this clutter!", "Just as I get peckish.. a TREASURE! *om nyom*"];
+							thought = treasure_thoughts[Math.floor(Math.random() * (treasure_thoughts.length))];
+							thought = thought.replace(/TREASURE/g, top_card._title);
+							break;
+					}
+				} else {
+					if (_moving_to_tile == _playState.hero.current_tile) {
+						var hero_thoughts:Array = ["THERE YOU ARE! I HOPE YOU LIKE BURNING", "TIME TO BURN!!!", "NOW I HAVE YOU"];
+						thought = hero_thoughts[Math.floor(Math.random() * (hero_thoughts.length))];
+					} else {
+						var random_thoughts:Array = ["Does this make me a wandering monster?", "How come I don't know the way around my own dungeon!?", "This dungeon makes no sense!",
+							"I think I'm getting closer!", "If only I had a NOSE I would sniff them out!!", "If only I could hold a map without burning it!", "Hmm...", "I can hear you .. somewhere!"];
+						thought = random_thoughts[Math.floor(Math.random() * (random_thoughts.length))];
+						angry = false;
+					}
+				}
+			}
+			BossAddChat(thought, 0, angry);
 		}
 		
 		public function PickBossRoom():void {
@@ -182,7 +228,6 @@ package
 		public function StartTurn():void {
 			//_playState.following_hero = true;
 			_is_taking_turn = true;
-			//thinking_timer = THINKING_TIME;
 			var possible_directions:Array = _current_tile.validEntrances();
 			var valid_tiles:Array = new Array();
 			//trace("picking tile from possible directions: " + possible_directions);
@@ -206,11 +251,13 @@ package
 				} else if (_moving_to_tile.x > _current_tile.x) {
 					facing = RIGHT;
 				}
-				//thinkSomething("movement");
-				//_playState.turn_phase = PlayState.PHASE_HERO_THINK;
 				_current_tile.cards = [];
-				TweenLite.to(this, TIME_TO_MOVE, { x:_moving_to_tile.x + TILE_OFFSET.x, y:_moving_to_tile.y + TILE_OFFSET.y, ease:Back.easeInOut.config(0.8) } );
-				TweenLite.delayedCall(TIME_TO_MOVE, FinishedMove);
+				var delay:Number = 0;
+				thinkSomething("movement");
+				delay += THINKING_TIME;
+				TweenLite.to(this, TIME_TO_MOVE, { x:_moving_to_tile.x + TILE_OFFSET.x, y:_moving_to_tile.y + TILE_OFFSET.y, delay: delay, ease:Back.easeInOut.config(0.8) } );
+				delay += TIME_TO_MOVE;
+				TweenLite.delayedCall(delay, FinishedMove);
 			}
 		}
 		

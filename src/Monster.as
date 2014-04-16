@@ -125,7 +125,7 @@ package
 				case "Ghost":
 					_desc = "BOO! Hey - were you scared?";
 					addAnimation(_type, [11]);
-					_dread = 2;
+					_dread = 3;
 					_health = 2;
 					_strength = 2;
 					_speed = 4;
