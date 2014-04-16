@@ -96,13 +96,13 @@ package
 				
 				BossAddChat("MINIONS! DESTROY THEM! BRING ME THEIR BONES!", appearDelay);
 				appearDelay += oneChatCycle;
+				moveToBoard = true; //todo: remove
 			} else if (chat_type == "first_kill") {
 				BossAddChat("HAR HAR! YOU THINK I'LL MISS THAT " + _playState.battling_monster._type.toUpperCase() + "?", appearDelay);
 				appearDelay += oneChatCycle;
 				
 				BossAddChat("NO! HE WAS MY LEAST FAVORITE MINION!", appearDelay);
 				appearDelay += oneChatCycle;
-				moveToBoard = true; //todo: remove
 			} else if (chat_type == "fifth_kill") {
 				BossAddChat("*sigh* As usual my minions are bumbling fools..", appearDelay, false);
 				appearDelay += oneChatCycle;

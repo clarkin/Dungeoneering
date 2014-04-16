@@ -401,10 +401,13 @@ package
 		
 		public function checkBoss():void {
 			if (turn_phase == PHASE_BOSS_MOVE) {
-				if (boss_monster._onBoard && !boss_monster._is_taking_turn) {
-					trace('starting boss turn')
-					boss_monster.StartTurn();
+				if (boss_monster._onBoard) {
+					if (!boss_monster._is_taking_turn) {
+						//trace('starting boss turn')
+						boss_monster.StartTurn();
+					}
 				} else {
+					//trace('skipping boss turn');
 					turn_phase = PHASE_NEWTURN;
 				}
 			}
