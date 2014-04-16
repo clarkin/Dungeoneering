@@ -28,7 +28,6 @@ package
 		public var _current_tile:Tile;
 		public var _moving_to_tile:Tile;
 		public var _previous_tile:Tile;
-		public var _bossCard:Card;
 		public var _is_taking_turn:Boolean = true;
 		
 		private var _playState:PlayState;
@@ -59,11 +58,6 @@ package
 					throw new Error("no matching monster defined for " + _type);
 			}
 			play(_type);
-			
-			var bossMonster:Monster = new Monster(_playState, "Fire Demon");
-			//bossMonster.visible = false;
-			_bossCard = new Card(_playState, X, Y, "MONSTER", null, bossMonster); 
-			_bossCard._monster = bossMonster;
 		}
 		
 		public function CheckChat():void {
@@ -102,13 +96,13 @@ package
 				
 				BossAddChat("MINIONS! DESTROY THEM! BRING ME THEIR BONES!", appearDelay);
 				appearDelay += oneChatCycle;
-				moveToBoard = true; //todo: remove
 			} else if (chat_type == "first_kill") {
 				BossAddChat("HAR HAR! YOU THINK I'LL MISS THAT " + _playState.battling_monster._type.toUpperCase() + "?", appearDelay);
 				appearDelay += oneChatCycle;
 				
 				BossAddChat("NO! HE WAS MY LEAST FAVORITE MINION!", appearDelay);
 				appearDelay += oneChatCycle;
+				moveToBoard = true; //todo: remove
 			} else if (chat_type == "fifth_kill") {
 				BossAddChat("*sigh* As usual my minions are bumbling fools..", appearDelay, false);
 				appearDelay += oneChatCycle;
@@ -224,8 +218,6 @@ package
 		public function FinishedMove():void {
 			//trace('arrived at tile at [' + _moving_to_tile.x + ',' + _moving_to_tile.y + ']');
 			_current_tile = _moving_to_tile;
-			//_current_tile.cards = [];
-			//_current_tile.cards.push(_bossCard);
 			SetBossCardOnTile(_current_tile);
 			EndTurn();
 			if (_current_tile == _playState.hero.current_tile) {
@@ -242,19 +234,19 @@ package
 		private function chooseTile(valid_tiles:Array):Tile {
 			//default: random tile
 			var favorite_tile:Tile = valid_tiles[Math.floor(Math.random() * (valid_tiles.length))];
-			/*
+			//trace('picked random tile for boss at [' + favorite_tile.x + ',' + favorite_tile.y + '], distance: ' + favorite_tile.distanceSquaredToTile(_playState.hero.current_tile));
 			for each (var tile:Tile in valid_tiles) {
 				//check if this is preferable to current fave
-				if (tile.countCards("TREASURE") > favorite_tile.countCards("TREASURE") || (favorite_tile.has_visited && !tile.has_visited)) {
+				//trace('checking against tile at [' + tile.x + ',' + tile.y + '], distance: ' + tile.distanceSquaredToTile(_playState.hero.current_tile));
+				if (tile.distanceSquaredToTile(_playState.hero.current_tile) < favorite_tile.distanceSquaredToTile(_playState.hero.current_tile)) {
 					favorite_tile = tile;
 				}
-			} */
+			} 
 			return favorite_tile;
 		}
 		
 		public function SetBossCardOnTile(tile:Tile):void {
 			var bossMonster:Monster = new Monster(_playState, "Fire Demon");
-			//bossMonster.visible = false;
 			var bossCard:Card = new Card(_playState, 0, 0, "MONSTER", null, bossMonster); 
 			bossCard._monster = bossMonster;
 			tile.cards = [];

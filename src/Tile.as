@@ -224,6 +224,10 @@ package
 			return false;
 		}
 		
+		public function distanceSquaredToTile(other_tile:Tile):Number {
+			return (this.x - other_tile.x) * (this.x - other_tile.x) + (this.y - other_tile.y) * (this.y - other_tile.y);
+		}
+		
 		public function checkExit(direction:int):Boolean {
 			switch (direction) {
 				case NORTH:
