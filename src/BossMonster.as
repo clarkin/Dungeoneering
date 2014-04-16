@@ -61,7 +61,7 @@ package
 			play(_type);
 			
 			var bossMonster:Monster = new Monster(_playState, "Fire Demon");
-			bossMonster.visible = false;
+			//bossMonster.visible = false;
 			_bossCard = new Card(_playState, X, Y, "MONSTER", null, bossMonster); 
 			_bossCard._monster = bossMonster;
 		}
@@ -170,8 +170,6 @@ package
 				numberOfChecks += 1;
 			}
 			_current_tile = possible_tile;
-			//_current_tile.cards = [];
-			//_current_tile.cards.push(_bossCard);
 			SetBossCardOnTile(_current_tile);
 			//trace('picked tile at world [' + current_tile.x + ',' + current_tile.y + '], screen [' + current_tile.getScreenXY().x + ',' + current_tile.getScreenXY().y + ']')
 		}
@@ -256,11 +254,12 @@ package
 		
 		public function SetBossCardOnTile(tile:Tile):void {
 			var bossMonster:Monster = new Monster(_playState, "Fire Demon");
-			bossMonster.visible = false;
+			//bossMonster.visible = false;
 			var bossCard:Card = new Card(_playState, 0, 0, "MONSTER", null, bossMonster); 
 			bossCard._monster = bossMonster;
 			tile.cards = [];
 			tile.cards.push(bossCard);
+			//trace("added boss card to tile at [" + tile.x + "," + tile.y + "]. frame at " + bossCard._monster.frame);
 		}
 		
 		public function BossTraceXY():void {

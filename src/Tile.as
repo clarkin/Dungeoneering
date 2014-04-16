@@ -115,7 +115,7 @@ package
 			
 			//TODO: is this really the best way to do this?
 			for each (var card:Card in this.cards) {
-				if (card._monster != null && card._monster.visible) {
+				if (card._monster != null && card._monster._type != "Fire Demon") {
 					card._monster.draw();
 				}
 				if (card._treasure != null) {

@@ -189,14 +189,14 @@ package
 			battleScreen.visible = false;
 
 			var starting_tile:Tile = new Tile(this, "corr_grate_n");
-			addTileAt(starting_tile, starting_point.x, starting_point.y - Tile.TILESIZE, false);
+			addTileAt(starting_tile, starting_point.x, starting_point.y, false);
 			starting_tile.AppearAlpha(appearDelay);
 			appearDelay += APPEAR_DELAY;
 			hero.setCurrentTile(starting_tile);
 			hero.x = starting_tile.x + hero.tile_offset.x - hero.origin.x;
 			hero.y = starting_tile.y + hero.tile_offset.y - hero.origin.y;
 			var second_tile:Tile = new Tile(this, "corr_thin_nesw");
-			addTileAt(second_tile, starting_point.x, starting_point.y - Tile.TILESIZE - Tile.TILESIZE);
+			addTileAt(second_tile, starting_point.x, starting_point.y - Tile.TILESIZE);
 			second_tile.AppearAlpha(appearDelay);
 			appearDelay += APPEAR_DELAY;
 			hero.Appear(appearDelay);
@@ -427,6 +427,7 @@ package
 			battle_monster_stats.text = battling_monster.GetStatsNumbers();
 			
 			battle_hero_sprite.pixels = hero.framePixels.clone();
+			battling_monster.drawFrame(true); //necessary for boss_monster as it has never been visible so frame was never set
 			battle_monster_sprite.pixels = battling_monster.framePixels.clone();
 			
 			battleScreen.visible = true;

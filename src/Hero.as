@@ -321,6 +321,7 @@ package
 						_playState.player_treasure += next_card._treasure._hope + 1;
 					}
 				} else if (next_card._type == "MONSTER") {
+					//trace("starting battle with monster " + next_card._monster._type + ", frame at " + next_card._monster.frame);
 					_playState.StartBattle(next_card._monster);
 				}
 
@@ -331,14 +332,14 @@ package
 		
 		public function FightMonster(this_monster:Monster):void {
 			if (EquippedSpeed() >= this_monster._speed) {
-				trace("hero attacks first")
+				//trace("hero attacks first")
 				HeroAttacksMonster(this_monster);
 				
 				if (this_monster._health > 0) {
 					MonsterAttacksHero(this_monster);
 				}
 			} else {
-				trace("monster attacks first")
+				//trace("monster attacks first")
 				MonsterAttacksHero(this_monster);
 				
 				if (_health > 0) {
@@ -348,7 +349,7 @@ package
 		}
 		
 		public function HeroAttacksMonster(this_monster:Monster):void {
-			trace("hero attacked monster");
+			//trace("hero attacked monster");
 			if (EquippedStrength() > this_monster._armour) {
 				this_monster._health -= (EquippedStrength() - this_monster._armour);
 				_playState.sndSwordkill.play();
@@ -361,7 +362,7 @@ package
 		}
 		
 		public function MonsterAttacksHero(this_monster:Monster):void {
-			trace("monster attacked hero");
+			//trace("monster attacked hero");
 			if (this_monster._strength > EquippedArmour()) {
 				_health -= (this_monster._strength - EquippedArmour());
 				CheckHeroHealth();
@@ -370,7 +371,7 @@ package
 		
 		public function CheckHeroHealth():void {
 			if (_health <= 0) {
-				trace("hero dead");
+				//trace("hero dead");
 				_playState.player_alive = false;
 				_playState.leaveDungeon();
 			}
