@@ -12,7 +12,7 @@ package
 		
 		public static const TIME_TO_MOVE_TILES:Number = 1.0;
 		public static const ARRIVAL_THRESHOLD:int = 0;
-		public static const THINKING_TIME:Number = FloatingText.FADE_IN_TIME * 2 + FloatingText.DISPLAY_TIME + FloatingText.FADE_OUT_TIME;;
+		public static const THINKING_TIME:Number = FloatingText.FADE_IN_TIME + FloatingText.DISPLAY_TIME + FloatingText.FADE_OUT_TIME;
 		public static const CARD_TIME:Number = 2;
 		public static const TILE_SIZE:int = 80;
 		
