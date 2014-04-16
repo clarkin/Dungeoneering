@@ -598,7 +598,6 @@ package
 											
 											if (placing_card._type == "TILE") {
 												var new_placing_card_tile:Card = new Card(this, -1000, -1000, placing_card._type, placing_card._tile);
-												//new_placing_card_tile._tile.alpha = 0.6;
 												placingSprite.add(new_placing_card_tile._tile);
 												highlights.visible = true;
 												highlights.setAll("visible", false);
@@ -610,18 +609,14 @@ package
 												}											
 											} else {
 												if (placing_card._type == "MONSTER") {
-													//var new_placing_card_monster:Card = new Card(this, -1000, -1000, placing_card._type, null, placing_card._monster);
-													//new_placing_card_monster._monster.alpha = 0.6;
-													//placingSprite.add(new_placing_card_monster._monster);
 													var new_placing_card_monster:Monster = new Monster(this, placing_card._monster._type, true);
 													placingSprite.add(new_placing_card_monster);
 												} else {
-													//var new_placing_card_treasure:Card = new Card(this, -1000, -1000, placing_card._type, null, null, placing_card._treasure);
-													//new_placing_card_treasure._treasure.alpha = 0.6;
-													//placingSprite.add(new_placing_card_treasure._treasure);
 													var new_placing_card_treasure:Treasure = new Treasure(this,placing_card._treasure._type, true);
 													placingSprite.add(new_placing_card_treasure);
 												}
+												placingSprite.setAll("x", FlxG.mouse.screenX + PLACING_OFFSET.x);
+												placingSprite.setAll("y", FlxG.mouse.screenY + PLACING_OFFSET.y);
 												for each (var possible_tile2:Tile in tiles.members) {
 													if (possible_tile2 != hero.current_tile && possible_tile2.validForCard(placing_card)) {
 														possible_tile2.flashing = true;
