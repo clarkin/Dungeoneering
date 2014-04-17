@@ -8,6 +8,7 @@ package
 	public class MenuState extends FlxState
 	{
 		[Embed(source = "../assets/title_screen.jpg")] private var ARTtitleScreen:Class;
+		[Embed(source = "../assets/instructions.png")] private var ARTinstructions:Class;
 		[Embed(source = "../assets/death_screen.png")] private var ARTdeathScreen:Class;
 		[Embed(source = "../assets/play_button.png")] private var ARTplayBtn:Class;
 		[Embed(source = "../assets/play_button_on.png")] private var ARTplayBtnOn:Class;
@@ -21,6 +22,7 @@ package
 		public var whiteFade:FlxSprite;
 		public var startButton:FlxButtonPlus;
 		public var titleScreen:FlxSprite;
+		public var instructionsScreen:FlxSprite;
 		public var deathScreen:FlxSprite;
 		public var title:FlxText;
 		public var results:FlxText;
@@ -39,8 +41,10 @@ package
 			FlxG.bgColor = 0xFF333333;
 			
 			titleScreen = new FlxSprite(0, 0, ARTtitleScreen);
+			instructionsScreen = new FlxSprite(43, 115, ARTinstructions);
+			instructionsScreen.visible = false;
 			
-			startButton = new FlxButtonPlus(400, 650, startGame, null, "", 150, 62);
+			startButton = new FlxButtonPlus(400, 650, showInstructions, null, "", 150, 62);
 			var playButton:FlxSprite = new FlxSprite(0, 0, ARTplayBtn);
 			var playButtonOn:FlxSprite = new FlxSprite(0, 0, ARTplayBtnOn);
 			startButton.loadGraphic(playButton, playButtonOn);
@@ -74,6 +78,7 @@ package
 			
 			add(titleScreen);
 			add(startButton);
+			add(instructionsScreen);
 			add(whiteFade);
 			add(deathScreen);
 			add(title);
@@ -106,13 +111,23 @@ package
 				TweenLite.delayedCall(appearDelay, startGame);
 			}
 		}
+		
+		private function showInstructions():void {
+			startButton.visible = false;
+			instructionsScreen.visible = true;
+			instructionsScreen.Appear();
+			TweenLite.delayedCall(15, startGame);
+		}
 
 		private function startGame():void {
+			startButton.visible = true;
+			instructionsScreen.Disappear(0, false);
 			whiteFade.AppearAlpha();
 			TweenLite.delayedCall(FlxSprite.TIME_TO_APPEAR * 2 + APPEAR_DELAY, FinishedFade);
 		}
 		
 		private function FinishedFade():void {
+			instructionsScreen.visible = false;
 			FlxG.switchState(new PlayState);
 		}
 		
