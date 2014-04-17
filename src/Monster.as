@@ -109,8 +109,8 @@ package
 					addAnimation(_type, [7]);
 					_dread = 5;
 					_health = 10;
-					_strength = 6;
-					_speed = 1;
+					_strength = 5;
+					_speed = 0;
 					_armour = 0;
 					break;
 				case "Fire Demon":
@@ -118,7 +118,7 @@ package
 					addAnimation(_type, [8]);
 					_dread = 5;
 					_health = 10;
-					_strength = 8;
+					_strength = 6;
 					_speed = 3;
 					_armour = 3;
 					break;
@@ -126,8 +126,8 @@ package
 					_desc = "BOO! Hey - were you scared?";
 					addAnimation(_type, [11]);
 					_dread = 3;
-					_health = 2;
-					_strength = 2;
+					_health = 1;
+					_strength = 3;
 					_speed = 4;
 					_armour = 3;
 					break;
@@ -166,15 +166,6 @@ package
 					_strength = 4;
 					_speed = 2;
 					_armour = 2;
-					break;
-				case "Fire Demon":
-					_desc = "OW! This card is burning hot!";
-					addAnimation(_type, [8]);
-					_dread = 5;
-					_health = 12;
-					_strength = 8;
-					_speed = 4;
-					_armour = 4;
 					break;
 				default:
 					throw new Error("no matching monster defined for " + _type);

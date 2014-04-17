@@ -74,7 +74,7 @@ package
 				DoBossChat("first_kill");
 			} else if (_playState.monsters_killed >= 5 && _usedChats.indexOf("fifth_kill") == -1) {
 				DoBossChat("fifth_kill");
-			} else if (_playState.turn_number >= 20 && _usedChats.indexOf("coming_soon") == -1) {
+			} else if (_playState.turn_number >= 15 && _usedChats.indexOf("coming_soon") == -1) {
 				DoBossChat("coming_soon");
 			} else {
 				_playState.BossChatOver();
