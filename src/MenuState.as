@@ -10,6 +10,7 @@ package
 		[Embed(source = "../assets/title_screen.jpg")] private var ARTtitleScreen:Class;
 		[Embed(source = "../assets/instructions.png")] private var ARTinstructions:Class;
 		[Embed(source = "../assets/death_screen.png")] private var ARTdeathScreen:Class;
+		[Embed(source = "../assets/win_screen.png")] private var ARTwinScreen:Class;
 		[Embed(source = "../assets/play_button.png")] private var ARTplayBtn:Class;
 		[Embed(source = "../assets/play_button_on.png")] private var ARTplayBtnOn:Class;
 		[Embed(source = "../assets/Lemons Can Fly.ttf", fontFamily = "LemonsCanFly", embedAsCFF = "false")] public var	FONTLemonsCanFly:String;
@@ -24,6 +25,7 @@ package
 		public var titleScreen:FlxSprite;
 		public var instructionsScreen:FlxSprite;
 		public var deathScreen:FlxSprite;
+		public var winScreen:FlxSprite;
 		public var title:FlxText;
 		public var results:FlxText;
 		public var appearDelay:Number = APPEAR_DELAY;
@@ -57,11 +59,14 @@ package
 			deathScreen = new FlxSprite(43, 115, ARTdeathScreen);
 			deathScreen.visible = false;
 			
+			winScreen = new FlxSprite(43, 115, ARTwinScreen);
+			winScreen.visible = false;
+			
 			var titleString:String = "Instructions";
 			var resultsString:String = "Explore the dungeon looking for treasure,\nbut beware the monsters..\n\nFind the treasure room if you can!";
 			if (showResults) {
 				if (survived) {
-					titleString = "You made it out!";
+					titleString = "You did it!!!";
 					resultsString = "You managed to find " + finalScore.toString() + " treasure!";
 				} else {
 					titleString = "You died!";
@@ -81,6 +86,7 @@ package
 			add(instructionsScreen);
 			add(whiteFade);
 			add(deathScreen);
+			add(winScreen);
 			add(title);
 			add(results);
 			
@@ -88,9 +94,15 @@ package
 				TweenLite.to(whiteFade, FlxSprite.TIME_TO_DISAPPEAR * 2, { alpha:0.7, delay:appearDelay, ease:Sine.easeOut } );
 				appearDelay += APPEAR_DELAY;
 				
-				deathScreen.visible = true;
-				deathScreen.AppearAlpha(appearDelay);
-				appearDelay += APPEAR_DELAY;
+				if (survived) {
+					winScreen.visible = true;
+					winScreen.AppearAlpha(appearDelay);
+					appearDelay += APPEAR_DELAY;
+				} else {
+					deathScreen.visible = true;
+					deathScreen.AppearAlpha(appearDelay);
+					appearDelay += APPEAR_DELAY;
+				}
 				
 				title.visible = true;
 				title.AppearAlpha(appearDelay);
@@ -143,8 +155,13 @@ package
 				title.DisappearAlpha(appearDelay, false);
 				appearDelay += APPEAR_DELAY;
 				
-				deathScreen.DisappearAlpha(appearDelay, false);
-				appearDelay += APPEAR_DELAY;
+				if (survived) {
+					winScreen.DisappearAlpha(appearDelay, false);
+					appearDelay += APPEAR_DELAY;
+				} else {
+					deathScreen.DisappearAlpha(appearDelay, false);
+					appearDelay += APPEAR_DELAY;
+				}
 				
 				whiteFade.DisappearAlpha(appearDelay, false);
 				appearDelay += APPEAR_DELAY;

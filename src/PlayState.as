@@ -466,7 +466,12 @@ package
 		public function EndFighting():void {
 			battleScreen.visible = false;
 			following_hero = false;
-			turn_phase = PlayState.PHASE_BOSS_MOVE;
+			if (battling_monster._type == boss_monster._type) {
+				trace('** beaten boss **');
+				leaveDungeon();
+			} else {
+				turn_phase = PlayState.PHASE_BOSS_MOVE;
+			}
 		}
 		
 		public function checkPlacing():void {
