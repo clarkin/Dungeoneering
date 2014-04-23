@@ -24,11 +24,13 @@ package
 		public var startButton:FlxButtonPlus;
 		public var titleScreen:FlxSprite;
 		public var instructionsScreen:FlxSprite;
+		public var showingInstructions:Boolean = false;
 		public var deathScreen:FlxSprite;
 		public var winScreen:FlxSprite;
 		public var title:FlxText;
 		public var results:FlxText;
 		public var appearDelay:Number = APPEAR_DELAY;
+		public var clickHandled:Boolean = false;
 
 		public function MenuState(showResults:Boolean = false, survived:Boolean = false, finalScore:int = 0)
 		{
@@ -125,51 +127,69 @@ package
 		}
 		
 		private function showInstructions():void {
+			clickHandled = true;
 			startButton.visible = false;
 			instructionsScreen.visible = true;
+			showingInstructions = true;
 			instructionsScreen.Appear();
 			TweenLite.delayedCall(15, startGame);
 		}
 
 		private function startGame():void {
-			startButton.visible = true;
-			instructionsScreen.Disappear(0, false);
-			whiteFade.AppearAlpha();
-			TweenLite.delayedCall(FlxSprite.TIME_TO_APPEAR * 2 + APPEAR_DELAY, FinishedFade);
+			if (showingInstructions) {
+				showingInstructions = false;
+				instructionsScreen.Disappear(0, false);
+				whiteFade.AppearAlpha();
+				TweenLite.delayedCall(FlxSprite.TIME_TO_APPEAR * 2 + APPEAR_DELAY, FinishedFade);
+			}
 		}
 		
 		private function FinishedFade():void {
+			startButton.visible = true;
 			instructionsScreen.visible = false;
 			FlxG.switchState(new PlayState);
 		}
 		
-		override public function update():void {
-
-			if (FlxG.mouse.justReleased() && showResults) {
-				showResults = false;
-				appearDelay = 0;
-				
-				results.DisappearAlpha(appearDelay, false);
+		public function hideResults():void {
+			showResults = false;
+			appearDelay = 0;
+			
+			results.DisappearAlpha(appearDelay, false);
+			appearDelay += APPEAR_DELAY;
+			
+			title.DisappearAlpha(appearDelay, false);
+			appearDelay += APPEAR_DELAY;
+			
+			if (survived) {
+				winScreen.DisappearAlpha(appearDelay, false);
 				appearDelay += APPEAR_DELAY;
-				
-				title.DisappearAlpha(appearDelay, false);
+			} else {
+				deathScreen.DisappearAlpha(appearDelay, false);
 				appearDelay += APPEAR_DELAY;
-				
-				if (survived) {
-					winScreen.DisappearAlpha(appearDelay, false);
-					appearDelay += APPEAR_DELAY;
-				} else {
-					deathScreen.DisappearAlpha(appearDelay, false);
-					appearDelay += APPEAR_DELAY;
-				}
-				
-				whiteFade.DisappearAlpha(appearDelay, false);
-				appearDelay += APPEAR_DELAY;
-				
-				TweenLite.delayedCall(appearDelay, resetStartBtn);
 			}
 			
+			whiteFade.DisappearAlpha(appearDelay, false);
+			appearDelay += APPEAR_DELAY;
+			
+			TweenLite.delayedCall(appearDelay, resetStartBtn);
+		}
+		
+		override public function update():void {
+
+			if (FlxG.mouse.justReleased()) {
+				if(showResults && !clickHandled) {
+					hideResults();
+				} else if (showingInstructions && !clickHandled) {
+					startGame();
+				}
+			}
+			
+			resetClickHandled();
 			super.update();
+		}
+		
+		public function resetClickHandled():void {
+			clickHandled = false;
 		}
 		
 		public function resetStartBtn():void {
