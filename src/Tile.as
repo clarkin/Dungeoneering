@@ -58,6 +58,7 @@ package
 		public var g:Number = 0;
 		public var h:Number = 0;
 		public var f:Number = 0;
+		public var pathingParent:Tile;
 		
 		private var _playState:PlayState;
 		
@@ -174,9 +175,8 @@ package
 			for each (var direction:int in validEntrances()) {
 				var tile_coords:FlxPoint = getTileCoordsThroughExit(direction);
 				var possible_tile:Tile = _playState.GetTileAtXY(tile_coords.x, tile_coords.y);
-				trace("checking for tile in direction " + Tile.directionName(Tile.oppositeDirection(direction)) + " at [" + tile_coords.x + "," + tile_coords.y + "]");
-				if (possible_tile) {
-					trace("found tile")
+				//trace("checking for tile in direction " + Tile.directionName(direction) + " at [" + tile_coords.x + "," + tile_coords.y + "]");
+				if (possible_tile && possible_tile.checkExit(Tile.oppositeDirection(direction))) {
 					connected_tiles.push(possible_tile);
 				}
 			}
@@ -292,11 +292,11 @@ package
 		public static function directionName(direction:int):String {
 			switch (direction) {
 				case NORTH:
-					return "SOUTH";
+					return "NORTH";
 				case EAST:
 					return "EAST";
 				case SOUTH:
-					return "NORTH";
+					return "SOUTH";
 				case WEST:
 					return "WEST";
 				default:

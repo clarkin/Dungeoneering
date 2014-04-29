@@ -518,7 +518,7 @@ package
 		
 		public function checkMouseClick():void {
 			if (FlxG.mouse.justPressed()) {
-				checkTileClick();
+				//checkTileClick();
 				//trace('mouse clicked at world [' + FlxG.mouse.getWorldPosition().x + ',' + FlxG.mouse.getWorldPosition().y + '], screen [' + FlxG.mouse.getScreenPosition().x + ',' + FlxG.mouse.getScreenPosition().y + '], camera.scroll = [' + FlxG.camera.scroll.x + ',' + FlxG.camera.scroll.y + ']')
 				idle_timer = IDLE_TIME;
 				if (checkMouseOverlapsGroup(guiGroup) == null && checkMouseOverlapsGroup(cardsInHand) == null) {
@@ -857,7 +857,7 @@ package
 					break;
 				case "MONSTER":
 					var possible_monster:Monster = dungeon.GetRandomMonster();
-					//trace("genrating possible monster card " + possible_monster._type);
+					//trace("generating possible monster card " + possible_monster._type);
 					possible_card = new Card(this, card_point.x, card_point.y, "MONSTER", null, possible_monster);
 					break;
 				case "TREASURE":
@@ -1034,8 +1034,9 @@ package
 		public function GetTileAtXY(x:int, y:int):Tile {
 			var point:FlxPoint = new FlxPoint(x, y);
 			for each (var tile:Tile in tiles.members) {
-				trace("checking tile " + tile.type + " at [" + tile.x + "," + tile.y + "]");
-				if (tile.overlapsPoint(point)) {
+				//trace("checking tile " + tile.type + " at [" + tile.x + "," + tile.y + "]");
+				if (tile.overlapsPoint(point) || (tile.x == point.x && tile.y == point.y)) {
+					//trace("tile overlaps point:  " + tile.type);
 					return tile;
 				}
 			}
@@ -1043,16 +1044,8 @@ package
 			return null;
 		}
 		
-		//TODO remove this one
-		public function getTileAt(point:FlxPoint):Tile {
-			for each (var t:Tile in tiles.members) {
-				//trace("checking tile " + t.type + " at [" + t.x + "," + t.y + "]");
-				if (t.x == point.x && t.y == point.y) {
-					return t;
-				}
-			}
-			
-			return null;
+		public function GetTileAt(point:FlxPoint):Tile {
+			return GetTileAtXY(point.x, point.y);
 		}
 		
 		public function checkTileClick():void {
@@ -1064,11 +1057,19 @@ package
 			var clicked_tile:Tile = GetTileAtXY(clicked_at.x, clicked_at.y);
 			if (clicked_tile) {
 				trace("tile found: " + clicked_tile.type);
+				/*
 				var connected_tiles:Array = clicked_tile.getConnectedTiles();
-				trace("connected tiles:");
+				//trace("connected tiles:");
 				for each (var tile:Tile in connected_tiles) {
 					var tile_coords:FlxPoint = Tile.getCoordinatesFromXY(tile.x, tile.y);
 					trace(tile.type + " at (" + tile_coords.x + "," + tile_coords.y + ")");
+				}
+				*/
+				var found_path:Array = TileManager.findPath(hero.current_tile, clicked_tile);
+				trace("** PATHING **");
+				for each (var tile:Tile in found_path) {
+					var tile_coords:FlxPoint = Tile.getCoordinatesFromXY(tile.x, tile.y);
+					trace(tile.type + " at (" + tile_coords.x + "," + tile_coords.y + ") ->");
 				}
 			}
 			

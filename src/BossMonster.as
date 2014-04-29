@@ -104,6 +104,7 @@ package
 				
 				BossAddChat("NO! HE WAS MY LEAST FAVORITE MINION!", appearDelay);
 				appearDelay += oneChatCycle;
+				moveToBoard = true;
 			} else if (chat_type == "fifth_kill") {
 				BossAddChat("*sigh* As usual my minions are bumbling fools..", appearDelay, false);
 				appearDelay += oneChatCycle;
@@ -234,7 +235,7 @@ package
 				var coords:FlxPoint = _current_tile.getTileCoordsThroughExit(dir);
 				//trace("current_tile at [" + current_tile.x + "," + current_tile.y + "]");
 				//trace("checking for tile in direction " + dir + " at [" + coords.x + "," + coords.y + "]");
-				var possible_tile:Tile = _playState.getTileAt(coords);
+				var possible_tile:Tile = _playState.GetTileAt(coords);
 				if (possible_tile != null && possible_tile.checkExit(Tile.oppositeDirection(dir))) {
 					valid_tiles.push(possible_tile);
 				}
@@ -277,6 +278,17 @@ package
 		}
 		
 		private function chooseTile(valid_tiles:Array):Tile {
+			var path_to_hero:Array = TileManager.findPath(_current_tile, _playState.hero.current_tile);
+			//this sets f values to all Tiles on the map, so can just take shortest of valid_tiles
+			valid_tiles.sortOn('f', Array.NUMERIC);
+			
+			for each (var tile:Tile in valid_tiles) {
+				trace("valid_tile " + tile.type + ", f: " + tile.f);
+			}
+			
+			return valid_tiles[0];
+			
+			/*
 			//default: random tile
 			var favorite_tile:Tile = valid_tiles[Math.floor(Math.random() * (valid_tiles.length))];
 			//trace('picked random tile for boss at [' + favorite_tile.x + ',' + favorite_tile.y + '], distance: ' + favorite_tile.distanceSquaredToTile(_playState.hero.current_tile));
@@ -288,6 +300,7 @@ package
 				}
 			} 
 			return favorite_tile;
+			*/
 		}
 		
 		public function SetBossCardOnTile(tile:Tile):void {

@@ -63,33 +63,32 @@ package
 			currentNode.h = heuristic(currentNode, destinationNode, travelCost);
 			trace("currentNode.h: " + currentNode.h);
 			currentNode.f = currentNode.g + currentNode.h;
-			var l:int = openNodes.length;
+			var l:int;
 			var i:int;
 			
-			/*
+			
 			while (currentNode != destinationNode) {
-				connectedNodes = connectedNodeFunction( currentNode );
+				connectedNodes = currentNode.getConnectedTiles();
 				l = connectedNodes.length;
 				for (i = 0; i < l; ++i) {
 					testNode = connectedNodes[i];
-					if (testNode == currentNode || testNode.travesable == false) continue;
+					if (testNode == currentNode) continue;
 					g = currentNode.g  + travelCost;
-					h = heuristic( testNode, destinationNode, travelCost);
+					h = heuristic(testNode, destinationNode, travelCost);
 					f = g + h;
-					if ( Pathfinder.isOpen(testNode, openNodes) || Pathfinder.isClosed( testNode, closedNodes) )	{
+					if ( arrayContains(testNode, openNodes) || arrayContains( testNode, closedNodes) )	{
 						if(testNode.f > f)
 						{
-
 							testNode.f = f;
 							testNode.g = g;
 							testNode.h = h;
-							testNode.parentNode = currentNode;
+							testNode.pathingParent = currentNode;
 						}
 					}else {
 						testNode.f = f;
 						testNode.g = g;
 						testNode.h = h;
-						testNode.parentNode = currentNode;
+						testNode.pathingParent = currentNode;
 						openNodes.push(testNode);
 					}
 				}
@@ -98,18 +97,35 @@ package
 					return null;
 				}
 				openNodes.sortOn('f', Array.NUMERIC);
-				currentNode = openNodes.shift() as INode;
+				currentNode = openNodes.shift() as Tile;
 			}
-			*/
 			
-			return connectedNodes;
+			return buildPath(destinationNode, firstNode);
+		}
+		
+		public static function buildPath(destinationNode:Tile, startNode:Tile):Array {
+			var path:Array = [];
+			var node:Tile = destinationNode;
+			path.push(node);
+			while (node != startNode) {
+				node = node.pathingParent;
+				path.unshift( node );
+			}
+			return path;
 		}
 		
 		public static function heuristic(currentNode:Tile, destinationNode:Tile, travelCost:Number):Number {
 			return currentNode.distanceSquaredToTile(destinationNode) / (Tile.TILESIZE * Tile.TILESIZE);
 		}
 		
-		
+		public static function arrayContains(testNode:Tile, searchArray:Array):Boolean {
+			for each (var t:Tile in searchArray) {
+				if (t == testNode) {
+					return true;
+				}
+			}
+			return false;
+		}
 		
 		
 	}

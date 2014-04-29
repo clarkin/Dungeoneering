@@ -142,7 +142,7 @@ package
 				var coords:FlxPoint = current_tile.getTileCoordsThroughExit(dir);
 				//trace("current_tile at [" + current_tile.x + "," + current_tile.y + "]");
 				//trace("checking for tile in direction " + dir + " at [" + coords.x + "," + coords.y + "]");
-				var possible_tile:Tile = _playState.getTileAt(coords);
+				var possible_tile:Tile = _playState.GetTileAt(coords);
 				//trace("possible_tile: " + possible_tile);
 				if (possible_tile != null && possible_tile.checkExit(Tile.oppositeDirection(dir))) {
 					valid_tiles.push(possible_tile);
