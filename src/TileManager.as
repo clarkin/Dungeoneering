@@ -49,6 +49,67 @@ package
 			return new Tile(_playState, this_tile.type);
 		}
 		
+		public static function findPath(firstNode:Tile, destinationNode:Tile):Array {
+			var openNodes:Array = [];
+			var closedNodes:Array = [];
+			var currentNode:Tile = firstNode;
+			var testNode:Tile;
+			var connectedNodes:Array;
+			var travelCost:Number = 1.0;
+			var g:Number;
+			var h:Number;
+			var f:Number;
+			currentNode.g = 0;
+			currentNode.h = heuristic(currentNode, destinationNode, travelCost);
+			trace("currentNode.h: " + currentNode.h);
+			currentNode.f = currentNode.g + currentNode.h;
+			var l:int = openNodes.length;
+			var i:int;
+			
+			/*
+			while (currentNode != destinationNode) {
+				connectedNodes = connectedNodeFunction( currentNode );
+				l = connectedNodes.length;
+				for (i = 0; i < l; ++i) {
+					testNode = connectedNodes[i];
+					if (testNode == currentNode || testNode.travesable == false) continue;
+					g = currentNode.g  + travelCost;
+					h = heuristic( testNode, destinationNode, travelCost);
+					f = g + h;
+					if ( Pathfinder.isOpen(testNode, openNodes) || Pathfinder.isClosed( testNode, closedNodes) )	{
+						if(testNode.f > f)
+						{
+
+							testNode.f = f;
+							testNode.g = g;
+							testNode.h = h;
+							testNode.parentNode = currentNode;
+						}
+					}else {
+						testNode.f = f;
+						testNode.g = g;
+						testNode.h = h;
+						testNode.parentNode = currentNode;
+						openNodes.push(testNode);
+					}
+				}
+				closedNodes.push( currentNode );
+				if (openNodes.length == 0) {
+					return null;
+				}
+				openNodes.sortOn('f', Array.NUMERIC);
+				currentNode = openNodes.shift() as INode;
+			}
+			*/
+			
+			return connectedNodes;
+		}
+		
+		public static function heuristic(currentNode:Tile, destinationNode:Tile, travelCost:Number):Number {
+			return currentNode.distanceSquaredToTile(destinationNode) / (Tile.TILESIZE * Tile.TILESIZE);
+		}
+		
+		
 		
 		
 	}

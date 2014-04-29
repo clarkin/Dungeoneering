@@ -518,6 +518,7 @@ package
 		
 		public function checkMouseClick():void {
 			if (FlxG.mouse.justPressed()) {
+				checkTileClick();
 				//trace('mouse clicked at world [' + FlxG.mouse.getWorldPosition().x + ',' + FlxG.mouse.getWorldPosition().y + '], screen [' + FlxG.mouse.getScreenPosition().x + ',' + FlxG.mouse.getScreenPosition().y + '], camera.scroll = [' + FlxG.camera.scroll.x + ',' + FlxG.camera.scroll.y + ']')
 				idle_timer = IDLE_TIME;
 				if (checkMouseOverlapsGroup(guiGroup) == null && checkMouseOverlapsGroup(cardsInHand) == null) {
@@ -952,17 +953,6 @@ package
 			turn_phase = PHASE_HERO_THINK;
 		}
 		
-		public function getTileAt(point:FlxPoint):Tile {
-			for each (var t:Tile in tiles.members) {
-				//trace("checking tile " + t.type + " at [" + t.x + "," + t.y + "]");
-				if (t.x == point.x && t.y == point.y) {
-					return t;
-				}
-			}
-			
-			return null;
-		}
-		
 		public function addTileAt(tile:Tile, X:int, Y:int, checkExits:Boolean = true):Tile {
 			tile.x = X;
 			tile.y = Y;
@@ -1039,6 +1029,49 @@ package
 			var delay:Number = 0.3;
 			TweenLite.to(label, delay, { y:"-5", bothScale: 1.5 } );
 			TweenLite.to(label, delay, { y:"5", bothScale: 1.0, delay: delay } );
+		}
+		
+		public function GetTileAtXY(x:int, y:int):Tile {
+			var point:FlxPoint = new FlxPoint(x, y);
+			for each (var tile:Tile in tiles.members) {
+				trace("checking tile " + tile.type + " at [" + tile.x + "," + tile.y + "]");
+				if (tile.overlapsPoint(point)) {
+					return tile;
+				}
+			}
+			
+			return null;
+		}
+		
+		//TODO remove this one
+		public function getTileAt(point:FlxPoint):Tile {
+			for each (var t:Tile in tiles.members) {
+				//trace("checking tile " + t.type + " at [" + t.x + "," + t.y + "]");
+				if (t.x == point.x && t.y == point.y) {
+					return t;
+				}
+			}
+			
+			return null;
+		}
+		
+		public function checkTileClick():void {
+			var clicked_at:FlxPoint = FlxG.mouse.getWorldPosition();
+			var clicked_at_tile_coords:FlxPoint = Tile.getCoordinatesFromXY(clicked_at.x, clicked_at.y);
+			var hero_tile_coords:FlxPoint = Tile.getCoordinatesFromXY(hero.current_tile.x, hero.current_tile.y);
+			trace("hero on tile (" + hero_tile_coords.x + "," + hero_tile_coords.y + ")");
+			trace("mouse clicked at tile (" + clicked_at_tile_coords.x + "," + clicked_at_tile_coords.y + "), exact [" + clicked_at.x + "," + clicked_at.y + "]");
+			var clicked_tile:Tile = GetTileAtXY(clicked_at.x, clicked_at.y);
+			if (clicked_tile) {
+				trace("tile found: " + clicked_tile.type);
+				var connected_tiles:Array = clicked_tile.getConnectedTiles();
+				trace("connected tiles:");
+				for each (var tile:Tile in connected_tiles) {
+					var tile_coords:FlxPoint = Tile.getCoordinatesFromXY(tile.x, tile.y);
+					trace(tile.type + " at (" + tile_coords.x + "," + tile_coords.y + ")");
+				}
+			}
+			
 		}
 	}
 }

@@ -122,6 +122,7 @@ package
 			}
 			
 			if (FlxG.debug && !showResults) {
+				showingInstructions = true;
 				TweenLite.delayedCall(appearDelay, startGame);
 			}
 		}

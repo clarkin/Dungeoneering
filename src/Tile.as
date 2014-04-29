@@ -55,6 +55,10 @@ package
 		public var has_visited:Boolean = true;
 		public var cards:Array = new Array();
 		
+		public var g:Number = 0;
+		public var h:Number = 0;
+		public var f:Number = 0;
+		
 		private var _playState:PlayState;
 		
 		public function Tile(playState:PlayState, type:String, X:int = 0, Y:int = 0) 
@@ -164,6 +168,22 @@ package
 			return total;
 		}
 		
+		public function getConnectedTiles():Array {
+			var connected_tiles:Array = new Array();
+			
+			for each (var direction:int in validEntrances()) {
+				var tile_coords:FlxPoint = getTileCoordsThroughExit(direction);
+				var possible_tile:Tile = _playState.GetTileAtXY(tile_coords.x, tile_coords.y);
+				trace("checking for tile in direction " + Tile.directionName(Tile.oppositeDirection(direction)) + " at [" + tile_coords.x + "," + tile_coords.y + "]");
+				if (possible_tile) {
+					trace("found tile")
+					connected_tiles.push(possible_tile);
+				}
+			}
+			
+			return connected_tiles;
+		}
+		
 		public function validEntrances():Array {
 			var valid_entrances:Array = new Array();
 			if (this.entry_north)
@@ -175,6 +195,17 @@ package
 			if (this.entry_west)
 				valid_entrances.push(WEST);
 			return valid_entrances;
+		}
+		
+		//note: flipped directions
+		public function validExits():Array {
+			var valid_entrances:Array = validEntrances();
+			var valid_exits:Array = new Array();
+			for each (var entrance:int in valid_entrances) {
+				valid_exits.push(Tile.oppositeDirection(entrance));
+			}
+			
+			return valid_exits;
 		}
 		
 		public function validHighlightEntrances():Array {
@@ -286,6 +317,10 @@ package
 				default:
 					throw new Error("invalid direction " + direction);
 			}
+		}
+		
+		public static function getCoordinatesFromXY(x:Number, y:Number):FlxPoint {
+			return new FlxPoint(Math.floor(x / TILESIZE), Math.floor(y / TILESIZE));
 		}
 		
 	}
