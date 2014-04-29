@@ -104,7 +104,6 @@ package
 				
 				BossAddChat("NO! HE WAS MY LEAST FAVORITE MINION!", appearDelay);
 				appearDelay += oneChatCycle;
-				moveToBoard = true;
 			} else if (chat_type == "fifth_kill") {
 				BossAddChat("*sigh* As usual my minions are bumbling fools..", appearDelay, false);
 				appearDelay += oneChatCycle;
@@ -278,29 +277,9 @@ package
 		}
 		
 		private function chooseTile(valid_tiles:Array):Tile {
-			var path_to_hero:Array = TileManager.findPath(_current_tile, _playState.hero.current_tile);
-			//this sets f values to all Tiles on the map, so can just take shortest of valid_tiles
-			valid_tiles.sortOn('f', Array.NUMERIC);
-			
-			for each (var tile:Tile in valid_tiles) {
-				trace("valid_tile " + tile.type + ", f: " + tile.f);
-			}
-			
-			return valid_tiles[0];
-			
-			/*
-			//default: random tile
-			var favorite_tile:Tile = valid_tiles[Math.floor(Math.random() * (valid_tiles.length))];
-			//trace('picked random tile for boss at [' + favorite_tile.x + ',' + favorite_tile.y + '], distance: ' + favorite_tile.distanceSquaredToTile(_playState.hero.current_tile));
-			for each (var tile:Tile in valid_tiles) {
-				//check if this is preferable to current fave
-				//trace('checking against tile at [' + tile.x + ',' + tile.y + '], distance: ' + tile.distanceSquaredToTile(_playState.hero.current_tile));
-				if (tile.distanceSquaredToTile(_playState.hero.current_tile) < favorite_tile.distanceSquaredToTile(_playState.hero.current_tile)) {
-					favorite_tile = tile;
-				}
-			} 
-			return favorite_tile;
-			*/
+			var path_to_hero:Array = _playState.tileManager.findPath(_current_tile, _playState.hero.current_tile);
+			//go to next step
+			return path_to_hero[1];
 		}
 		
 		public function SetBossCardOnTile(tile:Tile):void {

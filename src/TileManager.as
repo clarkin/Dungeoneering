@@ -49,7 +49,15 @@ package
 			return new Tile(_playState, this_tile.type);
 		}
 		
-		public static function findPath(firstNode:Tile, destinationNode:Tile):Array {
+		public function findPath(firstNode:Tile, destinationNode:Tile):Array {
+			//reset old pathing
+			for each (var tile:Tile in _playState.tiles.members) {
+				tile.g = 0;
+				tile.h = 0;
+				tile.f = 0;
+				tile.pathingParent = null;
+			}
+			
 			var openNodes:Array = [];
 			var closedNodes:Array = [];
 			var currentNode:Tile = firstNode;
@@ -61,11 +69,9 @@ package
 			var f:Number;
 			currentNode.g = 0;
 			currentNode.h = heuristic(currentNode, destinationNode, travelCost);
-			trace("currentNode.h: " + currentNode.h);
 			currentNode.f = currentNode.g + currentNode.h;
 			var l:int;
 			var i:int;
-			
 			
 			while (currentNode != destinationNode) {
 				connectedNodes = currentNode.getConnectedTiles();
