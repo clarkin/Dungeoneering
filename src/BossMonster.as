@@ -122,19 +122,20 @@ package
 				
 				moveToBoard = true;
 			}
+
+			_usedChats.push(chat_type);
 			
 			if (moveToBoard) {
 				PickBossRoom();
 				TweenLite.delayedCall(appearDelay + 0.05, BossNowOnBoard);
 				TweenLite.to(this, TIME_TO_MOVE, { x:_current_tile.x + TILE_OFFSET.x, y:_current_tile.y + TILE_OFFSET.y, delay:appearDelay + 0.1, ease:Back.easeInOut.config(0.8) } );
 				appearDelay += TIME_TO_MOVE;
+				TweenLite.delayedCall(appearDelay, _playState.BossChatOver);
 			} else {
 				TweenLite.to(this, TIME_TO_MOVE, { x:OFFSCREEN_POINT.x, y:OFFSCREEN_POINT.y, delay:appearDelay, ease:Back.easeInOut.config(0.8) } );
 				appearDelay += TIME_TO_MOVE;
+				_playState.BossChatOver();
 			}
-			TweenLite.delayedCall(appearDelay, _playState.BossChatOver);
-			
-			_usedChats.push(chat_type);
 		}
 		
 		public function BossAddChat(chat:String, delay:Number = 0, angry:Boolean = true):void {

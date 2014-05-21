@@ -518,7 +518,7 @@ package
 		
 		public function checkMouseClick():void {
 			if (FlxG.mouse.justPressed()) {
-				checkTileClick();
+				//checkTileClick();
 				//trace('mouse clicked at world [' + FlxG.mouse.getWorldPosition().x + ',' + FlxG.mouse.getWorldPosition().y + '], screen [' + FlxG.mouse.getScreenPosition().x + ',' + FlxG.mouse.getScreenPosition().y + '], camera.scroll = [' + FlxG.camera.scroll.x + ',' + FlxG.camera.scroll.y + ']')
 				idle_timer = IDLE_TIME;
 				if (checkMouseOverlapsGroup(guiGroup) == null && checkMouseOverlapsGroup(cardsInHand) == null) {
@@ -1052,24 +1052,16 @@ package
 			var clicked_at:FlxPoint = FlxG.mouse.getWorldPosition();
 			var clicked_at_tile_coords:FlxPoint = Tile.getCoordinatesFromXY(clicked_at.x, clicked_at.y);
 			var hero_tile_coords:FlxPoint = Tile.getCoordinatesFromXY(hero.current_tile.x, hero.current_tile.y);
-			trace("hero on tile (" + hero_tile_coords.x + "," + hero_tile_coords.y + ")");
-			trace("mouse clicked at tile (" + clicked_at_tile_coords.x + "," + clicked_at_tile_coords.y + "), exact [" + clicked_at.x + "," + clicked_at.y + "]");
+			//trace("hero on tile (" + hero_tile_coords.x + "," + hero_tile_coords.y + ")");
+			//trace("mouse clicked at tile (" + clicked_at_tile_coords.x + "," + clicked_at_tile_coords.y + "), exact [" + clicked_at.x + "," + clicked_at.y + "]");
 			var clicked_tile:Tile = GetTileAtXY(clicked_at.x, clicked_at.y);
 			if (clicked_tile) {
-				trace("tile found: " + clicked_tile.type);
-				/*
-				var connected_tiles:Array = clicked_tile.getConnectedTiles();
-				//trace("connected tiles:");
-				for each (var tile:Tile in connected_tiles) {
-					var tile_coords:FlxPoint = Tile.getCoordinatesFromXY(tile.x, tile.y);
-					trace(tile.type + " at (" + tile_coords.x + "," + tile_coords.y + ")");
-				}
-				*/
+				//trace("tile found: " + clicked_tile.type);
 				var found_path:Array = tileManager.findPath(hero.current_tile, clicked_tile);
-				trace("** PATHING **");
+				//trace("** PATHING **");
 				for each (var tile:Tile in found_path) {
 					var tile_coords:FlxPoint = Tile.getCoordinatesFromXY(tile.x, tile.y);
-					trace(tile.type + " at (" + tile_coords.x + "," + tile_coords.y + ") ->");
+					//trace(tile.type + " at (" + tile_coords.x + "," + tile_coords.y + ") ->");
 				}
 			}
 			
