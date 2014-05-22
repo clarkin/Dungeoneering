@@ -132,7 +132,7 @@ package
 		}
 		
 		public function startTurn():void {
-			_playState.following_hero = true;
+			_playState.setCameraFollowing(this);
 			is_taking_turn = true;
 			thinking_timer = THINKING_TIME;
 			var possible_directions:Array = current_tile.validEntrances();
@@ -274,7 +274,7 @@ package
 			if (current_tile.cards.length == 0) {
 				is_processing_cards = false;
 				if (_playState.turn_phase != PlayState.PHASE_HERO_BATTLE) {
-					_playState.following_hero = false;
+					_playState.setCameraFollowing(null);
 					_playState.turn_phase = PlayState.PHASE_BOSS_MOVE;
 				}
 			} else {

@@ -192,6 +192,7 @@ package
 					}
 				}
 			}
+			
 			BossAddChat(thought, 0, angry);
 		}
 		
@@ -253,6 +254,7 @@ package
 				}
 				_current_tile.cards = [];
 				var delay:Number = 0;
+				_playState.setCameraFollowing(this);
 				thinkSomething("movement");
 				delay += THINKING_TIME;
 				TweenLite.to(this, TIME_TO_MOVE, { x:_moving_to_tile.x + TILE_OFFSET.x, y:_moving_to_tile.y + TILE_OFFSET.y, delay: delay, ease:Back.easeInOut.config(0.8) } );
@@ -265,6 +267,7 @@ package
 			//trace('arrived at tile at [' + _moving_to_tile.x + ',' + _moving_to_tile.y + ']');
 			_current_tile = _moving_to_tile;
 			SetBossCardOnTile(_current_tile);
+			_playState.setCameraFollowing(null);
 			EndTurn();
 			if (_current_tile == _playState.hero.current_tile) {
 				trace('** arrived at hero! **');

@@ -106,7 +106,7 @@ package
 				
 		public var hero:Hero;
 		public var camera_target:FlxSprite;
-		public var following_hero:Boolean = false;
+		public var camera_following:FlxObject = null;
 		public var is_dragging:Boolean = false;
 		public var hand_shrunk:Boolean = true;
 		public var click_start:FlxPoint; //needs to be null at start
@@ -358,7 +358,7 @@ package
 							hero.moving_to_tile = hero.previous_tile;
 							hero.current_tile.addCard(hero.processing_card);
 							//hero.thinkSomething("movement"); //TODO think something cowardly 
-							following_hero = true;
+							setCameraFollowing(hero);
 							hero.is_taking_turn = true;
 							turn_phase = PlayState.PHASE_HERO_MOVING;
 						} else {
@@ -465,7 +465,7 @@ package
 		
 		public function EndFighting():void {
 			battleScreen.visible = false;
-			following_hero = false;
+			setCameraFollowing(null);
 			if (battling_monster._type == boss_monster._type) {
 				trace('** beaten boss **');
 				leaveDungeon();
@@ -700,8 +700,9 @@ package
 			
 			//camera movement
 			camera_target.acceleration.x = camera_target.acceleration.y = 0;
-			if (following_hero && !is_dragging) {
-				FlxVelocity.moveTowardsPoint(camera_target, new FlxPoint(hero.x, hero.y + 130), 0, 300);
+			if (camera_following != null && !is_dragging) {
+				//TODO change this to use TweenLite, perhaps?
+				FlxVelocity.moveTowardsPoint(camera_target, new FlxPoint(camera_following.x, camera_following.y + 130), 0, 300); //130 is to raise the viewport slightly because of the hand of cards
 			} else {
 				if (FlxG.keys.UP) {
 					camera_target.acceleration.y -= SCROLL_ACCELERATION;
@@ -907,6 +908,10 @@ package
 				placingSprite.remove(object, true);
 				object.kill();
 			}
+		}
+		
+		public function setCameraFollowing(follow_object:FlxObject):void {
+			camera_following = follow_object;
 		}
 
 		public function discardCard(card_to_discard:Card):void {
