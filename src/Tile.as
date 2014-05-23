@@ -75,7 +75,7 @@ package
 			
 			if (type.indexOf("corr_") != -1 || type.indexOf("room_") != -1) {			
 				var exits:String = type.substring(type.lastIndexOf("_") + 1, type.length);
-				//trace("added tile of type: " + type + ", exits: " + exits);
+				//tr("added tile of type: " + type + ", exits: " + exits);
 				
 				if (exits.indexOf("n") != -1) {
 					entry_north = true;
@@ -155,7 +155,7 @@ package
 				newCard._treasure.y = this.y + ICON_OFFSET.y;
 				newCard._treasure.Appear();
 			}
-			//trace("added card " + newCard._type + ":" + newCard._title + " to tile " + this.type);
+			//tr("added card " + newCard._type + ":" + newCard._title + " to tile " + this.type);
 			this.cards.push(newCard);
 		}
 		
@@ -175,7 +175,7 @@ package
 			for each (var direction:int in validEntrances()) {
 				var tile_coords:FlxPoint = getTileCoordsThroughExit(direction);
 				var possible_tile:Tile = _playState.GetTileAtXY(tile_coords.x, tile_coords.y);
-				//trace("checking for tile in direction " + Tile.directionName(direction) + " at [" + tile_coords.x + "," + tile_coords.y + "]");
+				//tr("checking for tile in direction " + Tile.directionName(direction) + " at [" + tile_coords.x + "," + tile_coords.y + "]");
 				if (possible_tile && possible_tile.checkExit(Tile.oppositeDirection(direction))) {
 					connected_tiles.push(possible_tile);
 				}
@@ -222,7 +222,7 @@ package
 		}
 		
 		public function setHighlightEntrance(direction:int):void {
-			//trace("setting highlight entrance at [" + Math.floor(x / Tile.TILESIZE) + "," + Math.floor(y / Tile.TILESIZE) + "] for direction " + direction + " " + Tile.directionName(direction));
+			//tr("setting highlight entrance at [" + Math.floor(x / Tile.TILESIZE) + "," + Math.floor(y / Tile.TILESIZE) + "] for direction " + direction + " " + Tile.directionName(direction));
 			switch (direction) {
 				case NORTH:
 					this.highlight_entry_north = true;
@@ -243,11 +243,11 @@ package
 		
 		public function validForHighlight(highlight:Tile):Boolean {
 			var valid_directions:Array = highlight.validHighlightEntrances();
-			//trace("checking tile vs highlight. tile entrances: " + validEntrances() + ". highlight directions: " + valid_directions);
+			//tr("checking tile vs highlight. tile entrances: " + validEntrances() + ". highlight directions: " + valid_directions);
 			
 			for each (var direction:int in valid_directions) {
 				if (checkExit(direction)) {
-					//trace("match found in direction " + direction + " " + Tile.directionName(direction));
+					//tr("match found in direction " + direction + " " + Tile.directionName(direction));
 					return true;
 				}
 			}

@@ -333,14 +333,14 @@ package
 			
 			updateLabels();
 			
-			//trace("camera_target [" + camera_target.x + ", " + camera_target.y + "], hero [" + hero.x + ", " + hero.y + "]");
+			//tr("camera_target [" + camera_target.x + ", " + camera_target.y + "], hero [" + hero.x + ", " + hero.y + "]");
 			
 			super.update();
 		}
 		
 		public function checkHero():void {
 			if (turn_phase == PHASE_HERO_THINK && !hero.is_taking_turn) {
-				//trace("starting hero turn");
+				//tr("starting hero turn");
 				hero.startTurn();
 			} else if (turn_phase == PHASE_HERO_CARDS && !hero.is_processing_cards) {
 				hero.processNextCard();
@@ -350,7 +350,7 @@ package
 				} else {
 					battle_timer = BATTLE_TIME;
 					battle_turn++;
-					//trace("battle turn " + battle_turn);
+					//tr("battle turn " + battle_turn);
 					if (battling_monster._health > 0 && hero._health > 0) {
 						if (battle_turn > 5) {
 							//run away
@@ -388,7 +388,6 @@ package
 						TweenLite.delayedCall(appearDelay, EndFighting);
 					}
 				}
-				
 			} else if (turn_phase == PHASE_CARDS_PLAY) {
 				if (idle_timer > 0) {
 					idle_timer -= FlxG.elapsed;
@@ -403,18 +402,18 @@ package
 			if (turn_phase == PHASE_BOSS_MOVE) {
 				if (boss_monster._onBoard) {
 					if (!boss_monster._is_taking_turn) {
-						//trace('starting boss turn')
+						//tr('starting boss turn')
 						boss_monster.StartTurn();
 					}
 				} else {
-					//trace('skipping boss turn');
+					//tr('skipping boss turn');
 					turn_phase = PHASE_NEWTURN;
 				}
 			}
 		}
 				
 		public function heroArrivedAt(tile:Tile):void {
-			//trace("heroArrivedAt, changing to PHASE_HERO_CARDS");
+			//tr("heroArrivedAt, changing to PHASE_HERO_CARDS");
 			turn_phase = PlayState.PHASE_HERO_CARDS;
 			idle_timer = IDLE_TIME;
 		}
@@ -467,7 +466,7 @@ package
 			battleScreen.visible = false;
 			setCameraFollowing(null);
 			if (battling_monster._type == boss_monster._type) {
-				trace('** beaten boss **');
+				tr('** beaten boss **');
 				leaveDungeon();
 			} else {
 				turn_phase = PlayState.PHASE_BOSS_MOVE;
@@ -484,7 +483,7 @@ package
 		public function checkNewTurn():void {
 			if (turn_phase == PHASE_NEWTURN) {
 				turn_number++;
-				trace("** new turn: " + turn_number + " **");
+				tr("** new turn: " + turn_number + " **");
 				dungeon.IncreaseDread();
 				turn_phase = PHASE_BOSS_CHAT;
 				boss_monster.CheckChat();
@@ -492,6 +491,7 @@ package
 		} 
 		
 		public function CardsDealOver():void {
+			//tr("CardsDealOver");
 			turn_phase = PHASE_HERO_THINK;
 		}
 		
@@ -519,12 +519,12 @@ package
 		public function checkMouseClick():void {
 			if (FlxG.mouse.justPressed()) {
 				//checkTileClick();
-				//trace('mouse clicked at world [' + FlxG.mouse.getWorldPosition().x + ',' + FlxG.mouse.getWorldPosition().y + '], screen [' + FlxG.mouse.getScreenPosition().x + ',' + FlxG.mouse.getScreenPosition().y + '], camera.scroll = [' + FlxG.camera.scroll.x + ',' + FlxG.camera.scroll.y + ']')
+				//tr('mouse clicked at world [' + FlxG.mouse.getWorldPosition().x + ',' + FlxG.mouse.getWorldPosition().y + '], screen [' + FlxG.mouse.getScreenPosition().x + ',' + FlxG.mouse.getScreenPosition().y + '], camera.scroll = [' + FlxG.camera.scroll.x + ',' + FlxG.camera.scroll.y + ']')
 				idle_timer = IDLE_TIME;
 				if (checkMouseOverlapsGroup(guiGroup) == null && checkMouseOverlapsGroup(cardsInHand) == null) {
 					if (click_start == null) {
 						click_start = FlxG.mouse.getScreenPosition();
-						//trace("marking click start, waiting for movement from: [" + click_start.x + "," + click_start.y + "]");
+						//tr("marking click start, waiting for movement from: [" + click_start.x + "," + click_start.y + "]");
 					}
 				} 
 				
@@ -548,7 +548,7 @@ package
 				if (diff_x > 10 || diff_y > 10) {
 					is_dragging = true;
 					dragging_from = FlxG.mouse.getScreenPosition();
-					//trace("dragging_from: [" + dragging_from.x + "," + dragging_from.y + "]");
+					//tr("dragging_from: [" + dragging_from.x + "," + dragging_from.y + "]");
 				}
 			}
 			
@@ -582,7 +582,7 @@ package
 											BulgeLabel(player_hope_label);
 										}
 									} else {
-										//trace("clicked on card " + card_in_hand._title);
+										//tr("clicked on card " + card_in_hand._title);
 										possible_spots = 0;
 										if (card_in_hand._type == "TILE") {
 											for each (var possible_highlight:Tile in highlights.members) {
@@ -635,14 +635,14 @@ package
 											}
 											
 											selectedCard();
-											//trace("placingSprite.countLiving(): " + placingSprite.countLiving());
+											//tr("placingSprite.countLiving(): " + placingSprite.countLiving());
 										}
 									}
 								}
 							}
 						}
 					} else {
-						//trace("placing card " + placing_card._title);
+						//tr("placing card " + placing_card._title);
 						if (placing_card._type == "TILE") {
 							for each (var highlight:Tile in highlights.members) {
 								if (highlight.alive && highlight.overlapsPoint(clicked_at) && placing_card._tile.validForHighlight(highlight)) {
@@ -657,7 +657,7 @@ package
 						} else {
 							for each (var tile:Tile in tiles.members) {
 								if (tile != hero.current_tile && tile.validForCard(placing_card) && tile.overlapsPoint(clicked_at)) {
-									//trace("clicked on tile " + tile.type + " at [" + tile.x + "," + tile.y + "]");
+									//tr("clicked on tile " + tile.type + " at [" + tile.x + "," + tile.y + "]");
 									tile.addCard(placing_card);
 									
 									is_placing_card = false;
@@ -682,17 +682,17 @@ package
 		
 		public function checkKeyboard():void {
 			if (FlxG.keys.justReleased("SPACE")) {
-				trace("*** RESET ***");
+				tr("*** RESET ***");
 				TweenMax.killAll();
 				FlxG.switchState(new MenuState);
 			} else if (FlxG.keys.justReleased("D")) {
-				trace("*** Toggle Debug ***");
+				tr("*** Toggle Debug ***");
 				FlxG.visualDebug = !FlxG.visualDebug;
 			} else if (FlxG.keys.justReleased("S")) {
-				trace("*** Toggle Sound ***");
+				tr("*** Toggle Sound ***");
 				FlxG.mute = !FlxG.mute;
 			} else if (FlxG.keys.justReleased("C")) {
-				trace("*** Toggle CLEARSCREEN ***");
+				tr("*** Toggle CLEARSCREEN ***");
 				UIFrame.visible = !UIFrame.visible;
 				cardsInHand.visible = !cardsInHand.visible;
 				guiGroup.visible = !guiGroup.visible;
@@ -723,19 +723,19 @@ package
 			if (object == null || !object.visible) {
 				return null;
 			} else if (object is FlxGroup) {
-				//trace("flxgroup found, recursing. " + object);
+				//tr("flxgroup found, recursing. " + object);
 				for each (var member:* in object.members) {
 					var this_one:FlxObject = checkMouseOverlapsGroup(member);
 					if (this_one != null) {
-						//trace("found one");
+						//tr("found one");
 						return this_one;
 					}
 				}
 			} else {
-				//trace("object checking. " + object + " at [" + object.x + "," + object.y + "]");
-				//trace("mouse at [" + FlxG.mouse.getScreenPosition().x + "," + FlxG.mouse.getScreenPosition().y + "]");
+				//tr("object checking. " + object + " at [" + object.x + "," + object.y + "]");
+				//tr("mouse at [" + FlxG.mouse.getScreenPosition().x + "," + FlxG.mouse.getScreenPosition().y + "]");
 				if (object.overlapsPoint(FlxG.mouse.getScreenPosition())) {
-					//trace("object overlaps. " + object + " at [" + object.x + "," + object.y + "]");
+					//tr("object overlaps. " + object + " at [" + object.x + "," + object.y + "]");
 					return object;
 				}
 			}
@@ -745,7 +745,7 @@ package
 		}
 		
 		public function canAfford(card:Card):Boolean {
-			//trace("canAfford " + card._type + " : " + card._title + " for cost " + card._cost + "?");
+			//tr("canAfford " + card._type + " : " + card._title + " for cost " + card._cost + "?");
 			if (card._type == "MONSTER") {
 				return (dungeon._dread_level >= card._cost);
 			} else if (card._type == "TREASURE") {
@@ -767,6 +767,7 @@ package
 		
 		
 		public function fillHand():void {
+			//tr("now in fillHand");
 			var cards_in_hand:int = cardsInHand.countLiving();
 			if (cards_in_hand < 0) {
 				cards_in_hand = 0;
@@ -779,6 +780,7 @@ package
 		}
 		
 		public function SortAndMoveCards():void {
+			//tr("now in SortAndMoveCards");
 			var cards_so_far:int = 0;
 			for each (var card_in_hand:Card in cardsInHand.members) {
 				if (card_in_hand != null && card_in_hand.alive) {
@@ -792,7 +794,7 @@ package
 						card_in_hand.MoveTo(new FlxPoint(HAND_START.x + cards_so_far * HAND_CARD_OFFSET, HAND_START.y), 0, 1.0);
 					}
 					
-					//trace("moving card " + card_in_hand._title + " from x: " + card_in_hand._background.x + " to x: " + card_in_hand._moving_to.x + " for card slot " + cards_so_far);
+					//tr("moving card " + card_in_hand._title + " from x: " + card_in_hand._background.x + " to x: " + card_in_hand._moving_to.x + " for card slot " + cards_so_far);
 					//TODO occasional sorting issue
 					cards_so_far++;
 				}
@@ -800,8 +802,8 @@ package
 		}
 		
 		public function addCardFromDeck(type:String = "", sequence:int = 0):void {
-			//trace("adding card from deck " + type);
-			//trace("cardsInHand.countLiving(): " + cardsInHand.countLiving());
+			//tr("adding card from deck " + type);
+			//tr("cardsInHand.countLiving(): " + cardsInHand.countLiving());
 			
 			var total_tile:int = 0;
 			var total_monster:int = 0;
@@ -817,7 +819,7 @@ package
 					}
 				}
 			}
-			//trace("total_tile: " + total_tile + ", total_monster: " + total_monster + ", total_treasure: " + total_treasure);
+			//tr("total_tile: " + total_tile + ", total_monster: " + total_monster + ", total_treasure: " + total_treasure);
 			if (type == "") {
 				var possible_types:Array = ["TILE", "TILE", "TILE", "MONSTER", "MONSTER", "TREASURE"];
 				if (total_tile == 0) {
@@ -836,7 +838,7 @@ package
 				type = possible_types[Math.floor(Math.random() * (possible_types.length))]
 			}
 			
-			//trace("  adding card of type " + type);
+			//tr("  adding card of type " + type);
 			var cards_so_far:int = cardsInHand.countLiving();
 			if (cards_so_far < 0) {
 				cards_so_far = 0;
@@ -848,9 +850,9 @@ package
 					var valid_entrances:Array = new Array();
 					for each (var h:Tile in highlights.members) {
 						if (h.alive) {
-							//trace("adding entrances for highlight at [" + Math.floor(h.x / Tile.TILESIZE) + "," + Math.floor(h.y / Tile.TILESIZE) + "] with validHighlightEntrances(): " + h.validHighlightEntrances() );
+							//tr("adding entrances for highlight at [" + Math.floor(h.x / Tile.TILESIZE) + "," + Math.floor(h.y / Tile.TILESIZE) + "] with validHighlightEntrances(): " + h.validHighlightEntrances() );
 							valid_entrances = valid_entrances.concat(h.validHighlightEntrances());
-							//trace("after concat valid_entrances: " + valid_entrances);
+							//tr("after concat valid_entrances: " + valid_entrances);
 						}
 					}
 					var possible_tile:Tile = tileManager.GetRandomTile(valid_entrances);
@@ -858,7 +860,7 @@ package
 					break;
 				case "MONSTER":
 					var possible_monster:Monster = dungeon.GetRandomMonster();
-					//trace("generating possible monster card " + possible_monster._type);
+					//tr("generating possible monster card " + possible_monster._type);
 					possible_card = new Card(this, card_point.x, card_point.y, "MONSTER", null, possible_monster);
 					break;
 				case "TREASURE":
@@ -880,7 +882,7 @@ package
 			}
 			cardsInHand.add(possible_card);
 			possible_card.Appear(sequence * Card.TIME_TO_APPEAR + appearDelay);
-			//trace("finished adding card to hand " + possible_card._title);
+			//tr("finished adding card to hand " + possible_card._title);
 		}
 		
 		public function selectedCard():void {
@@ -891,7 +893,7 @@ package
 		
 		public function cancelPlacement():void {
 			if (is_placing_card) {
-				//trace("cancel placement");
+				//tr("cancel placement");
 				is_placing_card = false;
 				cancelPlacingBtn.visible = false;
 				highlights.visible = false;
@@ -915,18 +917,22 @@ package
 		}
 
 		public function discardCard(card_to_discard:Card):void {
-			//trace("discarding card " + card_to_discard._title);
+			//tr("discarding card " + card_to_discard._title);
 			cardsInHand.remove(card_to_discard, true);
 			incrementCardsPlayed();
 		}
 		
 		public function endCardPlaying():void {
+			//tr("in endCardPlaying");
 			hideCards();
 			hand_shrunk = true;
 			SortAndMoveCards();
 			turn_phase = PHASE_CARDS_DEAL;
 			var missing_cards:Number = 5 - cardsInHand.countLiving();
+			//tr(" missing_cards = " + missing_cards);
+			//tr("  calling fillHand with delay of " + Card.TIME_TO_MOVE);
 			TweenLite.delayedCall(Card.TIME_TO_MOVE, fillHand);
+			//tr("  calling CardsDealOver with delay of " + (Card.TIME_TO_MOVE + Card.TIME_TO_APPEAR * missing_cards));
 			TweenLite.delayedCall(Card.TIME_TO_MOVE + Card.TIME_TO_APPEAR * missing_cards, CardsDealOver);
 		}
 		
@@ -962,14 +968,14 @@ package
 			tile.x = X;
 			tile.y = Y;
 			tiles.add(tile);
-			//trace("adding tile at " + X + "," + Y);
+			//tr("adding tile at " + X + "," + Y);
 			
 			if (checkExits && (tile.type.indexOf("corr") == 0 || tile.type.indexOf("room") == 0)) { 
 				tile.has_visited = false;
 				for each (var direction:int in tileManager.all_directions) {
 					//trace ("(in addTileAt) checking " + direction + " for tile of type " + tile.type);
 					if (tile.checkExit(direction)) {
-						//trace("adding new highlight to " + direction);
+						//tr("adding new highlight to " + direction);
 						var new_x:int = X;
 						var new_y:int = Y;
 						if (direction == TileManager.NORTH)
@@ -985,7 +991,7 @@ package
 						var filled:Boolean = false;
 						for each (var this_tile:Tile in tiles.members) {
 							if (this_tile.x == new_x && this_tile.y == new_y) {
-								//trace("direction " + direction + " filled by " + this_tile.type);
+								//tr("direction " + direction + " filled by " + this_tile.type);
 								filled = true;
 								break;
 							}
@@ -1006,7 +1012,7 @@ package
 			var filled:Boolean = false;
 			for each (var this_highlight:Tile in highlights.members) {
 				if (this_highlight.x == X && this_highlight.y == Y) {
-					//trace("setting additional entrance for highlight at [" + Math.floor(X / Tile.TILESIZE) + "," + Math.floor(Y / Tile.TILESIZE) + "] with entrance " + from_direction + " " + Tile.directionName(from_direction));
+					//tr("setting additional entrance for highlight at [" + Math.floor(X / Tile.TILESIZE) + "," + Math.floor(Y / Tile.TILESIZE) + "] with entrance " + from_direction + " " + Tile.directionName(from_direction));
 					this_highlight.setHighlightEntrance(Tile.oppositeDirection(from_direction));
 					filled = true;
 					break;
@@ -1015,7 +1021,7 @@ package
 			
 			if (!filled) {
 				var new_highlight:Tile = new Tile(this, "highlight", X, Y);
-				//trace("adding highlight at [" + Math.floor(X / Tile.TILESIZE) + "," + Math.floor(Y / Tile.TILESIZE) + "] with entrance " + from_direction + " " + Tile.directionName(from_direction));
+				//tr("adding highlight at [" + Math.floor(X / Tile.TILESIZE) + "," + Math.floor(Y / Tile.TILESIZE) + "] with entrance " + from_direction + " " + Tile.directionName(from_direction));
 				new_highlight.setHighlightEntrance(Tile.oppositeDirection(from_direction));
 				highlights.add(new_highlight);
 			}
@@ -1039,9 +1045,9 @@ package
 		public function GetTileAtXY(x:int, y:int):Tile {
 			var point:FlxPoint = new FlxPoint(x, y);
 			for each (var tile:Tile in tiles.members) {
-				//trace("checking tile " + tile.type + " at [" + tile.x + "," + tile.y + "]");
+				//tr("checking tile " + tile.type + " at [" + tile.x + "," + tile.y + "]");
 				if (tile.overlapsPoint(point) || (tile.x == point.x && tile.y == point.y)) {
-					//trace("tile overlaps point:  " + tile.type);
+					//tr("tile overlaps point:  " + tile.type);
 					return tile;
 				}
 			}
@@ -1057,16 +1063,16 @@ package
 			var clicked_at:FlxPoint = FlxG.mouse.getWorldPosition();
 			var clicked_at_tile_coords:FlxPoint = Tile.getCoordinatesFromXY(clicked_at.x, clicked_at.y);
 			var hero_tile_coords:FlxPoint = Tile.getCoordinatesFromXY(hero.current_tile.x, hero.current_tile.y);
-			//trace("hero on tile (" + hero_tile_coords.x + "," + hero_tile_coords.y + ")");
-			//trace("mouse clicked at tile (" + clicked_at_tile_coords.x + "," + clicked_at_tile_coords.y + "), exact [" + clicked_at.x + "," + clicked_at.y + "]");
+			//tr("hero on tile (" + hero_tile_coords.x + "," + hero_tile_coords.y + ")");
+			//tr("mouse clicked at tile (" + clicked_at_tile_coords.x + "," + clicked_at_tile_coords.y + "), exact [" + clicked_at.x + "," + clicked_at.y + "]");
 			var clicked_tile:Tile = GetTileAtXY(clicked_at.x, clicked_at.y);
 			if (clicked_tile) {
-				//trace("tile found: " + clicked_tile.type);
+				//tr("tile found: " + clicked_tile.type);
 				var found_path:Array = tileManager.findPath(hero.current_tile, clicked_tile);
-				//trace("** PATHING **");
+				//tr("** PATHING **");
 				for each (var tile:Tile in found_path) {
 					var tile_coords:FlxPoint = Tile.getCoordinatesFromXY(tile.x, tile.y);
-					//trace(tile.type + " at (" + tile_coords.x + "," + tile_coords.y + ") ->");
+					//tr(tile.type + " at (" + tile_coords.x + "," + tile_coords.y + ") ->");
 				}
 			}
 			
