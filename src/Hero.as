@@ -160,6 +160,7 @@ package
 					facing = RIGHT;
 				}
 				thinkSomething("movement");
+				trace("switching to PlayState.PHASE_HERO_THINK (" + PlayState.PHASE_HERO_THINK + ") from playstate value " + _playState.turn_phase);
 				_playState.turn_phase = PlayState.PHASE_HERO_THINK;
 			}
 		}

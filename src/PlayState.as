@@ -340,7 +340,7 @@ package
 		
 		public function checkHero():void {
 			if (turn_phase == PHASE_HERO_THINK && !hero.is_taking_turn) {
-				//trace("starting hero turn");
+				trace("starting hero turn");
 				hero.startTurn();
 			} else if (turn_phase == PHASE_HERO_CARDS && !hero.is_processing_cards) {
 				hero.processNextCard();
@@ -492,6 +492,7 @@ package
 		} 
 		
 		public function CardsDealOver():void {
+			trace("CardsDealOver");
 			turn_phase = PHASE_HERO_THINK;
 		}
 		
@@ -767,6 +768,7 @@ package
 		
 		
 		public function fillHand():void {
+			trace("now in fillHand");
 			var cards_in_hand:int = cardsInHand.countLiving();
 			if (cards_in_hand < 0) {
 				cards_in_hand = 0;
@@ -779,6 +781,7 @@ package
 		}
 		
 		public function SortAndMoveCards():void {
+			trace("called SortAndMoveCards");
 			var cards_so_far:int = 0;
 			for each (var card_in_hand:Card in cardsInHand.members) {
 				if (card_in_hand != null && card_in_hand.alive) {
@@ -880,7 +883,7 @@ package
 			}
 			cardsInHand.add(possible_card);
 			possible_card.Appear(sequence * Card.TIME_TO_APPEAR + appearDelay);
-			//trace("finished adding card to hand " + possible_card._title);
+			trace(flash.utils.getTimer() + ": finished adding card to hand " + possible_card._title);
 		}
 		
 		public function selectedCard():void {
@@ -921,12 +924,16 @@ package
 		}
 		
 		public function endCardPlaying():void {
+			trace("in endCardPlaying");
 			hideCards();
 			hand_shrunk = true;
 			SortAndMoveCards();
 			turn_phase = PHASE_CARDS_DEAL;
 			var missing_cards:Number = 5 - cardsInHand.countLiving();
+			trace(" missing_cards = " + missing_cards);
+			trace("  calling fillHand with delay of " + Card.TIME_TO_MOVE);
 			TweenLite.delayedCall(Card.TIME_TO_MOVE, fillHand);
+			trace("  calling CardsDealOver with delay of " + (Card.TIME_TO_MOVE + Card.TIME_TO_APPEAR * missing_cards));
 			TweenLite.delayedCall(Card.TIME_TO_MOVE + Card.TIME_TO_APPEAR * missing_cards, CardsDealOver);
 		}
 		
