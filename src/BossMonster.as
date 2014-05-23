@@ -64,7 +64,7 @@ package
 		
 		public function CheckChat():void {
 			if (_onBoard) {
-				tr("boss onBoard, no need for scripted chats");
+				//tr("boss onBoard, no need for scripted chats");
 				_playState.BossChatOver();
 				return;
 			}
@@ -105,8 +105,6 @@ package
 				
 				BossAddChat("NO! HE WAS MY LEAST FAVORITE MINION!", appearDelay);
 				appearDelay += oneChatCycle;
-				
-				moveToBoard = true;
 			} else if (chat_type == "fifth_kill") {
 				BossAddChat("*sigh* As usual my minions are bumbling fools..", appearDelay, false);
 				appearDelay += oneChatCycle;
@@ -273,7 +271,7 @@ package
 			_playState.setCameraFollowing(null);
 			EndTurn();
 			if (_current_tile == _playState.hero.current_tile) {
-				tr('** arrived at hero! **');
+				//tr('** arrived at hero! **');
 				_playState.turn_phase = PlayState.PHASE_HERO_CARDS;
 			}
 		}

@@ -340,7 +340,7 @@ package
 		
 		public function checkHero():void {
 			if (turn_phase == PHASE_HERO_THINK && !hero.is_taking_turn) {
-				tr("starting hero turn");
+				//tr("starting hero turn");
 				hero.startTurn();
 			} else if (turn_phase == PHASE_HERO_CARDS && !hero.is_processing_cards) {
 				hero.processNextCard();
@@ -402,18 +402,18 @@ package
 			if (turn_phase == PHASE_BOSS_MOVE) {
 				if (boss_monster._onBoard) {
 					if (!boss_monster._is_taking_turn) {
-						tr('starting boss turn')
+						//tr('starting boss turn')
 						boss_monster.StartTurn();
 					}
 				} else {
-					tr('skipping boss turn');
+					//tr('skipping boss turn');
 					turn_phase = PHASE_NEWTURN;
 				}
 			}
 		}
 				
 		public function heroArrivedAt(tile:Tile):void {
-			tr("heroArrivedAt, changing to PHASE_HERO_CARDS");
+			//tr("heroArrivedAt, changing to PHASE_HERO_CARDS");
 			turn_phase = PlayState.PHASE_HERO_CARDS;
 			idle_timer = IDLE_TIME;
 		}
@@ -491,7 +491,7 @@ package
 		} 
 		
 		public function CardsDealOver():void {
-			tr("CardsDealOver");
+			//tr("CardsDealOver");
 			turn_phase = PHASE_HERO_THINK;
 		}
 		
@@ -642,7 +642,7 @@ package
 							}
 						}
 					} else {
-						tr("placing card " + placing_card._title);
+						//tr("placing card " + placing_card._title);
 						if (placing_card._type == "TILE") {
 							for each (var highlight:Tile in highlights.members) {
 								if (highlight.alive && highlight.overlapsPoint(clicked_at) && placing_card._tile.validForHighlight(highlight)) {
@@ -767,7 +767,7 @@ package
 		
 		
 		public function fillHand():void {
-			tr("now in fillHand");
+			//tr("now in fillHand");
 			var cards_in_hand:int = cardsInHand.countLiving();
 			if (cards_in_hand < 0) {
 				cards_in_hand = 0;
@@ -780,7 +780,7 @@ package
 		}
 		
 		public function SortAndMoveCards():void {
-			tr("called SortAndMoveCards");
+			//tr("now in SortAndMoveCards");
 			var cards_so_far:int = 0;
 			for each (var card_in_hand:Card in cardsInHand.members) {
 				if (card_in_hand != null && card_in_hand.alive) {
@@ -882,7 +882,7 @@ package
 			}
 			cardsInHand.add(possible_card);
 			possible_card.Appear(sequence * Card.TIME_TO_APPEAR + appearDelay);
-			tr("finished adding card to hand " + possible_card._title);
+			//tr("finished adding card to hand " + possible_card._title);
 		}
 		
 		public function selectedCard():void {
@@ -923,19 +923,17 @@ package
 		}
 		
 		public function endCardPlaying():void {
-			tr("in endCardPlaying");
+			//tr("in endCardPlaying");
 			hideCards();
 			hand_shrunk = true;
 			SortAndMoveCards();
 			turn_phase = PHASE_CARDS_DEAL;
 			var missing_cards:Number = 5 - cardsInHand.countLiving();
-			tr(" missing_cards = " + missing_cards);
+			//tr(" missing_cards = " + missing_cards);
 			//tr("  calling fillHand with delay of " + Card.TIME_TO_MOVE);
-			//TweenLite.delayedCall(Card.TIME_TO_MOVE, fillHand);
+			TweenLite.delayedCall(Card.TIME_TO_MOVE, fillHand);
 			//tr("  calling CardsDealOver with delay of " + (Card.TIME_TO_MOVE + Card.TIME_TO_APPEAR * missing_cards));
-			//TweenLite.delayedCall(Card.TIME_TO_MOVE + Card.TIME_TO_APPEAR * missing_cards, CardsDealOver);
-			fillHand();
-			CardsDealOver();
+			TweenLite.delayedCall(Card.TIME_TO_MOVE + Card.TIME_TO_APPEAR * missing_cards, CardsDealOver);
 		}
 		
 		public function hideCards():void {
