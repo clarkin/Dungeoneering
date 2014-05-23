@@ -35,20 +35,20 @@ package
 				}
 			}
 			
-			//trace("getRandomMonster() found " + this_monster._type + " with dread " + this_dread);
+			//tr("getRandomMonster() found " + this_monster._type + " with dread " + this_dread);
 			return new Monster(_playState, this_monster._type);
 		}
 		
 		public function GetRandomTreasure():Treasure {
 			var this_treasure:Treasure = all_treasures[Math.floor(Math.random() * (all_treasures.length))];
 			
-			//trace("GetRandomTreasure() found " + this_treasure._type);
+			//tr("GetRandomTreasure() found " + this_treasure._type);
 			return new Treasure(_playState, this_treasure._type);
 		}
 		
 		public function IncreaseDread():void {
 			var dread:Number = Math.floor((_playState.turn_number + 2) / 5);
-			//trace("dread level changing from " + _dread_level + " to " + (_dread_level + dread));
+			//tr("dread level changing from " + _dread_level + " to " + (_dread_level + dread));
 			_dread_level += dread;
 			if (_dread_level > 5) {
 				_dread_level = 5;
@@ -68,10 +68,10 @@ package
 		public function RollForDread():Number {
 			var rolls:Array = [];
 			rolls.push(randomNumber(0, 5));
-			//trace("rolling for i:" + 0 + ", got: " + rolls[0]);
+			//tr("rolling for i:" + 0 + ", got: " + rolls[0]);
 			for (var i:int = 1; i <= 1; i++) {
 				rolls.push(randomNumber(_dread_level - 1, _dread_level + 1));
-				//trace("rolling for i:" + i + ", got: " + rolls[i]);
+				//tr("rolling for i:" + i + ", got: " + rolls[i]);
 			}
 			
 			var chosen_roll:Number = rolls[Math.floor(Math.random() * rolls.length)]

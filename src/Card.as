@@ -73,10 +73,10 @@ package
 			
 			if (type == "") {
 				type = CARDS_WEIGHTED[Math.floor(Math.random() * (CARDS_WEIGHTED.length))];
-				trace("WARNING: random card type added");
+				tr("WARNING: random card type added");
 			}
 			_type = type;
-			//trace("adding card " + type);
+			//tr("adding card " + type);
 			
 			_card_front = new FlxSprite(X, Y);
 			_card_front.makeGraphic(CARD_WIDTH, CARD_HEIGHT, 0x00FFFFFF, true);
@@ -207,9 +207,9 @@ package
 		}
 		
 		override public function update():void {	
-			//trace("current tile: " + current_tile.type + " at [" + current_tile.x + "," + current_tile.y + "]");
-			//trace("moving to tile: " + moving_to_tile.type + " at [" + moving_to_tile.x + "," + moving_to_tile.y + "]");
-			//trace("currently at : [" + x + "," + y + "], moving to [" + moving_to_tile.x + "," + moving_to_tile.y + "]");
+			//tr("current tile: " + current_tile.type + " at [" + current_tile.x + "," + current_tile.y + "]");
+			//tr("moving to tile: " + moving_to_tile.type + " at [" + moving_to_tile.x + "," + moving_to_tile.y + "]");
+			//tr("currently at : [" + x + "," + y + "], moving to [" + moving_to_tile.x + "," + moving_to_tile.y + "]");
 			
 			
 			//checkMovement();
@@ -297,7 +297,7 @@ package
 			} else {
 				_hoverEffect.visible = false;
 			}
-			//trace("mouse at [" + FlxG.mouse.x + "," + FlxG.mouse.y + "], visible: " + _hoverEffect.visible);
+			//tr("mouse at [" + FlxG.mouse.x + "," + FlxG.mouse.y + "], visible: " + _hoverEffect.visible);
 		}
 		
 		public function showBack():void {

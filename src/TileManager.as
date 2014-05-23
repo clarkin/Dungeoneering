@@ -32,7 +32,7 @@ package
 			var this_tile:Tile;
 			while (searching) {
 				this_tile = all_tiles[Math.floor(Math.random() * (all_tiles.length))];
-				//trace("trying " + this_tile.type);
+				//tr("trying " + this_tile.type);
 				if (this_tile.type.indexOf("corr") == 0 || this_tile.type.indexOf("room") == 0) { 
 					if (this_tile.type != "room_treasure") {
 						for each (var d:int in entrance_directions) {
@@ -45,7 +45,7 @@ package
 				
 			}
 			
-			//trace("found " + this_tile.type);
+			//tr("found " + this_tile.type);
 			return new Tile(_playState, this_tile.type);
 		}
 		

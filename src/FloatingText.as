@@ -47,7 +47,7 @@ package
 			_delay = delay;
 			
 			_lifetime = _delay + FADE_IN_TIME + DISPLAY_TIME + FADE_OUT_TIME;
-			//trace("_lifetime: " + _lifetime + " including delay of " + _delay);
+			//tr("_lifetime: " + _lifetime + " including delay of " + _delay);
 			
 			TweenLite.to(this, FADE_IN_TIME, { angle:ANGLE, delay:_delay, ease:Back.easeOut.config(1) } );
 			TweenLite.to(this, FADE_IN_TIME, { alpha:1.0, delay:_delay, ease:Back.easeOut.config(1) } );
@@ -57,16 +57,16 @@ package
 		override public function update():void {	
 			_lifetime -= FlxG.elapsed;
 			if (_lifetime <= 0) {
-				//trace("status: killing, _lifetime: " + _lifetime);
+				//tr("status: killing, _lifetime: " + _lifetime);
 				kill();
 			} else if (_lifetime <= FADE_OUT_TIME && _status == "SHOWING") {
-				//trace("status: fading_out, _lifetime: " + _lifetime);
+				//tr("status: fading_out, _lifetime: " + _lifetime);
 				_status = "FADING_OUT";
 				TweenLite.to(this, FADE_OUT_TIME, { angle:FADE_IN_ANGLE + ANGLE, ease:Back.easeIn.config(1) } );
 				TweenLite.to(this, FADE_OUT_TIME, { alpha:0.0, ease:Back.easeIn.config(1) } );
 				TweenLite.to(this, FADE_OUT_TIME, { bothScale:0.0, ease:Back.easeIn.config(1) } );
 			} else if (_lifetime <= FADE_OUT_TIME + DISPLAY_TIME && _status == "FADING_IN") {
-				//trace("status: showing, _lifetime: " + _lifetime);
+				//tr("status: showing, _lifetime: " + _lifetime);
 				_status = "SHOWING";
 			} else if (_lifetime <= FADE_OUT_TIME + DISPLAY_TIME + FADE_IN_TIME) {
 				

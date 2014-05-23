@@ -45,7 +45,7 @@ package
 		
 		public function Hero(playState:PlayState, X:int = 0, Y:int = 0) 
 		{
-			//trace("adding hero at [" + X + "," + Y + "]");
+			//tr("adding hero at [" + X + "," + Y + "]");
 			super(X + tile_offset.x, Y + tile_offset.y);
 			
 			_playState = playState;
@@ -62,9 +62,9 @@ package
 		}
 		
 		override public function update():void {	
-			//trace("current tile: " + current_tile.type + " at [" + current_tile.x + "," + current_tile.y + "]");
-			//trace("moving to tile: " + moving_to_tile.type + " at [" + moving_to_tile.x + "," + moving_to_tile.y + "]");
-			//trace("currently at : [" + x + "," + y + "], moving to [" + moving_to_tile.x + "," + moving_to_tile.y + "]");
+			//tr("current tile: " + current_tile.type + " at [" + current_tile.x + "," + current_tile.y + "]");
+			//tr("moving to tile: " + moving_to_tile.type + " at [" + moving_to_tile.x + "," + moving_to_tile.y + "]");
+			//tr("currently at : [" + x + "," + y + "], moving to [" + moving_to_tile.x + "," + moving_to_tile.y + "]");
 			
 			if (is_taking_turn) {
 				if (thinking_timer > 0) {
@@ -137,13 +137,13 @@ package
 			thinking_timer = THINKING_TIME;
 			var possible_directions:Array = current_tile.validEntrances();
 			var valid_tiles:Array = new Array();
-			//trace("picking tile from possible directions: " + possible_directions);
+			//tr("picking tile from possible directions: " + possible_directions);
 			for each (var dir:int in possible_directions) {
 				var coords:FlxPoint = current_tile.getTileCoordsThroughExit(dir);
-				//trace("current_tile at [" + current_tile.x + "," + current_tile.y + "]");
-				//trace("checking for tile in direction " + dir + " at [" + coords.x + "," + coords.y + "]");
+				//tr("current_tile at [" + current_tile.x + "," + current_tile.y + "]");
+				//tr("checking for tile in direction " + dir + " at [" + coords.x + "," + coords.y + "]");
 				var possible_tile:Tile = _playState.GetTileAt(coords);
-				//trace("possible_tile: " + possible_tile);
+				//tr("possible_tile: " + possible_tile);
 				if (possible_tile != null && possible_tile.checkExit(Tile.oppositeDirection(dir))) {
 					valid_tiles.push(possible_tile);
 				}
@@ -151,7 +151,7 @@ package
 			
 			if (valid_tiles.length == 0) {
 				_playState.turn_phase = PlayState.PHASE_BOSS_MOVE;
-				trace('** WARNING: no valid tiles to move to **');
+				tr('** WARNING: no valid tiles to move to **');
 			} else {
 				moving_to_tile = chooseTile(valid_tiles);
 				if (moving_to_tile.x < current_tile.x) {
@@ -160,7 +160,7 @@ package
 					facing = RIGHT;
 				}
 				thinkSomething("movement");
-				trace("switching to PlayState.PHASE_HERO_THINK (" + PlayState.PHASE_HERO_THINK + ") from playstate value " + _playState.turn_phase);
+				tr("switching to PlayState.PHASE_HERO_THINK (" + PlayState.PHASE_HERO_THINK + ") from playstate value " + _playState.turn_phase);
 				_playState.turn_phase = PlayState.PHASE_HERO_THINK;
 			}
 		}
@@ -250,9 +250,9 @@ package
 				var distance_x:int = moving_to_tile.x + tile_offset.x - (x + origin.x);
 				var distance_y:int = moving_to_tile.y + tile_offset.y - (y + origin.y);
 				
-				//trace("hero at [" + this.x + "," + this.y + "], moving_to_tile at [" + (moving_to_tile.x + tile_offset.x - origin.x) + "," + (moving_to_tile.y + tile_offset.y - origin.y) + "]");
-				//trace("hero origin is [" + this.origin.x + "," + this.origin.y + "]");
-				//trace("distance: [" + distance_x + "," + distance_y + "]");
+				//tr("hero at [" + this.x + "," + this.y + "], moving_to_tile at [" + (moving_to_tile.x + tile_offset.x - origin.x) + "," + (moving_to_tile.y + tile_offset.y - origin.y) + "]");
+				//tr("hero origin is [" + this.origin.x + "," + this.origin.y + "]");
+				//tr("distance: [" + distance_x + "," + distance_y + "]");
 				
 				if (distance_x >= -ARRIVAL_THRESHOLD && distance_x <= ARRIVAL_THRESHOLD && distance_y >= -ARRIVAL_THRESHOLD && distance_y <= ARRIVAL_THRESHOLD) {
 					moving_to_tile.has_visited = true;
@@ -268,7 +268,7 @@ package
 			current_tile = new_tile;
 			//x = new_tile.x + tile_offset_x;
 			//y = new_tile.y + tile_offset_y;
-			//trace("** hero at target tile ** " + current_tile.type + " at [" + current_tile.x + "," + current_tile.y + "]");
+			//tr("** hero at target tile ** " + current_tile.type + " at [" + current_tile.x + "," + current_tile.y + "]");
 		}
 		
 		public function processNextCard():void {
@@ -281,7 +281,7 @@ package
 			} else {
 				var next_card:Card = current_tile.cards.pop();
 				processing_card = next_card;
-				//trace("processing card " + next_card._title);
+				//tr("processing card " + next_card._title);
 				
 				if (next_card._type == "TREASURE") {
 					var sell_it:Boolean = true;
@@ -322,7 +322,7 @@ package
 						_playState.player_treasure += next_card._treasure._hope + 1;
 					}
 				} else if (next_card._type == "MONSTER") {
-					//trace("starting battle with monster " + next_card._monster._type + ", frame at " + next_card._monster.frame);
+					//tr("starting battle with monster " + next_card._monster._type + ", frame at " + next_card._monster.frame);
 					_playState.StartBattle(next_card._monster);
 				}
 
@@ -333,14 +333,14 @@ package
 		
 		public function FightMonster(this_monster:Monster):void {
 			if (EquippedSpeed() >= this_monster._speed) {
-				//trace("hero attacks first")
+				//tr("hero attacks first")
 				HeroAttacksMonster(this_monster);
 				
 				if (this_monster._health > 0) {
 					MonsterAttacksHero(this_monster);
 				}
 			} else {
-				//trace("monster attacks first")
+				//tr("monster attacks first")
 				MonsterAttacksHero(this_monster);
 				
 				if (_health > 0) {
@@ -350,7 +350,7 @@ package
 		}
 		
 		public function HeroAttacksMonster(this_monster:Monster):void {
-			//trace("hero attacked monster");
+			//tr("hero attacked monster");
 			if (EquippedStrength() > this_monster._armour) {
 				this_monster._health -= (EquippedStrength() - this_monster._armour);
 				_playState.sndSwordkill.play();
@@ -363,7 +363,7 @@ package
 		}
 		
 		public function MonsterAttacksHero(this_monster:Monster):void {
-			//trace("monster attacked hero");
+			//tr("monster attacked hero");
 			if (this_monster._strength > EquippedArmour()) {
 				_health -= (this_monster._strength - EquippedArmour());
 				CheckHeroHealth();
@@ -372,7 +372,7 @@ package
 		
 		public function CheckHeroHealth():void {
 			if (_health <= 0) {
-				//trace("hero dead");
+				//tr("hero dead");
 				_playState.player_alive = false;
 				_playState.leaveDungeon();
 			}

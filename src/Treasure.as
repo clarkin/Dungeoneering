@@ -34,7 +34,7 @@ package
 			
 			_playState = playState;
 			_type = type;
-			//trace("adding treasure " + type);
+			//tr("adding treasure " + type);
 			
 			if (colour) {
 				loadGraphic(itemsPNG, false, true, SPRITE_SIZE, SPRITE_SIZE);

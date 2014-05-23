@@ -64,7 +64,7 @@ package
 		
 		public function CheckChat():void {
 			if (_onBoard) {
-				trace("boss onBoard, no need for scripted chats");
+				tr("boss onBoard, no need for scripted chats");
 				_playState.BossChatOver();
 				return;
 			}
@@ -215,7 +215,7 @@ package
 			}
 			_current_tile = possible_tile;
 			SetBossCardOnTile(_current_tile);
-			//trace('picked tile at world [' + current_tile.x + ',' + current_tile.y + '], screen [' + current_tile.getScreenXY().x + ',' + current_tile.getScreenXY().y + ']')
+			//tr('picked tile at world [' + current_tile.x + ',' + current_tile.y + '], screen [' + current_tile.getScreenXY().x + ',' + current_tile.getScreenXY().y + ']')
 		}
 		
 		public function BossNowOnBoard():void {
@@ -234,11 +234,11 @@ package
 			_is_taking_turn = true;
 			var possible_directions:Array = _current_tile.validEntrances();
 			var valid_tiles:Array = new Array();
-			//trace("picking tile from possible directions: " + possible_directions);
+			//tr("picking tile from possible directions: " + possible_directions);
 			for each (var dir:int in possible_directions) {
 				var coords:FlxPoint = _current_tile.getTileCoordsThroughExit(dir);
-				//trace("current_tile at [" + current_tile.x + "," + current_tile.y + "]");
-				//trace("checking for tile in direction " + dir + " at [" + coords.x + "," + coords.y + "]");
+				//tr("current_tile at [" + current_tile.x + "," + current_tile.y + "]");
+				//tr("checking for tile in direction " + dir + " at [" + coords.x + "," + coords.y + "]");
 				var possible_tile:Tile = _playState.GetTileAt(coords);
 				if (possible_tile != null && possible_tile.checkExit(Tile.oppositeDirection(dir))) {
 					valid_tiles.push(possible_tile);
@@ -247,7 +247,7 @@ package
 			
 			if (valid_tiles.length == 0) {
 				EndTurn();
-				trace('** WARNING: no valid tiles to move to **');
+				tr('** WARNING: no valid tiles to move to **');
 			} else {
 				_moving_to_tile = chooseTile(valid_tiles);
 				if (_moving_to_tile.x < _current_tile.x) {
@@ -267,13 +267,13 @@ package
 		}
 		
 		public function FinishedMove():void {
-			//trace('arrived at tile at [' + _moving_to_tile.x + ',' + _moving_to_tile.y + ']');
+			//tr('arrived at tile at [' + _moving_to_tile.x + ',' + _moving_to_tile.y + ']');
 			_current_tile = _moving_to_tile;
 			SetBossCardOnTile(_current_tile);
 			_playState.setCameraFollowing(null);
 			EndTurn();
 			if (_current_tile == _playState.hero.current_tile) {
-				trace('** arrived at hero! **');
+				tr('** arrived at hero! **');
 				_playState.turn_phase = PlayState.PHASE_HERO_CARDS;
 			}
 		}
@@ -295,12 +295,12 @@ package
 			bossCard._monster = bossMonster;
 			tile.cards = [];
 			tile.cards.push(bossCard);
-			//trace("added boss card to tile at [" + tile.x + "," + tile.y + "]. frame at " + bossCard._monster.frame);
+			//tr("added boss card to tile at [" + tile.x + "," + tile.y + "]. frame at " + bossCard._monster.frame);
 		}
 		
 		public function BossTraceXY():void {
-			trace('boss at world [' + x + ',' + y +'], screen [' + getScreenXY().x + ',' + getScreenXY().y + ']');
-			trace('boss.current_tile at world [' + _current_tile.x + ',' + _current_tile.y + '], screen [' + _current_tile.getScreenXY().x + ',' + _current_tile.getScreenXY().y + ']')
+			tr('boss at world [' + x + ',' + y +'], screen [' + getScreenXY().x + ',' + getScreenXY().y + ']');
+			tr('boss.current_tile at world [' + _current_tile.x + ',' + _current_tile.y + '], screen [' + _current_tile.getScreenXY().x + ',' + _current_tile.getScreenXY().y + ']')
 		}
 		
 		public function GetStats():String {
