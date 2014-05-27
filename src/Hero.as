@@ -28,6 +28,7 @@ package
 		public var is_processing_cards:Boolean = false;
 		public var thinking_timer:Number = 0;
 		public var card_timer:Number = 0;
+		public var is_female:Boolean = false;
 		
 		public var _health:int = 0;
 		public var _strength:int = 0;
@@ -54,6 +55,9 @@ package
 			_strength = 2;
 			_speed = 2;
 			_armour = 0;
+			
+			is_female = (Math.random() < 0.5);
+			//tr("new hero, is_female? " + is_female);
 			
 			_equippables = new FlxSprite(X, Y);
 			_equippables.loadGraphic(heroPNG, true, false, TILE_SIZE, TILE_SIZE);
@@ -99,11 +103,19 @@ package
 			loadGraphic(heroBasePNG, false, false, TILE_SIZE, TILE_SIZE, true);
 			
 			//expression
-			_equippables.frame = 1;
+			if (is_female) {
+				_equippables.frame = 6;
+			} else {
+				_equippables.frame = 1;
+			}
 			this.stamp(_equippables);
 			
 			if (_equipped_helmet != null) {
 				_equippables.frame = _equipped_helmet._equippables_frame;
+				this.stamp(_equippables);
+			} else if (is_female) {
+				//female hair
+				_equippables.frame = 10;
 				this.stamp(_equippables);
 			}
 			
@@ -112,7 +124,11 @@ package
 				this.stamp(_equippables);
 			} else {
 				//tunic
-				_equippables.frame = 14;
+				if (is_female) {
+					_equippables.frame = 26;
+				} else {
+					_equippables.frame = 14;
+				}
 				this.stamp(_equippables);
 			}
 			
@@ -217,7 +233,7 @@ package
 					"I wish I was back at my nice warm room in the Guild", "*YAWN*", "Are you AFK?? Don't leave me here!"];
 				thought = idle_thoughts[Math.floor(Math.random() * (idle_thoughts.length))];
 			} else if (thought_type == "poked") {
-				var poked_thoughts:Array = ["Ow - that hurt!", "Please stop clicking me .. there", "What if I were to poke YOU instead!?",
+				var poked_thoughts:Array = ["Ow - that hurt!", "Please stop clicking me", "What if I were to poke YOU instead!?",
 					"Stop that", "The rulebook clearly says that clicking me doesn't achieve anything", "Cut it out!"];
 				thought = poked_thoughts[Math.floor(Math.random() * (poked_thoughts.length))];
 			} else if (thought_type == "card_afford") {
