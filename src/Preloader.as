@@ -8,7 +8,7 @@ package
 		{
 			className = "Dungeoneering";
 			myURL = "gambrinous.com/games/dungeoneering/";
-			VERSION = "0.6.19"
+			VERSION = "0.6.20"
 			super();
 		}
 	}
