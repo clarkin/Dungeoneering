@@ -20,7 +20,6 @@ package
 		private var _playState:PlayState;
 		
 		public var _sounds:Array = new Array();
-		public var _soundsEnabled:Boolean = true;
 		
 		public function AssetManager(playState:PlayState) 
 		{
@@ -40,13 +39,18 @@ package
 		
 		public function LoadSound(soundName:String):void {
 			var soundReference:Class = AssetManager[soundName] as Class;
-			_sounds[ soundName ] = new WavSound(new soundReference() as ByteArray); 
+			_sounds[soundName] = new WavSound(new soundReference() as ByteArray); 
 		}
 		
 		public function PlaySound(soundName:String):void {
-			if (_soundsEnabled) {
-				_sounds[ soundName ].play();
-				tr("played sound " + soundName);
+			if (_sounds[soundName] == null) {
+				tr(" *** ERROR sound '" + soundName + "' not defined ***");
+				return;
+			}
+			
+			if (!FlxG.mute) {
+				_sounds[soundName].play();
+				//tr("played sound " + soundName);
 			}
 		}
 		

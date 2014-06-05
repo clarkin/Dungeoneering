@@ -649,21 +649,21 @@ package
 		}
 		
 		public function checkKeyboard():void {
-			if (FlxG.keys.justReleased("SPACE")) {
+			if (FlxG.keys.justReleased("R")) {
 				tr("*** RESET ***");
 				TweenMax.killAll();
 				FlxG.switchState(new MenuState);
 			} else if (FlxG.keys.justReleased("D")) {
-				tr("*** Toggle Debug ***");
 				FlxG.visualDebug = !FlxG.visualDebug;
+				tr("*** Toggle Debug, visualDebug now " + FlxG.visualDebug + " ***");
 			} else if (FlxG.keys.justReleased("S")) {
-				tr("*** Toggle Sound ***");
 				FlxG.mute = !FlxG.mute;
+				tr("*** Toggle Sound, mute now " + FlxG.mute + " ***");
 			} else if (FlxG.keys.justReleased("C")) {
-				tr("*** Toggle CLEARSCREEN ***");
 				UIFrame.visible = !UIFrame.visible;
 				cardsInHand.visible = !cardsInHand.visible;
 				guiGroup.visible = !guiGroup.visible;
+				tr("*** Toggle CLEARSCREEN, frame visible now " + UIFrame.visible + " ***");
 			}
 			
 			//camera movement
