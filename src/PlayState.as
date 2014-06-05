@@ -997,9 +997,9 @@ package
 		
 		public function leaveDungeon():void {
 			if (player_alive) {
-				assetManager.sndCheer.play();
+				assetManager.PlaySound("cheer");
 			} else {
-				assetManager.sndDeathscream.play();
+				assetManager.PlaySound("deathscream");
 			}
 			FlxG.switchState(new MenuState(true, player_alive, player_treasure));
 		}

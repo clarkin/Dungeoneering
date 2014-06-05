@@ -77,9 +77,9 @@ package
 					if (!is_moving) {
 						_playState.turn_phase = PlayState.PHASE_HERO_MOVING;
 						if (current_tile.type.indexOf("room") == 0) {
-							_playState.assetManager.sndDoorcreak.play();
+							_playState.assetManager.PlaySound("doorcreak");
 						} else if (current_tile.type.indexOf("corr") == 0) {
-							_playState.assetManager.sndFootsteps.play();
+							_playState.assetManager.PlaySound("footsteps");
 						}
 						is_moving = true;
 						previous_tile = current_tile;
@@ -253,7 +253,7 @@ package
 			
 			TweenMax.to(this, THINKING_TIME / 20, { x:x + 1, y:y - 2, repeat:5, yoyo:true } );
 			if (thought_type != "idle") {
-				_playState.assetManager.sndDungeoneertalk1.play();
+				_playState.assetManager.PlaySound("dungeoneertalk1");
 			}
 			_playState.floatingTexts.add(new FloatingText(x + thought_offset.x, y + thought_offset.y, thought));
 		}
@@ -332,7 +332,7 @@ package
 							//nothing
 					}
 					if (sell_it) {
-						_playState.assetManager.sndCoins.play();
+						_playState.assetManager.PlaySound("coins");
 						_playState.player_treasure += next_card._treasure._hope + 1;
 					}
 				} else if (next_card._type == "MONSTER") {
@@ -367,7 +367,7 @@ package
 			//tr("hero attacked monster");
 			if (EquippedStrength() > this_monster._armour) {
 				this_monster._health -= (EquippedStrength() - this_monster._armour);
-				_playState.assetManager.sndSwordkill.play();
+				_playState.assetManager.PlaySound("swordkill");
 			}
 			
 			if (this_monster._health <= 0) {
