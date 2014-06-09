@@ -64,8 +64,8 @@ package
 			winScreen = new FlxSprite(43, 115, ARTwinScreen);
 			winScreen.visible = false;
 			
-			var titleString:String = "Instructions";
-			var resultsString:String = "Explore the dungeon looking for treasure,\nbut beware the monsters..\n\nFind the treasure room if you can!";
+			var titleString:String = "Your dungeoneer did it!!!";
+			var resultsString:String = "You gained 1460 glory for your Guild!";
 			if (showResults) {
 				if (survived) {
 					titleString = "Your dungeoneer did it!!!";
@@ -76,11 +76,11 @@ package
 				}
 			}
 			title = new FlxText(500, 220, 400, titleString);
-			title.setFormat("LemonsCanFly", 120, 0xFF333333, "center", 0xFF999999);
+			title.setFormat("LemonsCanFly", 80, 0xFF333333, "center", 0xFF999999);
 			title.visible = false;
 			
 			results = new FlxText(500, 340, 400, resultsString);
-			results.setFormat("LemonsCanFly", 80, 0xFF333333, "center", 0xFF999999);	
+			results.setFormat("LemonsCanFly", 60, 0xFF333333, "center", 0xFF999999);	
 			results.visible = false;
 			
 			add(titleScreen);
@@ -92,6 +92,7 @@ package
 			add(title);
 			add(results);
 			
+			//showResults = true;
 			if (showResults) {
 				TweenLite.to(whiteFade, FlxSprite.TIME_TO_DISAPPEAR * 2, { alpha:0.7, delay:appearDelay, ease:Sine.easeOut } );
 				appearDelay += APPEAR_DELAY;

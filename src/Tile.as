@@ -243,11 +243,25 @@ package
 		
 		public function validForHighlight(highlight:Tile):Boolean {
 			var valid_directions:Array = highlight.validHighlightEntrances();
-			//tr("checking tile vs highlight. tile entrances: " + validEntrances() + ". highlight directions: " + valid_directions);
+			var highlight_coords:FlxPoint = Tile.getCoordinatesFromXY(highlight.x, highlight.y);
+			//tr("in validForHighlight for tile with validEntrances: " + validEntrances());
+			//tr(" checking highlight at (" + highlight_coords.x + "," + highlight_coords.y + ") with valid_directions: " + valid_directions);
 			
+			//check all highlight entrances are matched
 			for each (var direction:int in valid_directions) {
 				if (!checkExit(direction)) {
-					//tr("match found in direction " + direction + " " + Tile.directionName(direction));
+					//tr(" match NOT found in direction " + direction + " " + Tile.directionName(direction));
+					return false;
+				}
+			}
+			
+			//check all exits of placing tile - make sure there are no tiles without corresponding entrances
+			for each (direction in validEntrances()) {
+				var tile_coords:FlxPoint = highlight.getTileCoordsThroughExit(direction);
+				var possible_tile:Tile = _playState.GetTileAtXY(tile_coords.x, tile_coords.y);
+				//tr("checking for tile in direction " + Tile.directionName(direction) + " at [" + tile_coords.x + "," + tile_coords.y + "]");
+				if (possible_tile && !possible_tile.checkExit(Tile.oppositeDirection(direction))) {
+					//tr(" tile found that wouldn't connect back");
 					return false;
 				}
 			}

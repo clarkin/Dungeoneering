@@ -575,6 +575,7 @@ package
 											cleanUpPlacingSprite();
 											
 											if (placing_card._type == "TILE") {
+												//tr("* placing tile *");
 												var new_placing_card_tile:Card = new Card(this, -1000, -1000, placing_card._type, placing_card._tile);
 												placingSprite.add(new_placing_card_tile._tile);
 												highlights.visible = true;
