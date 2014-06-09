@@ -65,7 +65,7 @@ package
 		public var choosingTile:Boolean = false;
 		
 		public var player_alive:Boolean = true;
-		public var player_treasure:int = 0;
+		public var player_glory:int = 0;
 		public var player_stats_label:FlxText;
 		public var player_dread_label:FlxText;
 		public var player_hope_label:FlxText;
@@ -478,7 +478,7 @@ package
 		
 		public function updateLabels():void {
 			//TODO only update these if any change instead of every frame
-			player_stats_label.text = "Treasure: " + player_treasure + "\n"
+			player_stats_label.text = "Glory: " + player_glory + "\n"
 			                        + hero.GetStats();
 			player_dread_label.text = "Dread: " + dungeon._dread_level;
 			player_hope_label.text = "Hope: " + dungeon._hope_level;
@@ -1001,7 +1001,7 @@ package
 			} else {
 				assetManager.PlaySound("deathscream");
 			}
-			FlxG.switchState(new MenuState(true, player_alive, player_treasure));
+			FlxG.switchState(new MenuState(true, player_alive, player_glory));
 		}
 		
 		public function BulgeLabel(label:FlxText):void {

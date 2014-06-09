@@ -68,11 +68,11 @@ package
 			var resultsString:String = "Explore the dungeon looking for treasure,\nbut beware the monsters..\n\nFind the treasure room if you can!";
 			if (showResults) {
 				if (survived) {
-					titleString = "You did it!!!";
-					resultsString = "You managed to find " + finalScore.toString() + " treasure!";
+					titleString = "Your dungeoneer did it!!!";
+					resultsString = "You gained " + finalScore.toString() + " glory for your Guild!";
 				} else {
-					titleString = "You died!";
-					resultsString = "You had found " + finalScore.toString() + " treasure so far..";
+					titleString = "Your dungeoneer died!";
+					resultsString = "Still. At least there's " + finalScore.toString() + " more glory for the Guild..";
 				}
 			}
 			title = new FlxText(500, 220, 400, titleString);

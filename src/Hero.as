@@ -333,7 +333,7 @@ package
 					}
 					if (sell_it) {
 						_playState.assetManager.PlaySound("coins");
-						_playState.player_treasure += next_card._treasure._hope + 1;
+						_playState.player_glory += next_card._treasure._hope + 1;
 					}
 				} else if (next_card._type == "MONSTER") {
 					//tr("starting battle with monster " + next_card._monster._type + ", frame at " + next_card._monster.frame);
