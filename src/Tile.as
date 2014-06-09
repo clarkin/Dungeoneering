@@ -246,13 +246,13 @@ package
 			//tr("checking tile vs highlight. tile entrances: " + validEntrances() + ". highlight directions: " + valid_directions);
 			
 			for each (var direction:int in valid_directions) {
-				if (checkExit(direction)) {
+				if (!checkExit(direction)) {
 					//tr("match found in direction " + direction + " " + Tile.directionName(direction));
-					return true;
+					return false;
 				}
 			}
 			
-			return false;
+			return true;
 		}
 		
 		public function distanceSquaredToTile(other_tile:Tile):Number {
