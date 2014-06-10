@@ -269,7 +269,10 @@ package
 				//tr("distance: [" + distance_x + "," + distance_y + "]");
 				
 				if (distance_x >= -ARRIVAL_THRESHOLD && distance_x <= ARRIVAL_THRESHOLD && distance_y >= -ARRIVAL_THRESHOLD && distance_y <= ARRIVAL_THRESHOLD) {
-					moving_to_tile.has_visited = true;
+					if (!moving_to_tile.has_visited) {
+						moving_to_tile.GainGlory();
+						moving_to_tile.has_visited = true;
+					}
 					setCurrentTile(moving_to_tile);
 					is_taking_turn = false;
 					is_moving = false;

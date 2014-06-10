@@ -269,6 +269,10 @@ package
 			return true;
 		}
 		
+		public function GainGlory():void {
+			_playState.player_glory += 1;
+		}
+		
 		public function distanceSquaredToTile(other_tile:Tile):Number {
 			return (this.x - other_tile.x) * (this.x - other_tile.x) + (this.y - other_tile.y) * (this.y - other_tile.y);
 		}

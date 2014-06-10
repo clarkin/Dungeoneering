@@ -617,6 +617,7 @@ package
 								if (highlight.alive && highlight.overlapsPoint(clicked_at) && placing_card._tile.validForHighlight(highlight)) {
 									var new_tile:Tile = new Tile(this, placing_card._tile.type);
 									var justAdded:Tile = addTileAt(new_tile, highlight.x, highlight.y);
+									justAdded.GainGlory();
 									justAdded.AppearAlpha();
 									highlight.kill()
 									is_placing_card = false;
