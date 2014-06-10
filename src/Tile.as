@@ -269,8 +269,10 @@ package
 			return true;
 		}
 		
-		public function GainGlory(amount:Number = 1):void {
-			if (amount > 0) {
+		public function GainGlory(amount:Number = 1, delay:Number = 0):void {
+			if (delay > 0) {
+				
+			} else if (amount > 0) {
 				_playState.player_glory += amount;
 				_playState.BulgeLabel(_playState.player_glory_label);
 				var tilePoint:FlxPoint = this.getScreenXY();

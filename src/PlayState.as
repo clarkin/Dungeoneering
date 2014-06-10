@@ -371,6 +371,7 @@ package
 						greyOut.DisappearAlpha(appearDelay, false);
 						appearDelay += APPEAR_DELAY;
 						
+						//tr("hiding battle screen with total delay of " + appearDelay);
 						TweenLite.delayedCall(appearDelay, EndFighting);
 					}
 				}

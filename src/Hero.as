@@ -374,10 +374,9 @@ package
 			}
 			
 			if (this_monster._health <= 0) {
-				_playState.dungeon._hope_level += this_monster._dread + 1;
-				_playState.BulgeLabel(_playState.player_hope_label);
-				
-				this.current_tile.GainGlory(this_monster._dread * this_monster._dread);
+				var appearDelay:Number = PlayState.APPEAR_DELAY * 3 + PlayState.BATTLE_TIME;
+				//tr("triggering glory etc with delay " + appearDelay);
+				TweenLite.delayedCall(appearDelay, MonsterKilledResults, [this_monster]);
 			}
 		}
 		
@@ -395,6 +394,12 @@ package
 				_playState.player_alive = false;
 				_playState.leaveDungeon();
 			}
+		}
+		
+		public function MonsterKilledResults(this_monster:Monster):void {
+			_playState.dungeon._hope_level += this_monster._dread + 1;
+			_playState.BulgeLabel(_playState.player_hope_label);
+			this.current_tile.GainGlory(this_monster._dread * this_monster._dread);
 		}
 		
 		public function EquippedStrength():int {
