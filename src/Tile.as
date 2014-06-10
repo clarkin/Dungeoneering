@@ -271,6 +271,7 @@ package
 		
 		public function GainGlory():void {
 			_playState.player_glory += 1;
+			_playState.BulgeLabel(_playState.player_glory_label);
 		}
 		
 		public function distanceSquaredToTile(other_tile:Tile):Number {

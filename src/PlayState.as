@@ -66,6 +66,7 @@ package
 		
 		public var player_alive:Boolean = true;
 		public var player_glory:int = 0;
+		public var player_glory_label:FlxText;
 		public var player_stats_label:FlxText;
 		public var player_dread_label:FlxText;
 		public var player_hope_label:FlxText;
@@ -170,6 +171,7 @@ package
 			var starting_tile:Tile = new Tile(this, "corr_grate_n");
 			addTileAt(starting_tile, starting_point.x, starting_point.y, false);
 			starting_tile.AppearAlpha(appearDelay);
+			starting_tile.has_visited = true;
 			appearDelay += APPEAR_DELAY;
 			hero.setCurrentTile(starting_tile);
 			hero.x = starting_tile.x + hero.tile_offset.x - hero.origin.x;
@@ -177,6 +179,7 @@ package
 			var second_tile:Tile = new Tile(this, "corr_thin_nesw");
 			addTileAt(second_tile, starting_point.x, starting_point.y - Tile.TILESIZE);
 			second_tile.AppearAlpha(appearDelay);
+			second_tile.has_visited = true;
 			appearDelay += APPEAR_DELAY;
 			hero.Appear(appearDelay);
 			appearDelay += APPEAR_DELAY;
@@ -202,14 +205,21 @@ package
 			stats_hero_sprite.Appear(appearDelay);
 			appearDelay += APPEAR_DELAY;
 			guiGroup.add(stats_hero_sprite);
-			player_dread_label = new FlxText(FlxG.width - 150 - 45, 15, 150, "Dread: 0");
+			player_glory_label = new FlxText(FlxG.width - 150 - 45, 15, 150, "Glory: 0");
+			player_glory_label.setFormat("LemonsCanFly", 40, 0xFF95B5D6, "right", 0xFF2A72BB);
+			player_glory_label.scrollFactor = new FlxPoint(0, 0);
+			player_glory_label.antialiasing = true;
+			player_glory_label.Appear(appearDelay);
+			appearDelay += APPEAR_DELAY;
+			guiGroup.add(player_glory_label);
+			player_dread_label = new FlxText(FlxG.width - 150 - 165, 15, 150, "Dread: 0");
 			player_dread_label.setFormat("LemonsCanFly", 40, 0xFFFF8A8A, "right", 0xFFA82C2C);
 			player_dread_label.scrollFactor = new FlxPoint(0, 0);
 			player_dread_label.antialiasing = true;
 			player_dread_label.Appear(appearDelay);
 			appearDelay += APPEAR_DELAY;
 			guiGroup.add(player_dread_label);
-			player_hope_label = new FlxText(FlxG.width - 150 - 165, 15, 150, "Hope: 0");
+			player_hope_label = new FlxText(FlxG.width - 150 - 285, 15, 150, "Hope: 0");
 			player_hope_label.setFormat("LemonsCanFly", 40, 0xFFEAE2AC, "right", 0xFF999966);
 			player_hope_label.scrollFactor = new FlxPoint(0, 0);
 			player_hope_label.antialiasing = true;
@@ -478,8 +488,8 @@ package
 		
 		public function updateLabels():void {
 			//TODO only update these if any change instead of every frame
-			player_stats_label.text = "Glory: " + player_glory + "\n"
-			                        + hero.GetStats();
+			player_stats_label.text = hero.GetStats();
+			player_glory_label.text = "Glory: " + player_glory;
 			player_dread_label.text = "Dread: " + dungeon._dread_level;
 			player_hope_label.text = "Hope: " + dungeon._hope_level;
 		}
