@@ -336,7 +336,7 @@ package
 					}
 					if (sell_it) {
 						_playState.assetManager.PlaySound("coins");
-						_playState.player_glory += next_card._treasure._hope + 1;
+						this.current_tile.GainGlory(next_card._treasure._hope + 1);
 					}
 				} else if (next_card._type == "MONSTER") {
 					//tr("starting battle with monster " + next_card._monster._type + ", frame at " + next_card._monster.frame);
@@ -376,6 +376,8 @@ package
 			if (this_monster._health <= 0) {
 				_playState.dungeon._hope_level += this_monster._dread + 1;
 				_playState.BulgeLabel(_playState.player_hope_label);
+				
+				this.current_tile.GainGlory(this_monster._dread * this_monster._dread);
 			}
 		}
 		

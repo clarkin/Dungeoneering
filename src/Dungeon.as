@@ -47,20 +47,14 @@ package
 		}
 		
 		public function IncreaseDread():void {
+			var old_dread:Number = _dread_level;
 			var dread:Number = Math.floor((_playState.turn_number + 2) / 5);
 			//tr("dread level changing from " + _dread_level + " to " + (_dread_level + dread));
 			_dread_level += dread;
 			if (_dread_level > 5) {
 				_dread_level = 5;
 			}
-			_playState.BulgeLabel(_playState.player_dread_label);
-		}
-		
-		public function ReduceDread():void {
-			_dread_level--;
-			if (_dread_level < 0) {
-				_dread_level = 0;
-			} else {
+			if (old_dread != _dread_level) {
 				_playState.BulgeLabel(_playState.player_dread_label);
 			}
 		}

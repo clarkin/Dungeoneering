@@ -269,9 +269,11 @@ package
 			return true;
 		}
 		
-		public function GainGlory():void {
-			_playState.player_glory += 1;
-			_playState.BulgeLabel(_playState.player_glory_label);
+		public function GainGlory(amount:Number = 1):void {
+			if (amount > 0) {
+				_playState.player_glory += amount;
+				_playState.BulgeLabel(_playState.player_glory_label);
+			}
 		}
 		
 		public function distanceSquaredToTile(other_tile:Tile):Number {

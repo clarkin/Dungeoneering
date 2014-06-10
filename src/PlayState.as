@@ -445,7 +445,8 @@ package
 			setCameraFollowing(null);
 			if (battling_monster._type == boss_monster._type) {
 				tr('** beaten boss **');
-				leaveDungeon();
+				hero.current_tile.GainGlory(250);
+				TweenLite.delayedCall(0.6, leaveDungeon);
 			} else {
 				turn_phase = PlayState.PHASE_BOSS_MOVE;
 			}
