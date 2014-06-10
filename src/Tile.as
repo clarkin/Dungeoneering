@@ -273,6 +273,10 @@ package
 			if (amount > 0) {
 				_playState.player_glory += amount;
 				_playState.BulgeLabel(_playState.player_glory_label);
+				var tilePoint:FlxPoint = this.getScreenXY();
+				_playState.particleEmitter.x = tilePoint.x + this.width / 2;
+				_playState.particleEmitter.y = tilePoint.y + this.height / 2;
+				_playState.particleEmitter.start(true, 0.5, 0, amount * 3);
 			}
 		}
 		

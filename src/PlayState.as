@@ -100,6 +100,7 @@ package
 		public var appearDelay:Number = APPEAR_DELAY;
 		public var whiteFade:FlxSprite;
 		public var greyOut:FlxSprite;
+		public var particleEmitter:FlxEmitter;
 		
 		override public function create():void {
 			//FlxG.visualDebug = true;
@@ -205,21 +206,21 @@ package
 			stats_hero_sprite.Appear(appearDelay);
 			appearDelay += APPEAR_DELAY;
 			guiGroup.add(stats_hero_sprite);
-			player_glory_label = new FlxText(FlxG.width - 150 - 45, 15, 150, "Glory: 0");
+			player_glory_label = new FlxText(FlxG.width - 150 - 45, 15, 120, "Glory: 0");
 			player_glory_label.setFormat("LemonsCanFly", 40, 0xFF95B5D6, "right", 0xFF2A72BB);
 			player_glory_label.scrollFactor = new FlxPoint(0, 0);
 			player_glory_label.antialiasing = true;
 			player_glory_label.Appear(appearDelay);
 			appearDelay += APPEAR_DELAY;
 			guiGroup.add(player_glory_label);
-			player_dread_label = new FlxText(FlxG.width - 150 - 165, 15, 150, "Dread: 0");
+			player_dread_label = new FlxText(FlxG.width - 150 - 165, 15, 120, "Dread: 0");
 			player_dread_label.setFormat("LemonsCanFly", 40, 0xFFFF8A8A, "right", 0xFFA82C2C);
 			player_dread_label.scrollFactor = new FlxPoint(0, 0);
 			player_dread_label.antialiasing = true;
 			player_dread_label.Appear(appearDelay);
 			appearDelay += APPEAR_DELAY;
 			guiGroup.add(player_dread_label);
-			player_hope_label = new FlxText(FlxG.width - 150 - 285, 15, 150, "Hope: 0");
+			player_hope_label = new FlxText(FlxG.width - 150 - 285, 15, 120, "Hope: 0");
 			player_hope_label.setFormat("LemonsCanFly", 40, 0xFFEAE2AC, "right", 0xFF999966);
 			player_hope_label.scrollFactor = new FlxPoint(0, 0);
 			player_hope_label.antialiasing = true;
@@ -246,7 +247,14 @@ package
 			
 			highlights.visible = false;
 			placingSprite.visible = true;
-
+			
+			particleEmitter = new FlxEmitter(0, 0, 300);
+			particleEmitter.setXSpeed( -5, 5);
+			particleEmitter.setYSpeed( -5, 5);
+			for (var i:int = 0; i < particleEmitter.maxSize; i++) {
+				particleEmitter.add(new SmallParticle(new FlxPoint(player_glory_label.x + player_glory_label.width / 2, player_glory_label.y + player_glory_label.height / 2)));
+			}
+			guiGroup.add(particleEmitter);
 			
 			addCardFromDeck("TILE", 0);
 			addCardFromDeck("TILE", 1);
