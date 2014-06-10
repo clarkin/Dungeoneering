@@ -716,7 +716,8 @@ package
 		public function canAfford(card:Card):Boolean {
 			//tr("canAfford " + card._type + " : " + card._title + " for cost " + card._cost + "?");
 			if (card._type == "MONSTER") {
-				return (dungeon._dread_level >= card._cost);
+				//return (dungeon._dread_level >= card._cost);
+				return true; //always allowed play a monster
 			} else if (card._type == "TREASURE") {
 				return (dungeon._hope_level >= card._cost);
 			} else {
@@ -727,6 +728,9 @@ package
 		public function payForCard(card:Card):void {
 			if (card._type == "MONSTER") {
 				dungeon._dread_level -= card._cost;
+				if (dungeon._dread_level < 0) {
+					dungeon._dread_level = 0;
+				}
 				BulgeLabel(player_dread_label);
 			} else if (card._type == "TREASURE") {
 				dungeon._hope_level -= card._cost;
