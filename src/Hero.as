@@ -13,7 +13,7 @@ package
 		public static const TIME_TO_MOVE_TILES:Number = 1.0;
 		public static const ARRIVAL_THRESHOLD:int = 0;
 		public static const THINKING_TIME:Number = FloatingText.FADE_IN_TIME + FloatingText.DISPLAY_TIME + FloatingText.FADE_OUT_TIME;
-		public static const CARD_TIME:Number = 2;
+		public static const TIME_TREASURE:Number = 1.0;
 		public static const TILE_SIZE:int = 80;
 		
 		public var tile_offset:FlxPoint = new FlxPoint(60, 60);
@@ -27,7 +27,6 @@ package
 		public var is_moving:Boolean = false;
 		public var is_processing_cards:Boolean = false;
 		public var thinking_timer:Number = 0;
-		public var card_timer:Number = 0;
 		public var is_female:Boolean = false;
 		
 		public var _health:int = 0;
@@ -87,14 +86,7 @@ package
 					}
 					checkMovement();
 				}
-			} else if (is_processing_cards) {
-				if (card_timer > 0) {
-					card_timer -= FlxG.elapsed;
-				} else {
-					
-					processNextCard();
-				}
-			}
+			} 
 			
 			super.update();
 		}
@@ -291,10 +283,8 @@ package
 		public function processNextCard():void {
 			if (current_tile.cards.length == 0) {
 				is_processing_cards = false;
-				if (_playState.turn_phase != PlayState.PHASE_HERO_BATTLE) {
-					_playState.setCameraFollowing(null);
-					_playState.turn_phase = PlayState.PHASE_BOSS_MOVE;
-				}
+				_playState.setCameraFollowing(null);
+				_playState.turn_phase = PlayState.PHASE_BOSS_MOVE;
 			} else {
 				var next_card:Card = current_tile.cards.pop();
 				processing_card = next_card;
@@ -338,13 +328,12 @@ package
 						_playState.assetManager.PlaySound("coins");
 						this.current_tile.GainGlory(next_card._treasure._hope + 1);
 					}
+					TweenLite.delayedCall(TIME_TREASURE, processNextCard);
 				} else if (next_card._type == "MONSTER") {
 					//tr("starting battle with monster " + next_card._monster._type + ", frame at " + next_card._monster.frame);
 					_playState.StartBattle(next_card._monster);
 				}
-
-				is_processing_cards = true;
-				card_timer = CARD_TIME;				
+				is_processing_cards = true;	
 			}
 		}
 		

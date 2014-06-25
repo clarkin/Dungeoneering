@@ -457,7 +457,8 @@ package
 				hero.current_tile.GainGlory(250);
 				TweenLite.delayedCall(0.6, leaveDungeon);
 			} else {
-				turn_phase = PlayState.PHASE_BOSS_MOVE;
+				turn_phase = PlayState.PHASE_HERO_CARDS;
+				hero.is_processing_cards = false;
 			}
 		}
 		

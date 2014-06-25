@@ -163,7 +163,16 @@ package
 				newCard._treasure.Appear();
 			}
 			//tr("added card " + newCard._type + ":" + newCard._title + " to tile " + this.type);
-			this.cards.push(newCard);
+			if (this.cards.length == 0) {
+				this.cards.push(newCard);
+			} else {
+				if (newCard._type == "MONSTER") {
+					this.cards.push(newCard);
+				} else {
+					//monster cards always put on end of array (encountered first)
+					this.cards.unshift(newCard);
+				}
+			}
 		}
 		
 		public function countCards(type:String = ""):int {
