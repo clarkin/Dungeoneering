@@ -38,7 +38,8 @@ package
 		public static const WEST:int  = 8;
 		
 		public static const FLASH_SPEED:Number = 2;
-		public static const ICON_OFFSET:FlxPoint = new FlxPoint(50, 30);
+		public static const MONSTER_ICON_OFFSET:FlxPoint = new FlxPoint(50, 20);
+		public static const TREASURE_ICON_OFFSET:FlxPoint = new FlxPoint(20, 50);
 		
 		public var entry_north:Boolean = false;
 		public var entry_east:Boolean = false;
@@ -131,8 +132,14 @@ package
 		
 		public function validForCard(card:Card):Boolean {
 			var validity:Boolean = false;
-			if (validEntrances().length > 0 && cards.length == 0) {
-				validity = true;
+			if (validEntrances().length > 0) {
+				if (cards.length == 0) {
+					validity = true;
+				} else if (cards.length == 1) {
+					if (card._type != cards[0]._type) {
+						validity = true;
+					}
+				}
 			}
 			
 			return validity;
@@ -144,15 +151,15 @@ package
 			if (newCard._monster != null) {
 				var new_placing_card_monster:Monster = new Monster(this._playState, newCard._monster._type, true);
 				newCard._monster = new_placing_card_monster;
-				newCard._monster.x = this.x + ICON_OFFSET.x;
-				newCard._monster.y = this.y + ICON_OFFSET.y;
+				newCard._monster.x = this.x + MONSTER_ICON_OFFSET.x;
+				newCard._monster.y = this.y + MONSTER_ICON_OFFSET.y;
 				newCard._monster.Appear();
 			}
 			if (newCard._treasure != null) {
 				var new_placing_card_treasure:Treasure = new Treasure(this._playState, newCard._treasure._type, true);
 				newCard._treasure = new_placing_card_treasure;
-				newCard._treasure.x = this.x + ICON_OFFSET.x;
-				newCard._treasure.y = this.y + ICON_OFFSET.y;
+				newCard._treasure.x = this.x + TREASURE_ICON_OFFSET.x;
+				newCard._treasure.y = this.y + TREASURE_ICON_OFFSET.y;
 				newCard._treasure.Appear();
 			}
 			//tr("added card " + newCard._type + ":" + newCard._title + " to tile " + this.type);

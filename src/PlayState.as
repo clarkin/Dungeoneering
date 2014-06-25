@@ -258,8 +258,8 @@ package
 			
 			addCardFromDeck("TILE", 0);
 			addCardFromDeck("TILE", 1);
-			addCardFromDeck("TILE", 2);
-			//addCardFromDeck("TREASURE", 2);
+			//addCardFromDeck("TILE", 2);
+			addCardFromDeck("TREASURE", 2);
 			addCardFromDeck("MONSTER", 3);
 			addCardFromDeck("MONSTER", 4);
 			
