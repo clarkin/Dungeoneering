@@ -144,6 +144,7 @@ package
 			debug_text_holder.y = this.y;
 			var coords:FlxPoint = getCoordinatesFromXY(this.x, this.y);
 			debug_text_holder.text = this.type + " at [" + coords.x + "," + coords.y + "]";
+			debug_text_holder.text += "\ng:" + this.g + ", h:" + this.h + ", f:" + this.f;
 		}
 		
 		public function validForCard(card:Card):Boolean {

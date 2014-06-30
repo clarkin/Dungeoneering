@@ -98,6 +98,7 @@ package
 						openNodes.push(testNode);
 					}
 				}
+				currentNode.setDebugText();
 				closedNodes.push( currentNode );
 				if (openNodes.length == 0) {
 					return null;
@@ -121,6 +122,7 @@ package
 		}
 		
 		public static function heuristic(currentNode:Tile, destinationNode:Tile, travelCost:Number):Number {
+			//TODO change to x/y distance in steps
 			return currentNode.distanceSquaredToTile(destinationNode) / (Tile.TILESIZE * Tile.TILESIZE);
 		}
 		

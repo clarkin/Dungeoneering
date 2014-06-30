@@ -249,6 +249,9 @@ package
 			highlights.visible = false;
 			placingSprite.visible = true;
 			debugText.visible = false;
+			if (FlxG.debug) {
+				debugText.visible = true;
+			}
 			
 			particleEmitter = new FlxEmitter(0, 0, 300);
 			particleEmitter.setXSpeed( -5, 5);
@@ -299,12 +302,12 @@ package
 			add(hero);
 			add(boss_monster);
 			add(floatingTexts);
+			add(debugText);
 			add(UIFrame);
 			add(guiGroup);
 			add(cardsInHand);
 			add(battleScreen);
 			add(placingSprite);
-			add(debugText);
 			add(whiteFade);
 			
 			TweenLite.delayedCall(appearDelay, endFadeIn);
