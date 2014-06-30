@@ -61,6 +61,9 @@ package
 		public var f:Number = 0;
 		public var pathingParent:Tile;
 		
+		public var debug_text:String = "";
+		public var debug_text_holder:FlxText;
+		
 		private var _playState:PlayState;
 		
 		public function Tile(playState:PlayState, type:String, X:int = 0, Y:int = 0) 
@@ -99,6 +102,12 @@ package
 				flashing = true;
 				//alpha = 1 - Math.random() / 2; //between 0.5 and 1.0
 			}
+			
+			if (FlxG.debug && type != "highlight") {
+				debug_text_holder = new FlxText(X, Y, this.width, "test");
+				debug_text_holder.setFormat(null, 8, 0x000000, null, 0xFFFFFF);
+				_playState.debugText.add(debug_text_holder);
+			}
 		}
 		
 		override public function update():void {	
@@ -128,6 +137,13 @@ package
 					card._treasure.draw();
 				}
 			}
+		}
+		
+		public function setDebugText():void {
+			debug_text_holder.x = this.x;
+			debug_text_holder.y = this.y;
+			var coords:FlxPoint = getCoordinatesFromXY(this.x, this.y);
+			debug_text_holder.text = this.type + " at [" + coords.x + "," + coords.y + "]";
 		}
 		
 		public function validForCard(card:Card):Boolean {

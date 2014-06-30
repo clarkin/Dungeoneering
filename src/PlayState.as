@@ -27,6 +27,7 @@ package
 		public var placingSprite:FlxGroup = new FlxGroup();
 		public var floatingTexts:FlxGroup = new FlxGroup();
 		public var battleScreen:FlxGroup = new FlxGroup();
+		public var debugText:FlxGroup = new FlxGroup();
 		
 		public static const starting_point:Point = new Point(0, 0);
 		
@@ -247,6 +248,7 @@ package
 			
 			highlights.visible = false;
 			placingSprite.visible = true;
+			debugText.visible = false;
 			
 			particleEmitter = new FlxEmitter(0, 0, 300);
 			particleEmitter.setXSpeed( -5, 5);
@@ -258,8 +260,8 @@ package
 			
 			addCardFromDeck("TILE", 0);
 			addCardFromDeck("TILE", 1);
-			//addCardFromDeck("TILE", 2);
-			addCardFromDeck("TREASURE", 2);
+			addCardFromDeck("TILE", 2);
+			//addCardFromDeck("TREASURE", 2);
 			addCardFromDeck("MONSTER", 3);
 			addCardFromDeck("MONSTER", 4);
 			
@@ -302,6 +304,7 @@ package
 			add(cardsInHand);
 			add(battleScreen);
 			add(placingSprite);
+			add(debugText);
 			add(whiteFade);
 			
 			TweenLite.delayedCall(appearDelay, endFadeIn);
@@ -678,6 +681,7 @@ package
 				FlxG.switchState(new MenuState);
 			} else if (FlxG.keys.justReleased("D")) {
 				FlxG.visualDebug = !FlxG.visualDebug;
+				debugText.visible = FlxG.visualDebug;
 				tr("*** Toggle Debug, visualDebug now " + FlxG.visualDebug + " ***");
 			} else if (FlxG.keys.justReleased("S")) {
 				FlxG.mute = !FlxG.mute;
@@ -963,6 +967,7 @@ package
 			tile.x = X;
 			tile.y = Y;
 			tiles.add(tile);
+			tile.setDebugText();
 			//tr("adding tile at " + X + "," + Y);
 			
 			if (checkExits && (tile.type.indexOf("corr") == 0 || tile.type.indexOf("room") == 0)) { 
