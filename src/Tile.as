@@ -103,7 +103,7 @@ package
 				//alpha = 1 - Math.random() / 2; //between 0.5 and 1.0
 			}
 			
-			if (FlxG.debug && type != "highlight") {
+			if (type != "highlight") { //TODO don't add these unless FlxG.debug is true
 				debug_text_holder = new FlxText(X, Y, this.width, "test");
 				debug_text_holder.setFormat(null, 8, 0x000000, null, 0xFFFFFF);
 				_playState.debugText.add(debug_text_holder);

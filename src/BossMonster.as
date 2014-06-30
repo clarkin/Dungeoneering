@@ -229,39 +229,21 @@ package
 		
 		public function StartTurn():void {
 			//_playState.following_hero = true;
-			_is_taking_turn = true;
-			var possible_directions:Array = _current_tile.validEntrances();
-			var valid_tiles:Array = new Array();
-			//tr("picking tile from possible directions: " + possible_directions);
-			for each (var dir:int in possible_directions) {
-				var coords:FlxPoint = _current_tile.getTileCoordsThroughExit(dir);
-				//tr("current_tile at [" + current_tile.x + "," + current_tile.y + "]");
-				//tr("checking for tile in direction " + dir + " at [" + coords.x + "," + coords.y + "]");
-				var possible_tile:Tile = _playState.GetTileAt(coords);
-				if (possible_tile != null && possible_tile.checkExit(Tile.oppositeDirection(dir))) {
-					valid_tiles.push(possible_tile);
-				}
+			_is_taking_turn = true;		
+			_moving_to_tile = chooseTile();
+			if (_moving_to_tile.x < _current_tile.x) {
+				facing = LEFT;
+			} else if (_moving_to_tile.x > _current_tile.x) {
+				facing = RIGHT;
 			}
-			
-			if (valid_tiles.length == 0) {
-				EndTurn();
-				tr('** WARNING: no valid tiles to move to **');
-			} else {
-				_moving_to_tile = chooseTile(valid_tiles);
-				if (_moving_to_tile.x < _current_tile.x) {
-					facing = LEFT;
-				} else if (_moving_to_tile.x > _current_tile.x) {
-					facing = RIGHT;
-				}
-				_current_tile.cards = [];
-				var delay:Number = 0;
-				_playState.setCameraFollowing(this);
-				thinkSomething("movement");
-				delay += THINKING_TIME;
-				TweenLite.to(this, TIME_TO_MOVE, { x:_moving_to_tile.x + TILE_OFFSET.x, y:_moving_to_tile.y + TILE_OFFSET.y, delay: delay, ease:Back.easeInOut.config(0.8) } );
-				delay += TIME_TO_MOVE;
-				TweenLite.delayedCall(delay, FinishedMove);
-			}
+			_current_tile.cards = [];
+			var delay:Number = 0;
+			_playState.setCameraFollowing(this);
+			thinkSomething("movement");
+			delay += THINKING_TIME;
+			TweenLite.to(this, TIME_TO_MOVE, { x:_moving_to_tile.x + TILE_OFFSET.x, y:_moving_to_tile.y + TILE_OFFSET.y, delay: delay, ease:Back.easeInOut.config(0.8) } );
+			delay += TIME_TO_MOVE;
+			TweenLite.delayedCall(delay, FinishedMove);
 		}
 		
 		public function FinishedMove():void {
@@ -281,7 +263,7 @@ package
 			_is_taking_turn = false;
 		}
 		
-		private function chooseTile(valid_tiles:Array):Tile {
+		private function chooseTile():Tile {
 			var path_to_hero:Array = _playState.tileManager.findPath(_current_tile, _playState.hero.current_tile);
 			//go to next step
 			return path_to_hero[1];
