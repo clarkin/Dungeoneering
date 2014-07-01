@@ -103,8 +103,8 @@ package
 				//alpha = 1 - Math.random() / 2; //between 0.5 and 1.0
 			}
 			
-			if (type != "highlight") { //TODO don't add these unless FlxG.debug is true
-				debug_text_holder = new FlxText(X, Y, this.width, "test");
+			if (type != "highlight" && type != "empty") { //TODO don't add these unless FlxG.debug is true
+				debug_text_holder = new FlxText(X, Y, this.width, "");
 				debug_text_holder.setFormat(null, 8, 0x000000, null, 0xFFFFFF);
 				_playState.debugText.add(debug_text_holder);
 			}
@@ -144,7 +144,14 @@ package
 			debug_text_holder.y = this.y;
 			var coords:FlxPoint = getCoordinatesFromXY(this.x, this.y);
 			debug_text_holder.text = this.type + " at [" + coords.x + "," + coords.y + "]";
-			debug_text_holder.text += "\ng:" + this.g + ", h:" + this.h + ", f:" + this.f;
+			
+			if (this.f > 0) {
+				debug_text_holder.text += "\ng:" + this.g + ", h:" + this.h + ", f:" + this.f;
+				if (this.pathingParent) {
+					debug_text_holder.text += "\nfrom: " + directionArrow(directionToTile(pathingParent));
+				}
+			}
+			
 		}
 		
 		public function validForCard(card:Card):Boolean {
@@ -325,6 +332,25 @@ package
 			return Math.abs(this_coords.x - other_coords.x) + Math.abs(this_coords.y - other_coords.y);
 		}
 		
+		public function directionToTile(other_tile:Tile):int {
+			//note: assumes tiles are adjacent
+			var this_coords:FlxPoint = getCoordinatesFromXY(this.x, this.y);
+			var other_coords:FlxPoint = getCoordinatesFromXY(other_tile.x, other_tile.y);
+			var x_dist:int = this_coords.x - other_coords.x;
+			var y_dist:int = this_coords.y - other_coords.y;
+			if (y_dist == 1) {
+				return NORTH;
+			} else if (x_dist == -1) {
+				return EAST;
+			} else if (y_dist == -1) {
+				return SOUTH;
+			} else if (x_dist == 1) {
+				return WEST;
+			} else {
+				return -1;
+			}
+		}
+		
 		public function checkExit(direction:int):Boolean {
 			switch (direction) {
 				case NORTH:
@@ -365,6 +391,21 @@ package
 					return "SOUTH";
 				case WEST:
 					return "WEST";
+				default:
+					throw new Error("invalid direction " + direction);
+			}
+		}
+		
+		public static function directionArrow(direction:int):String {
+			switch (direction) {
+				case NORTH:
+					return "^";
+				case EAST:
+					return ">";
+				case SOUTH:
+					return "V";
+				case WEST:
+					return "<";
 				default:
 					throw new Error("invalid direction " + direction);
 			}

@@ -111,8 +111,17 @@ package
 				tile.setDebugText();
 			}
 			
+			var path:Array = buildPath(destinationNode, firstNode);
+			/*
+			for each (tile in path) {
+				//tile.setPathDebugText();
+				tr("checking path for tile " + tile.type);
+			}
+			*/
+			path[0].debug_text_holder.text += "\nSTARTING TILE";
+			path[path.length - 1].debug_text_holder.text += "\nDESTINATION TILE";
 			
-			return buildPath(destinationNode, firstNode);
+			return path;
 		}
 		
 		public static function buildPath(destinationNode:Tile, startNode:Tile):Array {
