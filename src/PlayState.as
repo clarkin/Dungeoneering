@@ -513,7 +513,7 @@ package
 		
 		public function checkMouseClick():void {
 			if (FlxG.mouse.justPressed()) {
-				//checkTileClick();
+				checkTileClick();
 				//tr('mouse clicked at world [' + FlxG.mouse.getWorldPosition().x + ',' + FlxG.mouse.getWorldPosition().y + '], screen [' + FlxG.mouse.getScreenPosition().x + ',' + FlxG.mouse.getScreenPosition().y + '], camera.scroll = [' + FlxG.camera.scroll.x + ',' + FlxG.camera.scroll.y + ']')
 				idle_timer = IDLE_TIME;
 				if (checkMouseOverlapsGroup(guiGroup) == null && checkMouseOverlapsGroup(cardsInHand) == null) {

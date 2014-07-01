@@ -98,7 +98,6 @@ package
 						openNodes.push(testNode);
 					}
 				}
-				currentNode.setDebugText();
 				closedNodes.push( currentNode );
 				if (openNodes.length == 0) {
 					return null;
@@ -106,6 +105,12 @@ package
 				openNodes.sortOn('f', Array.NUMERIC);
 				currentNode = openNodes.shift() as Tile;
 			}
+			
+			//redraw debug text
+			for each (tile in _playState.tiles.members) {
+				tile.setDebugText();
+			}
+			
 			
 			return buildPath(destinationNode, firstNode);
 		}
@@ -122,8 +127,7 @@ package
 		}
 		
 		public static function heuristic(currentNode:Tile, destinationNode:Tile, travelCost:Number):Number {
-			//TODO change to x/y distance in steps
-			return currentNode.distanceSquaredToTile(destinationNode) / (Tile.TILESIZE * Tile.TILESIZE);
+			return currentNode.stepsToTile(destinationNode) * travelCost;
 		}
 		
 		public static function arrayContains(testNode:Tile, searchArray:Array):Boolean {

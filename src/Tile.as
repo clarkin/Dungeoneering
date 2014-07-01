@@ -319,6 +319,12 @@ package
 			return (this.x - other_tile.x) * (this.x - other_tile.x) + (this.y - other_tile.y) * (this.y - other_tile.y);
 		}
 		
+		public function stepsToTile(other_tile:Tile):Number {
+			var this_coords:FlxPoint = getCoordinatesFromXY(this.x, this.y);
+			var other_coords:FlxPoint = getCoordinatesFromXY(other_tile.x, other_tile.y);
+			return Math.abs(this_coords.x - other_coords.x) + Math.abs(this_coords.y - other_coords.y);
+		}
+		
 		public function checkExit(direction:int):Boolean {
 			switch (direction) {
 				case NORTH:
