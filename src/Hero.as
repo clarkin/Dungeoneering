@@ -26,7 +26,6 @@ package
 		public var is_taking_turn:Boolean = false;
 		public var is_moving:Boolean = false;
 		public var is_processing_cards:Boolean = false;
-		public var thinking_timer:Number = 0;
 		public var is_female:Boolean = false;
 		
 		public var _health:int = 0;
@@ -68,25 +67,6 @@ package
 			//tr("current tile: " + current_tile.type + " at [" + current_tile.x + "," + current_tile.y + "]");
 			//tr("moving to tile: " + moving_to_tile.type + " at [" + moving_to_tile.x + "," + moving_to_tile.y + "]");
 			//tr("currently at : [" + x + "," + y + "], moving to [" + moving_to_tile.x + "," + moving_to_tile.y + "]");
-			
-			if (is_taking_turn) {
-				if (thinking_timer > 0) {
-					thinking_timer -= FlxG.elapsed;
-				} else {
-					if (!is_moving) {
-						_playState.turn_phase = PlayState.PHASE_HERO_MOVING;
-						if (current_tile.type.indexOf("room") == 0) {
-							_playState.assetManager.PlaySound("doorcreak");
-						} else if (current_tile.type.indexOf("corr") == 0) {
-							_playState.assetManager.PlaySound("footsteps");
-						}
-						is_moving = true;
-						previous_tile = current_tile;
-						TweenLite.to(this, TIME_TO_MOVE_TILES, { x:moving_to_tile.x + tile_offset.x - origin.x, y:moving_to_tile.y + tile_offset.y - origin.y, ease:Back.easeInOut.config(0.8) } );
-					}
-					checkMovement();
-				}
-			} 
 			
 			super.update();
 		}
@@ -142,7 +122,7 @@ package
 		public function startTurn():void {
 			_playState.setCameraFollowing(this);
 			is_taking_turn = true;
-			thinking_timer = THINKING_TIME;
+			
 			var possible_directions:Array = current_tile.validEntrances();
 			var valid_tiles:Array = new Array();
 			//tr("picking tile from possible directions: " + possible_directions);
@@ -168,6 +148,7 @@ package
 					facing = RIGHT;
 				}
 				thinkSomething("movement");
+				TweenMax.delayedCall(THINKING_TIME, startMoving);
 			}
 		}
 		
@@ -250,27 +231,28 @@ package
 			_playState.floatingTexts.add(new FloatingText(x + thought_offset.x, y + thought_offset.y, thought));
 		}
 		
-		private function checkMovement():void {
-			if (moving_to_tile != null && current_tile != moving_to_tile) {
-				
-				var distance_x:int = moving_to_tile.x + tile_offset.x - (x + origin.x);
-				var distance_y:int = moving_to_tile.y + tile_offset.y - (y + origin.y);
-				
-				//tr("hero at [" + this.x + "," + this.y + "], moving_to_tile at [" + (moving_to_tile.x + tile_offset.x - origin.x) + "," + (moving_to_tile.y + tile_offset.y - origin.y) + "]");
-				//tr("hero origin is [" + this.origin.x + "," + this.origin.y + "]");
-				//tr("distance: [" + distance_x + "," + distance_y + "]");
-				
-				if (distance_x >= -ARRIVAL_THRESHOLD && distance_x <= ARRIVAL_THRESHOLD && distance_y >= -ARRIVAL_THRESHOLD && distance_y <= ARRIVAL_THRESHOLD) {
-					if (!moving_to_tile.has_visited) {
-						moving_to_tile.GainGlory();
-						moving_to_tile.has_visited = true;
-					}
-					setCurrentTile(moving_to_tile);
-					is_taking_turn = false;
-					is_moving = false;
-					_playState.heroArrivedAt(moving_to_tile);
-				}
+		private function startMoving():void {
+			_playState.turn_phase = PlayState.PHASE_HERO_MOVING;
+			if (current_tile.type.indexOf("room") == 0) {
+				_playState.assetManager.PlaySound("doorcreak");
+			} else if (current_tile.type.indexOf("corr") == 0) {
+				_playState.assetManager.PlaySound("footsteps");
 			}
+			is_moving = true;
+			previous_tile = current_tile;
+			TweenLite.to(this, TIME_TO_MOVE_TILES, { x:moving_to_tile.x + tile_offset.x - origin.x, y:moving_to_tile.y + tile_offset.y - origin.y, ease:Back.easeInOut.config(0.8) } );
+			TweenMax.delayedCall(TIME_TO_MOVE_TILES, finishedMoving);
+		}
+		
+		private function finishedMoving():void {
+			if (!moving_to_tile.has_visited) {
+				moving_to_tile.GainGlory();
+				moving_to_tile.has_visited = true;
+			}
+			setCurrentTile(moving_to_tile);
+			is_taking_turn = false;
+			is_moving = false;
+			_playState.heroArrivedAt(moving_to_tile);
 		}
 		
 		public function setCurrentTile(new_tile:Tile):void {
