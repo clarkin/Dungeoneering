@@ -123,45 +123,46 @@ package
 			_playState.setCameraFollowing(this);
 			is_taking_turn = true;
 			
-			var possible_directions:Array = current_tile.validEntrances();
 			var valid_tiles:Array = new Array();
-			//tr("picking tile from possible directions: " + possible_directions);
-			for each (var dir:int in possible_directions) {
-				var coords:FlxPoint = current_tile.getTileCoordsThroughExit(dir);
-				//tr("current_tile at [" + current_tile.x + "," + current_tile.y + "]");
-				//tr("checking for tile in direction " + dir + " at [" + coords.x + "," + coords.y + "]");
-				var possible_tile:Tile = _playState.GetTileAt(coords);
-				//tr("possible_tile: " + possible_tile);
-				if (possible_tile != null && possible_tile.checkExit(Tile.oppositeDirection(dir))) {
-					valid_tiles.push(possible_tile);
+			for each (var tile:Tile in _playState.tiles.members) {
+				tile.resetPathingVars();
+				tile.setDebugText();
+
+				if (tile != current_tile) {	
+					var found_path:Array = _playState.tileManager.findPath(current_tile, tile);
+					tile.distance_to_hero = tile.f;
+					tile.treasure_value = tile.countCardValue("TREASURE") * 2;
+					tile.monsters_between = 0;
+					for each (var path_tile:Tile in found_path) {
+						tile.monsters_between += path_tile.countCardValue("MONSTER");
+					}
+					tile.unexplored_area_value = tile.has_visited? 0 : 3;
+					for each (var neighbouring_tile:Tile in tile.getConnectedTiles()) {
+						tile.unexplored_area_value += neighbouring_tile.has_visited? 0 : 1;
+					}
+					tile.weighted_value = tile.unexplored_area_value + tile.treasure_value - tile.distance_to_hero - tile.monsters_between;
+					
+					tile.debug_text_holder.text += "\nVALUE: " + tile.weighted_value;
+					tile.debug_text_holder.text += "\n  Explored: +" + tile.unexplored_area_value;
+					tile.debug_text_holder.text += "\n  Treasure: +" + tile.treasure_value;
+					tile.debug_text_holder.text += "\n  Distance: -" + tile.distance_to_hero;
+					tile.debug_text_holder.text += "\n  Monsters: -" + tile.monsters_between;
+					
+					valid_tiles.push(tile);
 				}
 			}
-			
-			if (valid_tiles.length == 0) {
-				_playState.turn_phase = PlayState.PHASE_BOSS_MOVE;
-				tr('** WARNING: no valid tiles to move to **');
-			} else {
-				moving_to_tile = chooseTile(valid_tiles);
-				if (moving_to_tile.x < current_tile.x) {
-					facing = LEFT;
-				} else if (moving_to_tile.x > current_tile.x) {
-					facing = RIGHT;
-				}
-				thinkSomething("movement");
-				TweenMax.delayedCall(THINKING_TIME, startMoving);
+			valid_tiles.sortOn("weighted_value", Array.DESCENDING | Array.NUMERIC);
+			var best_tile:Tile = valid_tiles.shift();
+			best_tile.debug_text_holder.text += "\n\nHEADING OVER HERE";
+			var path_to_best_tile:Array = _playState.tileManager.findPath(current_tile, best_tile);
+			moving_to_tile = path_to_best_tile[1];
+			if (moving_to_tile.x < current_tile.x) {
+				facing = LEFT;
+			} else if (moving_to_tile.x > current_tile.x) {
+				facing = RIGHT;
 			}
-		}
-		
-		private function chooseTile(valid_tiles:Array):Tile {
-			//default: random tile
-			var favorite_tile:Tile = valid_tiles[Math.floor(Math.random() * (valid_tiles.length))];
-			for each (var tile:Tile in valid_tiles) {
-				//check if this is preferable to current fave
-				if (tile.countCards("TREASURE") > favorite_tile.countCards("TREASURE") || (favorite_tile.has_visited && !tile.has_visited)) {
-					favorite_tile = tile;
-				}
-			}
-			return favorite_tile;
+			thinkSomething("movement");
+			TweenMax.delayedCall(THINKING_TIME, startMoving);
 		}
 		
 		public function thinkSomething(thought_type:String, card_clicked:Card = null):void {

@@ -61,6 +61,12 @@ package
 		public var f:Number = 0;
 		public var pathingParent:Tile;
 		
+		public var distance_to_hero:Number = 0;
+		public var treasure_value:Number = 0;
+		public var unexplored_area_value:Number = 0;
+		public var monsters_between:Number = 0;
+		public var weighted_value:Number = 0;
+		
 		public var debug_text:String = "";
 		public var debug_text_holder:FlxText;
 		
@@ -139,6 +145,13 @@ package
 			}
 		}
 		
+		public function resetPathingVars():void {
+			g = 0;
+			h = 0;
+			f = 0;
+			pathingParent = null;
+		}
+		
 		public function setDebugText():void {
 			debug_text_holder.x = this.x;
 			debug_text_holder.y = this.y;
@@ -209,6 +222,16 @@ package
 			return total;
 		}
 		
+		public function countCardValue(type:String = ""):int {
+			var total:int = 0;
+			for each (var card:Card in cards) {
+				if (card._type == type || type == "") {
+					total += card._cost + 1;
+				}
+			}
+			return total;
+		}
+				
 		public function getConnectedTiles():Array {
 			var connected_tiles:Array = new Array();
 			

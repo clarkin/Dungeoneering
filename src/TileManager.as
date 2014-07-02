@@ -52,10 +52,7 @@ package
 		public function findPath(firstNode:Tile, destinationNode:Tile, showDebugText:Boolean = false):Array {
 			//reset old pathing
 			for each (var tile:Tile in _playState.tiles.members) {
-				tile.g = 0;
-				tile.h = 0;
-				tile.f = 0;
-				tile.pathingParent = null;
+				tile.resetPathingVars();
 			}
 			
 			var openNodes:Array = [];
