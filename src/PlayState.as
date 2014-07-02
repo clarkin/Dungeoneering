@@ -513,7 +513,7 @@ package
 		
 		public function checkMouseClick():void {
 			if (FlxG.mouse.justPressed()) {
-				checkTileClick();
+				//checkTileClick();
 				//tr('mouse clicked at world [' + FlxG.mouse.getWorldPosition().x + ',' + FlxG.mouse.getWorldPosition().y + '], screen [' + FlxG.mouse.getScreenPosition().x + ',' + FlxG.mouse.getScreenPosition().y + '], camera.scroll = [' + FlxG.camera.scroll.x + ',' + FlxG.camera.scroll.y + ']')
 				idle_timer = IDLE_TIME;
 				if (checkMouseOverlapsGroup(guiGroup) == null && checkMouseOverlapsGroup(cardsInHand) == null) {
@@ -1071,7 +1071,7 @@ package
 			var clicked_tile:Tile = GetTileAtXY(clicked_at.x, clicked_at.y);
 			if (clicked_tile) {
 				//tr("tile found: " + clicked_tile.type);
-				var found_path:Array = tileManager.findPath(hero.current_tile, clicked_tile);
+				var found_path:Array = tileManager.findPath(hero.current_tile, clicked_tile, true);
 				//tr("** PATHING **");
 				for each (var tile:Tile in found_path) {
 					var tile_coords:FlxPoint = Tile.getCoordinatesFromXY(tile.x, tile.y);

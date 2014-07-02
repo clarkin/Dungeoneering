@@ -49,7 +49,7 @@ package
 			return new Tile(_playState, this_tile.type);
 		}
 		
-		public function findPath(firstNode:Tile, destinationNode:Tile):Array {
+		public function findPath(firstNode:Tile, destinationNode:Tile, showDebugText:Boolean = false):Array {
 			//reset old pathing
 			for each (var tile:Tile in _playState.tiles.members) {
 				tile.g = 0;
@@ -106,20 +106,16 @@ package
 				currentNode = openNodes.shift() as Tile;
 			}
 			
-			//redraw debug text
-			for each (tile in _playState.tiles.members) {
-				tile.setDebugText();
-			}
-			
 			var path:Array = buildPath(destinationNode, firstNode);
-			/*
-			for each (tile in path) {
-				//tile.setPathDebugText();
-				tr("checking path for tile " + tile.type);
+			
+			//redraw debug text
+			if (showDebugText) {
+				for each (tile in _playState.tiles.members) {
+					tile.setDebugText();
+				}
+				path[0].debug_text_holder.text += "\nSTARTING TILE";
+				path[path.length - 1].debug_text_holder.text += "\nDESTINATION TILE";
 			}
-			*/
-			path[0].debug_text_holder.text += "\nSTARTING TILE";
-			path[path.length - 1].debug_text_holder.text += "\nDESTINATION TILE";
 			
 			return path;
 		}
