@@ -255,7 +255,7 @@ package
 			placingSprite.visible = true;
 			debugText.visible = false;
 			if (FlxG.debug) {
-				debugText.visible = true;
+				//debugText.visible = true;
 			}
 			
 			particleEmitter = new FlxEmitter(0, 0, 300);

@@ -6,7 +6,7 @@ package
 	public class Gamb 
 	{
 		
-		public static function drawPathAsLine(Sprite:FlxSprite, Path:Array, Color:uint=0xFF000000, Thickness:uint=1, Outline:uint=0x00000000):void
+		public static function drawPathAsLine(Sprite:FlxSprite, Path:Array, Color:uint=0xFF000000, Thickness:uint=1, Fill:uint=0x00000000):void
 		{
 			if (Path.length >= 2) {
 				//Draw line
@@ -31,22 +31,15 @@ package
 					pt.x += tile.origin.x;
 					pt.y += tile.origin.y;
 					
-					//outline
-					if (Outline != 0x00000000) {
-						var outline_adjustment:FlxPoint = new FlxPoint(0, 0);
-						if (last_point.x - pt.x == 0) { //vertical line
-							outline_adjustment.y = 1;
-						} else {
-							outline_adjustment.x = 1;
-						}
-						gfx.moveTo(last_point.x - outline_adjustment.x, last_point.y - outline_adjustment.y);
-						gfx.lineStyle(Thickness + 2, Outline, alphaComponent);
-						gfx.lineTo(pt.x + outline_adjustment.x, pt.y + outline_adjustment.y);
-						gfx.moveTo(last_point.x, last_point.y);
-					}
-					
 					gfx.lineStyle(Thickness, Color, alphaComponent);
 					gfx.lineTo(pt.x, pt.y);
+				}
+				
+				if (Fill != 0x00000000) {
+					gfx.beginFill(Fill);
+					gfx.drawRect(pt.x - 2, pt.y - 2, 4, 4);
+					gfx.endFill();
+					gfx.moveTo(pt.x, pt.y);
 				}
 				
 				// Draw line to bitmap

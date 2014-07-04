@@ -173,7 +173,7 @@ package
 			}
 			TweenMax.to(best_tile, flashTime, { alpha:0.7, delay:delay, repeat:5, yoyo:true } );
 			TweenMax.delayedCall(delay, drawPath, [path_to_best_tile]);
-			delay += flashTime * 5;
+			delay += flashTime * 4;
 			
 			TweenMax.delayedCall(delay, clearPath);
 			TweenMax.delayedCall(delay, thinkSomething, ["movement"]);
@@ -254,7 +254,7 @@ package
 		
 		private function drawPath(path:Array):void {
 			_playState.pathOverlay.fill(0x00000000);
-			Gamb.drawPathAsLine(_playState.pathOverlay, path, 0xff666666, 2, 0xffCCCCCC);
+			Gamb.drawPathAsLine(_playState.pathOverlay, path, 0x991C65AE, 2, 0x995C9CD1);
 		}
 		
 		private function clearPath():void {
