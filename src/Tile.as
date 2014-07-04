@@ -60,6 +60,7 @@ package
 		public var h:Number = 0;
 		public var f:Number = 0;
 		public var pathingParent:Tile;
+		public var pathToThis:Array;
 		
 		public var distance_to_hero:Number = 0;
 		public var treasure_value:Number = 0;

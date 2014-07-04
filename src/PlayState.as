@@ -101,6 +101,7 @@ package
 		public var appearDelay:Number = APPEAR_DELAY;
 		public var whiteFade:FlxSprite;
 		public var greyOut:FlxSprite;
+		public var pathOverlay:FlxSprite;
 		public var particleEmitter:FlxEmitter;
 		
 		override public function create():void {
@@ -113,6 +114,10 @@ package
 			whiteFade.scrollFactor = new FlxPoint(0, 0);
 			whiteFade.DisappearAlpha(appearDelay, false);
 			appearDelay += APPEAR_DELAY;
+			
+			pathOverlay = new FlxSprite(0, 0);
+			pathOverlay.makeGraphic(FlxG.width, FlxG.height, 0x00000000);
+			pathOverlay.scrollFactor = new FlxPoint(0, 0);
 			
 			assetManager = new AssetManager(this);
 			tileManager = new TileManager(this);
@@ -299,6 +304,7 @@ package
 			add(tiles);
 			add(camera_target);
 			add(highlights);
+			add(pathOverlay);
 			add(hero);
 			add(boss_monster);
 			add(floatingTexts);

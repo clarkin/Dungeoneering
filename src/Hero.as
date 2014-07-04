@@ -129,6 +129,7 @@ package
 
 				if (tile != current_tile) {	
 					var found_path:Array = _playState.tileManager.findPath(current_tile, tile);
+					tile.pathToThis = found_path;
 					tile.distance_to_hero = tile.f;
 					tile.treasure_value = tile.countCardValue("TREASURE") * 2;
 					tile.monsters_between = 0;
@@ -166,11 +167,15 @@ package
 			var flashTime:Number = 0.15;
 			for (var i:int = valid_tiles.length - 1; i >= 0; i--) {
 				var this_tile:Tile = valid_tiles[i];
-				TweenMax.to(this_tile, flashTime, { alpha:0.7, delay:delay, repeat:1, yoyo:true } );
+				//TweenMax.to(this_tile, flashTime, { alpha:0.7, delay:delay, repeat:1, yoyo:true } );
+				TweenMax.delayedCall(delay, drawPath, [this_tile.pathToThis]);
 				delay += flashTime;
 			}
 			TweenMax.to(best_tile, flashTime, { alpha:0.7, delay:delay, repeat:5, yoyo:true } );
+			TweenMax.delayedCall(delay, drawPath, [path_to_best_tile]);
+			delay += flashTime * 5;
 			
+			TweenMax.delayedCall(delay, clearPath);
 			TweenMax.delayedCall(delay, thinkSomething, ["movement"]);
 			TweenMax.delayedCall(delay, followHero);
 			TweenMax.delayedCall(THINKING_TIME + delay, startMoving);
@@ -245,6 +250,15 @@ package
 		
 		private function followHero():void {
 			_playState.setCameraFollowing(this);
+		}
+		
+		private function drawPath(path:Array):void {
+			_playState.pathOverlay.fill(0x00000000);
+			Gamb.drawPathAsLine(_playState.pathOverlay, path, 0xff666666, 2, 0xffCCCCCC);
+		}
+		
+		private function clearPath():void {
+			_playState.pathOverlay.fill(0x00000000);
 		}
 		
 		private function startMoving():void {
