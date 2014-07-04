@@ -161,8 +161,19 @@ package
 			} else if (moving_to_tile.x > current_tile.x) {
 				facing = RIGHT;
 			}
-			thinkSomething("movement");
-			TweenMax.delayedCall(THINKING_TIME, startMoving);
+			
+			//show tile search effect
+			var delay:Number = 0;
+			var flashTime:Number = 0.1;
+			for (var i:int = valid_tiles.length - 1; i >= 0; i--) {
+				var this_tile:Tile = valid_tiles[i];
+				TweenMax.to(this_tile, flashTime, { alpha:0.8, delay:delay, repeat:1, yoyo:true } );
+				delay += flashTime;
+			}
+			TweenMax.to(best_tile, flashTime, { alpha:0.8, delay:delay, repeat:5, yoyo:true } );
+			
+			TweenMax.delayedCall(delay, thinkSomething, ["movement"]);
+			TweenMax.delayedCall(THINKING_TIME + delay, startMoving);
 		}
 		
 		public function thinkSomething(thought_type:String, card_clicked:Card = null):void {
