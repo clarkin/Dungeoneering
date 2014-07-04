@@ -32,7 +32,7 @@ package
 		private static const CARD_WIDTH:int = 154;
 		private static const CARD_HEIGHT:int = 204;
 		public static const TIME_TO_MOVE:Number = 1.0;
-		public static const TIME_TO_APPEAR:Number = 0.4;
+		public static const TIME_TO_APPEAR:Number = 0.2;
 		public static const TIME_TO_DISAPPEAR:Number = 0.3;
 		
 		public var _title:String = "";

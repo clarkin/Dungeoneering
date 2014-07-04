@@ -120,7 +120,6 @@ package
 		}
 		
 		public function startTurn():void {
-			_playState.setCameraFollowing(this);
 			is_taking_turn = true;
 			
 			var valid_tiles:Array = new Array();
@@ -164,15 +163,16 @@ package
 			
 			//show tile search effect
 			var delay:Number = 0;
-			var flashTime:Number = 0.1;
+			var flashTime:Number = 0.15;
 			for (var i:int = valid_tiles.length - 1; i >= 0; i--) {
 				var this_tile:Tile = valid_tiles[i];
-				TweenMax.to(this_tile, flashTime, { alpha:0.8, delay:delay, repeat:1, yoyo:true } );
+				TweenMax.to(this_tile, flashTime, { alpha:0.7, delay:delay, repeat:1, yoyo:true } );
 				delay += flashTime;
 			}
-			TweenMax.to(best_tile, flashTime, { alpha:0.8, delay:delay, repeat:5, yoyo:true } );
+			TweenMax.to(best_tile, flashTime, { alpha:0.7, delay:delay, repeat:5, yoyo:true } );
 			
 			TweenMax.delayedCall(delay, thinkSomething, ["movement"]);
+			TweenMax.delayedCall(delay, followHero);
 			TweenMax.delayedCall(THINKING_TIME + delay, startMoving);
 		}
 		
@@ -241,6 +241,10 @@ package
 				_playState.assetManager.PlaySound("dungeoneertalk1");
 			}
 			_playState.floatingTexts.add(new FloatingText(x + thought_offset.x, y + thought_offset.y, thought));
+		}
+		
+		private function followHero():void {
+			_playState.setCameraFollowing(this);
 		}
 		
 		private function startMoving():void {
