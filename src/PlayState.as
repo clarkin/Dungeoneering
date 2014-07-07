@@ -427,6 +427,7 @@ package
 			battle_hero_stats.text = hero.GetStatsNumbers();
 			battle_monster_stats.text = battling_monster.GetStatsNumbers();
 			
+			hero.setExpression(Hero.EXPRESSION_ANGRY);
 			battle_hero_sprite.pixels = hero.framePixels.clone();
 			battling_monster.drawFrame(true); //necessary for boss_monster as it has never been visible so frame was never set
 			battle_monster_sprite.pixels = battling_monster.framePixels.clone();

@@ -16,6 +16,11 @@ package
 		public static const TIME_TREASURE:Number = 1.0;
 		public static const TILE_SIZE:int = 80;
 		
+		public static const EXPRESSION_HAPPY:int = 1;
+		public static const EXPRESSION_ANGRY:int = 2;
+		public static const EXPRESSION_WORRIED:int = 3;
+		public static const EXPRESSION_SCARED:int = 4;
+		
 		public var tile_offset:FlxPoint = new FlxPoint(60, 60);
 		public var thought_offset:FlxPoint = new FlxPoint(29, -110);
 		
@@ -27,6 +32,7 @@ package
 		public var is_moving:Boolean = false;
 		public var is_processing_cards:Boolean = false;
 		public var is_female:Boolean = false;
+		public var expression:int = EXPRESSION_HAPPY;
 		
 		public var _health:int = 0;
 		public var _strength:int = 0;
@@ -60,6 +66,8 @@ package
 			_equippables = new FlxSprite(X, Y);
 			_equippables.loadGraphic(heroPNG, true, false, TILE_SIZE, TILE_SIZE);
 			
+			antialiasing = true;
+			
 			RedoSprite();
 		}
 		
@@ -75,11 +83,11 @@ package
 			loadGraphic(heroBasePNG, false, false, TILE_SIZE, TILE_SIZE, true);
 			
 			//expression
+			var expression_frame:int = expression;
 			if (is_female) {
-				_equippables.frame = 6;
-			} else {
-				_equippables.frame = 1;
-			}
+				expression_frame += 5;
+			} 
+			_equippables.frame = expression_frame;
 			this.stamp(_equippables);
 			
 			if (_equipped_helmet != null) {
@@ -121,6 +129,7 @@ package
 		
 		public function startTurn():void {
 			is_taking_turn = true;
+			setExpression(EXPRESSION_WORRIED);
 			
 			var valid_tiles:Array = new Array();
 			for each (var tile:Tile in _playState.tiles.members) {
@@ -189,6 +198,7 @@ package
 					var top_card:Card = moving_to_tile.cards[moving_to_tile.cards.length - 1];
 					switch (top_card._type) {
 						case "MONSTER":
+							setExpression(EXPRESSION_ANGRY);
 							var monster_thoughts:Array = ["Grrr! I hate MONSTERs!!", "That MONSTER is going to get it",
 								"Yeah, I THINK I can take it..", "Oh god not a MONSTER", "Well lets get this over with",
 								"BANZAAAAAIIIIII", "MONSTERs drop loot, right?"];
@@ -196,6 +206,7 @@ package
 							thought = thought.replace(/MONSTER/g, top_card._title);
 							break;
 						case "TREASURE":
+							setExpression(EXPRESSION_HAPPY);
 							var treasure_thoughts:Array = ["SHINY", "That looks a bit like a TREASURE",
 								"Is that.. TREASURE!", "THIS is why I'm a dungeoneer!", "Om nyom nyom",
 								"Ooh gimme", "TREASURE? TREASURE!", "Cha-CHING!"];
@@ -203,6 +214,7 @@ package
 							thought = thought.replace(/TREASURE/g, top_card._title);
 							break;
 						case "WEAPON":
+							setExpression(EXPRESSION_HAPPY);
 							var weapon_thoughts:Array = ["Oh yeah I need me one of those", "That looks a bit like a WEAPON",
 								"Is that.. WEAPON!", "Another WEAPON? Jeez", "That looks useful..", "Yeah! #LOOT",
 								"Hm, is that an upgrade?", "That will look nice on my mantelpiece"];
@@ -223,10 +235,12 @@ package
 					"I wish I was back at my nice warm room in the Guild", "*YAWN*", "Are you AFK?? Don't leave me here!"];
 				thought = idle_thoughts[Math.floor(Math.random() * (idle_thoughts.length))];
 			} else if (thought_type == "poked") {
+				setExpression(EXPRESSION_ANGRY);
 				var poked_thoughts:Array = ["Ow - that hurt!", "Please stop clicking me", "What if I were to poke YOU instead!?",
 					"Stop that", "The rulebook clearly says that clicking me doesn't achieve anything", "Cut it out!"];
 				thought = poked_thoughts[Math.floor(Math.random() * (poked_thoughts.length))];
 			} else if (thought_type == "card_afford") {
+				setExpression(EXPRESSION_WORRIED);
 				var afford_thoughts:Array = ["No, silly, you need COST CURRENCY before you can play that!", "Playing a CARDNAME costs COST CURRENCY. Even I know that!!",
 					"Don't some cards have a cost? Did you skip reading the manual?! ohgodimdoomed", "You need more CURRENCY before you can play that CARDNAME..", 
 					"Maybe you need more CURRENCY for that?"];
@@ -235,17 +249,24 @@ package
 				thought = thought.replace(/CURRENCY/g, card_clicked._type == "MONSTER" ? "DREAD" : "HOPE");
 				thought = thought.replace(/CARDNAME/g, card_clicked._title);
 			} else if (thought_type == "card_fit") {
+				setExpression(EXPRESSION_SCARED);
 				var fit_thoughts:Array = ["I don't think that can fit anywhere right now..", "And just where would that CARDNAME fit?",
 					"There's nowhere that can fit that CARDNAME", "That won't fit anywhere!", "There's no space for that CARDNAME!"];
 				thought = fit_thoughts[Math.floor(Math.random() * (fit_thoughts.length))];
 				thought = thought.replace(/CARDNAME/g, card_clicked._title);
 			}
 			
-			TweenMax.to(this, THINKING_TIME / 20, { x:x + 1, y:y - 2, repeat:5, yoyo:true } );
+			TweenMax.delayedCall(THINKING_TIME, setExpression, [EXPRESSION_HAPPY]);
+			TweenMax.to(this, THINKING_TIME / 10, { x:x + 1, y:y - 2, bothScale:bothScale + 0.1, repeat:5, yoyo:true } );
 			if (thought_type != "idle") {
 				_playState.assetManager.PlaySound("dungeoneertalk1");
 			}
 			_playState.floatingTexts.add(new FloatingText(x + thought_offset.x, y + thought_offset.y, thought));
+		}
+		
+		public function setExpression(newExpression:int):void {
+			expression = newExpression;
+			RedoSprite();
 		}
 		
 		private function followHero():void {
@@ -283,6 +304,7 @@ package
 			is_taking_turn = false;
 			is_moving = false;
 			_playState.heroArrivedAt(moving_to_tile);
+			setExpression(EXPRESSION_HAPPY);
 		}
 		
 		public function setCurrentTile(new_tile:Tile):void {
@@ -344,6 +366,7 @@ package
 				} else if (next_card._type == "MONSTER") {
 					//tr("starting battle with monster " + next_card._monster._type + ", frame at " + next_card._monster.frame);
 					_playState.StartBattle(next_card._monster);
+					setExpression(EXPRESSION_ANGRY);
 				}
 				is_processing_cards = true;	
 			}
@@ -401,6 +424,7 @@ package
 			_playState.dungeon._hope_level += this_monster._dread + 1;
 			_playState.BulgeLabel(_playState.player_hope_label);
 			this.current_tile.GainGlory(this_monster._dread * this_monster._dread);
+			setExpression(EXPRESSION_HAPPY);
 		}
 		
 		public function EquippedStrength():int {
