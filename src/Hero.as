@@ -257,7 +257,7 @@ package
 			}
 			
 			TweenMax.delayedCall(THINKING_TIME, setExpression, [EXPRESSION_HAPPY]);
-			TweenMax.to(this, THINKING_TIME / 10, { x:x + 1, y:y - 2, bothScale:bothScale + 0.1, repeat:5, yoyo:true } );
+			TweenMax.to(this, 0.15, { x:x + 1, y:y - 2, bothScale:bothScale + 0.1, repeat:5, yoyo:true } );
 			if (thought_type != "idle") {
 				_playState.assetManager.PlaySound("dungeoneertalk1");
 			}
