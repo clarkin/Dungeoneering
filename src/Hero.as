@@ -191,8 +191,11 @@ package
 		}
 		
 		public function thinkSomething(thought_type:String, card_clicked:Card = null):void {
-			var thought:String = "";
+			if (TweenMax.isTweening(this)) {
+				return;
+			}
 			
+			var thought:String = "";
 			if (thought_type == "movement") {
 				if (moving_to_tile.cards.length > 0) {
 					var top_card:Card = moving_to_tile.cards[moving_to_tile.cards.length - 1];
