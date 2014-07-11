@@ -285,7 +285,7 @@ package
 			_playState.pathOverlay.fill(0x00000000);
 		}
 		
-		private function startMoving():void {
+		public function startMoving():void {
 			_playState.turn_phase = PlayState.PHASE_HERO_MOVING;
 			if (current_tile.type.indexOf("room") == 0) {
 				_playState.assetManager.PlaySound("doorcreak");

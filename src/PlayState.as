@@ -358,7 +358,8 @@ package
 							//hero.thinkSomething("movement"); //TODO think something cowardly 
 							setCameraFollowing(hero);
 							hero.is_taking_turn = true;
-							turn_phase = PlayState.PHASE_HERO_MOVING;
+							hero.is_processing_cards = false;
+							hero.startMoving();
 						} else {
 							hero.FightMonster(battling_monster);
 							battle_hero_stats.text = hero.GetStatsNumbers();
