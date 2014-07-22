@@ -8,12 +8,7 @@ package
 	
 	public class Card extends FlxGroup
 	{
-		[Embed(source = "../assets/card_dread_back.png")] private var cardDreadBackPNG:Class;
-		[Embed(source = "../assets/card_dread_front.png")] private var cardDreadFrontPNG:Class;
-		[Embed(source = "../assets/card_hope_back.png")] private var cardHopeBackPNG:Class;
-		[Embed(source = "../assets/card_hope_front.png")] private var cardHopeFrontPNG:Class;
-		[Embed(source = "../assets/card_seek_back.png")] private var cardSeekBackPNG:Class;
-		[Embed(source = "../assets/card_seek_front.png")] private var cardSeekFrontPNG:Class;
+		[Embed(source = "../assets/card_backgrounds_colour.png")] private var cardBackgroundsPNG:Class;
 		[Embed(source = "../assets/card_white.png")] private var cardScrollsPNG:Class;
 		[Embed(source = "../assets/card_symbols.png")] private var cardSymbolsPNG:Class;
 		
@@ -81,17 +76,27 @@ package
 			_card_front = new FlxSprite(X, Y);
 			_card_front.makeGraphic(CARD_WIDTH, CARD_HEIGHT, 0x00FFFFFF, true);
 			_card_front.antialiasing = true;
-			
 			_card_back = new FlxSprite(X, Y);
+			_card_back.makeGraphic(CARD_WIDTH, CARD_HEIGHT, 0x00FFFFFF, true);
 			var _card_stamper:FlxSprite = new FlxSprite(X, Y);
+			_card_stamper.makeGraphic(CARD_WIDTH, CARD_HEIGHT, 0x00FFFFFF, true);
+			var _card_backgrounds:FlxSprite = new FlxSprite(X, Y);
+			_card_backgrounds.loadGraphic(cardBackgroundsPNG, false, false, CARD_WIDTH, CARD_HEIGHT);
+			//TODO _card_backgrounds could be static/preloaded somewhere
 			
 			switch (_type) {
 				case "MONSTER":
 					if (monster == null) {
 						monster = _playState.dungeon.GetRandomMonster();
 					}
-					_card_stamper.loadGraphic(cardDreadFrontPNG, false, false, CARD_WIDTH, CARD_HEIGHT, true);
-					_card_back.loadGraphic(cardDreadBackPNG, false, false, CARD_WIDTH, CARD_HEIGHT);
+					_card_backgrounds.frame = 3;
+					_card_backgrounds.drawFrame(true);
+					_card_back.stamp(_card_backgrounds);
+					
+					_card_backgrounds.frame = 0;
+					_card_backgrounds.drawFrame(true);
+					_card_stamper.stamp(_card_backgrounds);
+
 					_type_icon_frame = 0;
 					_card_text_color = 0xFF333333;
 					_title = monster._type;
@@ -104,8 +109,14 @@ package
 					if (treasure == null) {
 						treasure = _playState.dungeon.GetRandomTreasure();
 					}
-					_card_stamper.loadGraphic(cardHopeFrontPNG, false, false, CARD_WIDTH, CARD_HEIGHT, true);
-					_card_back.loadGraphic(cardHopeBackPNG, false, false, CARD_WIDTH, CARD_HEIGHT);
+					_card_backgrounds.frame = 4;
+					_card_backgrounds.drawFrame(true);
+					_card_back.stamp(_card_backgrounds);
+					
+					_card_backgrounds.frame = 1;
+					_card_backgrounds.drawFrame(true);
+					_card_stamper.stamp(_card_backgrounds);
+					
 					_type_icon_frame = 1;
 					_card_text_color = 0xFF333333;
 					_title = treasure._type;
@@ -118,8 +129,14 @@ package
 					if (tile == null) {
 						tile = _playState.tileManager.GetRandomTile();
 					}
-					_card_stamper.loadGraphic(cardSeekFrontPNG, false, false, CARD_WIDTH, CARD_HEIGHT, true);
-					_card_back.loadGraphic(cardSeekBackPNG, false, false, CARD_WIDTH, CARD_HEIGHT);
+					_card_backgrounds.frame = 5;
+					_card_backgrounds.drawFrame(true);
+					_card_back.stamp(_card_backgrounds);
+					
+					_card_backgrounds.frame = 2;
+					_card_backgrounds.drawFrame(true);
+					_card_stamper.stamp(_card_backgrounds);
+					
 					_type_icon_frame = 2;
 					_card_text_color = 0xFF333333;
 					_title = tile.type;
