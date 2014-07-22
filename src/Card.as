@@ -9,14 +9,16 @@ package
 	public class Card extends FlxGroup
 	{
 		[Embed(source = "../assets/card_backgrounds_colour.png")] private var cardBackgroundsPNG:Class;
-		[Embed(source = "../assets/card_white.png")] private var cardScrollsPNG:Class;
+		[Embed(source = "../assets/card_scroll.png")] private var cardScrollPNG:Class;
+		[Embed(source = "../assets/card_textbox.png")] private var cardTextboxPNG:Class;
 		[Embed(source = "../assets/card_symbols.png")] private var cardSymbolsPNG:Class;
 		
 		public static const CARDS_WEIGHTED:Array = [
 			"MONSTER", "MONSTER", "MONSTER", "TREASURE", "TREASURE"];
 
-		private static const TITLE_OFFSET:FlxPoint = new FlxPoint(19, 115);
-		private static const SCROLLS_OFFSET:FlxPoint = new FlxPoint(18, 111);
+		private static const SCROLL_TOP_OFFSET:FlxPoint = new FlxPoint(16, 26);
+		private static const SCROLL_BOTTOM_OFFSET:FlxPoint = new FlxPoint(16, 135);
+		private static const SCROLL_TITLE_OFFSET:FlxPoint = new FlxPoint(2, 15);
 		private static const TYPE_OFFSET:FlxPoint = new FlxPoint(6, 8);
 		private static const COST_ICON_OFFSET:FlxPoint = new FlxPoint(110, 8);
 		private static const COST_OFFSET:FlxPoint = new FlxPoint(118, 14);
@@ -34,7 +36,8 @@ package
 		public var _desc:String = "";
 		public var _type:String = "";
 		public var _type_icon:FlxSprite;
-		public var _scrolls:FlxSprite;
+		public var _scroll:FlxSprite;
+		public var _textbox:FlxSprite;
 		public var _cost_icon:FlxSprite;
 		private var _background_frame:int = 0;
 		private var _background_frame_back:int = 0;
@@ -162,36 +165,36 @@ package
 				}
 			} 
 			
-			_type_icon = new FlxSprite(X + TYPE_OFFSET.x, Y + TYPE_OFFSET.y);
+			_type_icon = new FlxSprite(X, Y);
 			_type_icon.loadGraphic(cardSymbolsPNG, false, false, 38, 50);
 			_type_icon.frame = _type_icon_frame;
 			_card_stamper.stamp(_type_icon, TYPE_OFFSET.x, TYPE_OFFSET.y);
 			
-			_scrolls = new FlxSprite(X + SCROLLS_OFFSET.x, Y + SCROLLS_OFFSET.y, cardScrollsPNG);
-			_card_stamper.stamp(_scrolls, SCROLLS_OFFSET.x, SCROLLS_OFFSET.y);
-			
-			_titleText = new FlxText(X + TITLE_OFFSET.x, Y + TITLE_OFFSET.y, 116, _title);
-			_titleText.height = 22;
-			_titleText.setFormat("LemonsCanFly", 30, _card_text_color, "center");
-			_card_stamper.stamp(_titleText, TITLE_OFFSET.x, TITLE_OFFSET.y);
-			
-			_descText = new FlxText(X + DESC_OFFSET.x, Y + DESC_OFFSET.y, 100, _desc);
+			_descText = new FlxText(X, Y, 100, _desc);
 			_descText.height = 48;
 			_descText.setFormat("LemonsCanFly", 20, _card_text_color, "center");
-			_card_stamper.stamp(_descText, DESC_OFFSET.x, DESC_OFFSET.y);
+			//_card_stamper.stamp(_descText, DESC_OFFSET.x, DESC_OFFSET.y);
 			
-			_cost_icon = new FlxSprite(X + COST_ICON_OFFSET.x, Y + COST_ICON_OFFSET.y);
+			_cost_icon = new FlxSprite(X, Y);
 			_cost_icon.loadGraphic(cardSymbolsPNG, false, false, 38, 50);
 			_cost_icon.frame = 3;
 			_card_stamper.stamp(_cost_icon, COST_ICON_OFFSET.x, COST_ICON_OFFSET.y);
 			
-			_costText = new FlxText(X + COST_OFFSET.x, Y + COST_OFFSET.y, 20);
+			_costText = new FlxText(X, Y, 20);
 			_costText.height = 18;
 			_costText.setFormat("LemonsCanFly", 30, _card_text_color, "center");
 			_costText.text = _cost.toString();
 			if (_cost > 0) {
 				_card_stamper.stamp(_costText, COST_OFFSET.x, COST_OFFSET.y);
 			}
+			
+			_scroll = new FlxSprite(X, Y, cardScrollPNG);
+			_card_stamper.stamp(_scroll, SCROLL_BOTTOM_OFFSET.x, SCROLL_BOTTOM_OFFSET.y);
+			
+			_titleText = new FlxText(X, Y, 118, _title);
+			_titleText.height = 22;
+			_titleText.setFormat("LemonsCanFly", 30, _card_text_color, "center");
+			_card_stamper.stamp(_titleText, SCROLL_BOTTOM_OFFSET.x + SCROLL_TITLE_OFFSET.x, SCROLL_BOTTOM_OFFSET.y + SCROLL_TITLE_OFFSET.y);
 			
 			_card_front.stamp(_card_stamper, 0, 0);
 			_card_front.scrollFactor = new FlxPoint(0, 0);
