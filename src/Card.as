@@ -11,6 +11,7 @@ package
 		[Embed(source = "../assets/card_backgrounds_colour.png")] private var cardBackgroundsPNG:Class;
 		[Embed(source = "../assets/card_scroll.png")] private var cardScrollPNG:Class;
 		[Embed(source = "../assets/card_textbox.png")] private var cardTextboxPNG:Class;
+		[Embed(source = "../assets/card_tile_outline.png")] private var cardTileOutlinePNG:Class;
 		[Embed(source = "../assets/card_symbols.png")] private var cardSymbolsPNG:Class;
 		
 		public static const CARDS_WEIGHTED:Array = [
@@ -22,8 +23,8 @@ package
 		private static const TYPE_OFFSET:FlxPoint = new FlxPoint(6, 8);
 		private static const COST_ICON_OFFSET:FlxPoint = new FlxPoint(110, 8);
 		private static const COST_OFFSET:FlxPoint = new FlxPoint(118, 14);
-		private static const ICON_TILE_OFFSET:FlxPoint = new FlxPoint(39, 39); 
 		private static const ICON_OFFSET:FlxPoint = new FlxPoint(18, 30);
+		private static const ICON_TILE_OFFSET:FlxPoint = new FlxPoint(38, 50); 
 		private static const DESC_OFFSET:FlxPoint = new FlxPoint(28, 140);
 		private static const DISCARD_OFFSET:FlxPoint = new FlxPoint(42, 205);
 		private static const CARD_WIDTH:int = 154;
@@ -124,7 +125,7 @@ package
 					_card_text_color = 0xFF333333;
 					_title = treasure._type;
 					_desc = treasure._desc;
-					_treasure = new Treasure(_playState, _title, false, X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
+					_treasure = new Treasure(_playState, _title, false, true);
 					_card_stamper.stamp(_treasure, ICON_OFFSET.x, ICON_OFFSET.y);
 					_cost = _treasure._hope;
 					break;
@@ -143,13 +144,12 @@ package
 					_type_icon_frame = 2;
 					_card_text_color = 0xFF333333;
 					_title = tile.type;
-					_tile = new Tile(_playState, _title, X + ICON_TILE_OFFSET.x, Y + ICON_TILE_OFFSET.y);
-					_tile.antialiasing = true;
-					_tile.scale = new FlxPoint(0.5, 0.5);
-					_tile.width = _tile.width * 0.5;
-					_tile.height = _tile.height * 0.5;
-					_tile.offset = new FlxPoint(_tile.width/2, _tile.height/2);
-					_card_stamper.stamp(_tile, ICON_TILE_OFFSET.x - _tile.width * 0.5, ICON_TILE_OFFSET.y - _tile.height * 0.5);
+					
+					var tile_outline:FlxSprite = new FlxSprite(X, Y, cardTileOutlinePNG);
+					_card_stamper.stamp(tile_outline, ICON_TILE_OFFSET.x - 3, ICON_TILE_OFFSET.y - 3);
+					
+					_tile = new Tile(_playState, _title, false);
+					_card_stamper.stamp(_tile, ICON_TILE_OFFSET.x, ICON_TILE_OFFSET.y);
 					break;
 				default:
 					throw new Error("no matching card type defined for " + type);

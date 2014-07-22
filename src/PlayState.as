@@ -1031,7 +1031,7 @@ package
 			}
 			
 			if (!filled) {
-				var new_highlight:Tile = new Tile(this, "highlight", X, Y);
+				var new_highlight:Tile = new Tile(this, "highlight", true, X, Y);
 				//tr("adding highlight at [" + Math.floor(X / Tile.TILESIZE) + "," + Math.floor(Y / Tile.TILESIZE) + "] with entrance " + from_direction + " " + Tile.directionName(from_direction));
 				new_highlight.setHighlightEntrance(Tile.oppositeDirection(from_direction));
 				highlights.add(new_highlight);

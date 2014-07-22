@@ -8,9 +8,11 @@ package
 	{
 		[Embed(source = "../assets/treasure_spritesheet_80px_COLOUR.png")] private var itemsPNG:Class;
 		[Embed(source = "../assets/treasure_spritesheet_80px_WHITE.png")] private var itemsWhitePNG:Class;
+		[Embed(source = "../assets/treasure_spritesheet_120px_COLOUR.png")] private var itemsLargePNG:Class;
+		[Embed(source = "../assets/treasure_spritesheet_120px_WHITE.png")] private var itemsLargeWhitePNG:Class;
 				
 		public static const ICON_OFFSET:FlxPoint = new FlxPoint(10, 5);
-		public static const SPRITE_SIZE:int = 80;
+		public var SPRITE_SIZE:int = 80;
 		
 		public static const ALL_TREASURES:Array = [
 			"Gold Coin", "Silver Coins", "Gold Pouch", "Candlestick", "Sapphire Ring", "Massive Gem", 
@@ -28,7 +30,7 @@ package
 		
 		private var _playState:PlayState;
 		
-		public function Treasure(playState:PlayState, type:String, colour:Boolean = true, X:int = 0, Y:int = 0) 
+		public function Treasure(playState:PlayState, type:String, colour:Boolean = true, large:Boolean = false, X:int = 0, Y:int = 0) 
 		{
 			super(X, Y);
 			
@@ -36,10 +38,22 @@ package
 			_type = type;
 			//tr("adding treasure " + type);
 			
+			if (large) {
+				SPRITE_SIZE = 120;
+			}
+			
 			if (colour) {
-				loadGraphic(itemsPNG, false, true, SPRITE_SIZE, SPRITE_SIZE);
+				if (large) {
+					loadGraphic(itemsLargePNG, false, true, SPRITE_SIZE, SPRITE_SIZE);
+				} else {
+					loadGraphic(itemsPNG, false, true, SPRITE_SIZE, SPRITE_SIZE);
+				}
 			} else {
-				loadGraphic(itemsWhitePNG, false, true, SPRITE_SIZE, SPRITE_SIZE);
+				if (large) {
+					loadGraphic(itemsLargeWhitePNG, false, true, SPRITE_SIZE, SPRITE_SIZE);
+				} else {
+					loadGraphic(itemsWhitePNG, false, true, SPRITE_SIZE, SPRITE_SIZE);
+				}
 			}
 			
 			switch (_type) {

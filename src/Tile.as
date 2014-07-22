@@ -7,9 +7,10 @@ package
 	public class Tile extends FlxSprite
 	{
 		//[Embed(source = "../assets/dungeon_tiles.png")] private var dungeonTilesPNG:Class;
-		[Embed(source = "../assets/tiles.png")] private var dungeonTilesPNG:Class;
+		[Embed(source = "../assets/tiles_150.png")] private var dungeonTilesLargePNG:Class;
+		[Embed(source = "../assets/tiles_80.png")] private var dungeonTilesPNG:Class;
 		
-		public static const TILESIZE:Number = 150;
+		public static const TILESIZE:Number = 150.0;
 		
 		public static const ALL_TILES:Array = 
 			["corr_fat_nesw", "corr_well_nesw", "corr_thin_nesw", "corr_hatch_nesw", "corr_carpet_ns",
@@ -73,13 +74,20 @@ package
 		
 		private var _playState:PlayState;
 		
-		public function Tile(playState:PlayState, type:String, X:int = 0, Y:int = 0) 
+		public function Tile(playState:PlayState, type:String, large:Boolean = true, X:int = 0, Y:int = 0) 
 		{
 			super(X, Y);
 			
 			_playState = playState;
 			
-			loadGraphic(dungeonTilesPNG, true, false, TILESIZE, TILESIZE);
+			var actual_tilesize:Number = TILESIZE;
+			if (large) {
+				loadGraphic(dungeonTilesLargePNG, true, false, actual_tilesize, actual_tilesize);
+			} else {
+				actual_tilesize = 80;
+				loadGraphic(dungeonTilesPNG, true, false, actual_tilesize, actual_tilesize);
+			}
+			
 			for (var i:int = 0; i < ALL_TILES.length; i++) {
 				addAnimation(ALL_TILES[i], [i]);
 			}
