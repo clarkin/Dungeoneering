@@ -8,9 +8,11 @@ package
 	{
 		[Embed(source = "../assets/monster_spritesheet_80px_COLOUR.png")] private var charactersPNG:Class;
 		[Embed(source = "../assets/monster_spritesheet_80px_WHITE.png")] private var charactersWhitePNG:Class;
+		[Embed(source = "../assets/monster_spritesheet_120px_COLOUR.png")] private var charactersLargePNG:Class;
+		[Embed(source = "../assets/monster_spritesheet_120px_WHITE.png")] private var charactersLargeWhitePNG:Class;
 		
 		public static const ICON_OFFSET:FlxPoint = new FlxPoint(10, 5);
-		public static const SPRITE_SIZE:int = 80;
+		public var SPRITE_SIZE:int = 80;
 		
 		public static const ALL_MONSTERS:Array = [
 			"Sorceress", "Skeleton", "Rubber Ducky", "Gray Ooze", "Mummy", "Zombie", "Bandito", "Cyclops",
@@ -27,17 +29,29 @@ package
 		
 		private var _playState:PlayState;
 		
-		public function Monster(playState:PlayState, type:String, colour:Boolean = true, X:int = 0, Y:int = 0) 
+		public function Monster(playState:PlayState, type:String, colour:Boolean = true, large:Boolean = false, X:int = 0, Y:int = 0) 
 		{
 			super(X, Y);
 			
 			_playState = playState;
 			_type = type;
 			
+			if (large) {
+				SPRITE_SIZE = 120;
+			}
+			
 			if (colour) {
-				loadGraphic(charactersPNG, false, true, SPRITE_SIZE, SPRITE_SIZE);
+				if (large) {
+					loadGraphic(charactersLargePNG, false, true, SPRITE_SIZE, SPRITE_SIZE);
+				} else {
+					loadGraphic(charactersPNG, false, true, SPRITE_SIZE, SPRITE_SIZE);
+				}
 			} else {
-				loadGraphic(charactersWhitePNG, false, true, SPRITE_SIZE, SPRITE_SIZE);
+				if (large) {
+					loadGraphic(charactersLargeWhitePNG, false, true, SPRITE_SIZE, SPRITE_SIZE);
+				} else {
+					loadGraphic(charactersWhitePNG, false, true, SPRITE_SIZE, SPRITE_SIZE);
+				}
 			}
 			
 			switch (_type) {

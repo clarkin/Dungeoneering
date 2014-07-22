@@ -23,7 +23,7 @@ package
 		private static const COST_ICON_OFFSET:FlxPoint = new FlxPoint(110, 8);
 		private static const COST_OFFSET:FlxPoint = new FlxPoint(118, 14);
 		private static const ICON_TILE_OFFSET:FlxPoint = new FlxPoint(39, 39); 
-		private static const ICON_OFFSET:FlxPoint = new FlxPoint(37, 37);
+		private static const ICON_OFFSET:FlxPoint = new FlxPoint(18, 30);
 		private static const DESC_OFFSET:FlxPoint = new FlxPoint(28, 140);
 		private static const DISCARD_OFFSET:FlxPoint = new FlxPoint(42, 205);
 		private static const CARD_WIDTH:int = 154;
@@ -104,7 +104,7 @@ package
 					_card_text_color = 0xFF333333;
 					_title = monster._type;
 					_desc = monster._desc;
-					_monster = new Monster(_playState, _title, false, X + ICON_OFFSET.x, Y + ICON_OFFSET.y);
+					_monster = new Monster(_playState, _title, false, true);
 					_card_stamper.stamp(_monster, ICON_OFFSET.x, ICON_OFFSET.y);
 					_cost = _monster._dread;
 					break;
