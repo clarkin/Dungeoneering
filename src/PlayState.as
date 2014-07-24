@@ -15,6 +15,7 @@ package
 		[Embed(source = "../assets/UI_frame.png")] private var UIFramePNG:Class;
 		[Embed(source = "../assets/small_paper.png")] private var UIPaperPNG:Class;
 		[Embed(source = "../assets/battle_scroll.png")] private var UIBattleScrollPNG:Class;
+		[Embed(source = "../assets/cards_scroll.png")] private var UICardsScrollPNG:Class;
 		
 		public var assetManager:AssetManager;
 		public var tileManager:TileManager;
@@ -72,6 +73,7 @@ package
 		public var player_dread_label:FlxText;
 		public var player_hope_label:FlxText;
 		public var player_cards_label:FlxText;
+		public var player_cards_scroll:FlxSprite;
 		public var endTurnBtn:FlxButtonPlus;
 		public var cancelPlacingBtn:FlxButtonPlus;
 		public var battle_scroll:FlxSprite;
@@ -234,10 +236,14 @@ package
 			appearDelay += APPEAR_DELAY;
 			guiGroup.add(player_hope_label);
 			
-			player_cards_label = new FlxText(15, 507, 350, "Play or discard up to 3 more cards");
-			player_cards_label.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "left", 0xFF6E533F);
+			player_cards_scroll = new FlxSprite(-30 - 350, 485, UICardsScrollPNG);
+			player_cards_scroll.scrollFactor = new FlxPoint(0, 0);
+			//player_cards_scroll.visible = false;
+			guiGroup.add(player_cards_scroll);
+			player_cards_label = new FlxText(10 - 350, 500, 300, "Play or discard 3 more cards");
+			player_cards_label.setFormat("LemonsCanFly", 36, 0xFF000000, "left");
 			player_cards_label.scrollFactor = new FlxPoint(0, 0);
-			player_cards_label.visible = false;
+			//player_cards_label.visible = false;
 			guiGroup.add(player_cards_label);
 			cancelPlacingBtn = new FlxButtonPlus(693, 500, cancelPlacement, null, "Cancel", 70, 30);
 			cancelPlacingBtn.textNormal.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "center", 0xFF6E533F);
@@ -507,7 +513,7 @@ package
 			hand_shrunk = false;
 			SortAndMoveCards();
 			cards_played = 0;
-			player_cards_label.text = "Play or discard up to 3 more cards";
+			player_cards_label.text = "Play or discard 3 more cards";
 			turn_phase = PHASE_CARDS_PLAY;
 		}
 		
@@ -949,18 +955,20 @@ package
 		public function hideCards():void {
 			cardsInHand.callAll("showBack", false);
 			cancelPlacingBtn.visible = false;
-			player_cards_label.visible = false;
+			TweenLite.to(player_cards_label, 0.5, { x:player_cards_label.x - 350, ease:Back.easeInOut.config(0.8) } );
+			TweenLite.to(player_cards_scroll, 0.5, { x:player_cards_scroll.x - 350, ease:Back.easeInOut.config(0.8) } );
 		}
 		
 		public function showCards():void {
 			cardsInHand.callAll("showFront", false);
-			player_cards_label.visible = true;
+			TweenLite.to(player_cards_label, 0.5, { x:player_cards_label.x + 350, ease:Back.easeInOut.config(0.8) } );
+			TweenLite.to(player_cards_scroll, 0.5, { x:player_cards_scroll.x + 350, ease:Back.easeInOut.config(0.8) } );
 		}
 		
 		public function incrementCardsPlayed():void {
 			cards_played += 1;
 			var cards_left:int = CARDS_PER_TURN - cards_played;
-			player_cards_label.text = "Play or discard up to " + cards_left + " more cards";
+			player_cards_label.text = "Play or discard " + cards_left + " more cards";
 			if (cards_left <= 1) {
 				player_cards_label.text = "Play or discard " + cards_left + " more card";
 			}
