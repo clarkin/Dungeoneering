@@ -50,7 +50,7 @@ package
 		
 		public static const HAND_START:FlxPoint = new FlxPoint(10, 555);
 		public static const HAND_CARD_OFFSET:int = 150;
-		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(210, 600);
+		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(312, 600);
 		public static const SHRUNK_HAND_CARD_OFFSET:int = 60;
 		
 		public static const CARDS_PER_TURN:int = 3;
@@ -580,7 +580,7 @@ package
 						clicked_at = FlxG.mouse.getScreenPosition();
 						for each (var card_in_hand:Card in cardsInHand.members) {
 							if (card_in_hand != null && card_in_hand.alive) {
-								if (card_in_hand.bothScale == 1.0 && card_in_hand._card_front.overlapsPoint(clicked_at)) {
+								if (card_in_hand.bothScale == 1.0 && card_in_hand.clickableAt(clicked_at)) {
 									if (!canAfford(card_in_hand)) {
 										hero.thinkSomething("card_afford", card_in_hand);
 										if (card_in_hand._type == "MONSTER") {

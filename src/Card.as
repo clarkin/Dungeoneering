@@ -211,12 +211,6 @@ package
 			_hoverEffect.blend = "overlay";
 			this.add(_hoverEffect);
 			
-			//_discardBtn = new FlxButtonPlus(X + DISCARD_OFFSET.x, Y + DISCARD_OFFSET.y, discardThisCard, null, "Discard", 70, 30);
-			//_discardBtn.textNormal.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "center", 0xFF6E533F);
-			//_discardBtn.textHighlight.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "center", 0xFF6E533F);
-			//_discardBtn.borderColor = 0xFFEAE2AC;
-			//_discardBtn.updateInactiveButtonColors([0xFFA38C69, 0xFFA38C69]);
-			//_discardBtn.updateActiveButtonColors([0xFF6E533F, 0xFF6E533F]); 
 			_discardBtn = new FlxButtonPlus(X + DISCARD_OFFSET.x, Y + DISCARD_OFFSET.y, discardThisCard, null, "", 30, 30);
 			_discardBtn.loadGraphic(new FlxSprite(0, 0, cardCancelOffPNG), new FlxSprite(0, 0, cardCancelOnPNG));
 			_discardBtn.setAll("scrollFactor", new FlxPoint(0, 0));
@@ -316,12 +310,16 @@ package
 		}
 		
 		public function checkHover():void {
-			if (_hover_enabled && !_showing_back && bothScale == 1.0 && _card_front.overlapsPoint(FlxG.mouse.getScreenPosition())) {
+			if (_hover_enabled && !_showing_back && bothScale == 1.0 && clickableAt(FlxG.mouse.getScreenPosition())) {
 				_hoverEffect.visible = true;
 			} else {
 				_hoverEffect.visible = false;
 			}
 			//tr("mouse at [" + FlxG.mouse.x + "," + FlxG.mouse.y + "], visible: " + _hoverEffect.visible);
+		}
+		
+		public function clickableAt(point:FlxPoint):Boolean {
+			return (_card_front.overlapsPoint(point) && !_discardBtn.buttonNormal.overlapsPoint(point));
 		}
 		
 		public function showBack():void {
