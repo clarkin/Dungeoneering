@@ -48,7 +48,7 @@ package
 		public static const SCROLL_ACCELERATION:Number = 800;
 		public static const PLACING_OFFSET:FlxPoint = new FlxPoint(10, 10);
 		
-		public static const HAND_START:FlxPoint = new FlxPoint(10, 532);
+		public static const HAND_START:FlxPoint = new FlxPoint(10, 555);
 		public static const HAND_CARD_OFFSET:int = 150;
 		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(210, 600);
 		public static const SHRUNK_HAND_CARD_OFFSET:int = 60;
@@ -236,14 +236,12 @@ package
 			appearDelay += APPEAR_DELAY;
 			guiGroup.add(player_hope_label);
 			
-			player_cards_scroll = new FlxSprite(-30 - 350, 485, UICardsScrollPNG);
+			player_cards_scroll = new FlxSprite(HAND_START.x - 40 - 350, HAND_START.y - 47, UICardsScrollPNG);
 			player_cards_scroll.scrollFactor = new FlxPoint(0, 0);
-			//player_cards_scroll.visible = false;
 			guiGroup.add(player_cards_scroll);
-			player_cards_label = new FlxText(10 - 350, 500, 300, "Play or discard 3 more cards");
+			player_cards_label = new FlxText(HAND_START.x - 350, HAND_START.y - 32, 300, "Play or discard 3 more cards");
 			player_cards_label.setFormat("LemonsCanFly", 36, 0xFF000000, "left");
 			player_cards_label.scrollFactor = new FlxPoint(0, 0);
-			//player_cards_label.visible = false;
 			guiGroup.add(player_cards_label);
 			cancelPlacingBtn = new FlxButtonPlus(693, 500, cancelPlacement, null, "Cancel", 70, 30);
 			cancelPlacingBtn.textNormal.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "center", 0xFF6E533F);
