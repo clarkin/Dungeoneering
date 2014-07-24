@@ -13,6 +13,8 @@ package
 		[Embed(source = "../assets/card_textbox.png")] private var cardTextboxPNG:Class;
 		[Embed(source = "../assets/card_tile_outline.png")] private var cardTileOutlinePNG:Class;
 		[Embed(source = "../assets/card_symbols.png")] private var cardSymbolsPNG:Class;
+		[Embed(source = "../assets/cancel_off.png")] private var cardCancelOffPNG:Class;
+		[Embed(source = "../assets/cancel_on.png")] private var cardCancelOnPNG:Class;
 		
 		public static const CARDS_WEIGHTED:Array = [
 			"MONSTER", "MONSTER", "MONSTER", "TREASURE", "TREASURE"];
@@ -26,7 +28,7 @@ package
 		private static const ICON_OFFSET:FlxPoint = new FlxPoint(18, 30);
 		private static const ICON_TILE_OFFSET:FlxPoint = new FlxPoint(38, 50); 
 		private static const DESC_OFFSET:FlxPoint = new FlxPoint(28, 140);
-		private static const DISCARD_OFFSET:FlxPoint = new FlxPoint(42, 205);
+		private static const DISCARD_OFFSET:FlxPoint = new FlxPoint(105, 180);
 		private static const CARD_WIDTH:int = 154;
 		private static const CARD_HEIGHT:int = 204;
 		public static const TIME_TO_MOVE:Number = 1.0;
@@ -209,12 +211,14 @@ package
 			_hoverEffect.blend = "overlay";
 			this.add(_hoverEffect);
 			
-			_discardBtn = new FlxButtonPlus(X + DISCARD_OFFSET.x, Y + DISCARD_OFFSET.y, discardThisCard, null, "Discard", 70, 30);
-			_discardBtn.textNormal.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "center", 0xFF6E533F);
-			_discardBtn.textHighlight.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "center", 0xFF6E533F);
-			_discardBtn.borderColor = 0xFFEAE2AC;
-			_discardBtn.updateInactiveButtonColors([0xFFA38C69, 0xFFA38C69]);
-			_discardBtn.updateActiveButtonColors([0xFF6E533F, 0xFF6E533F]); 
+			//_discardBtn = new FlxButtonPlus(X + DISCARD_OFFSET.x, Y + DISCARD_OFFSET.y, discardThisCard, null, "Discard", 70, 30);
+			//_discardBtn.textNormal.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "center", 0xFF6E533F);
+			//_discardBtn.textHighlight.setFormat("LemonsCanFly", 30, 0xFFEAE2AC, "center", 0xFF6E533F);
+			//_discardBtn.borderColor = 0xFFEAE2AC;
+			//_discardBtn.updateInactiveButtonColors([0xFFA38C69, 0xFFA38C69]);
+			//_discardBtn.updateActiveButtonColors([0xFF6E533F, 0xFF6E533F]); 
+			_discardBtn = new FlxButtonPlus(X + DISCARD_OFFSET.x, Y + DISCARD_OFFSET.y, discardThisCard, null, "", 30, 30);
+			_discardBtn.loadGraphic(new FlxSprite(0, 0, cardCancelOffPNG), new FlxSprite(0, 0, cardCancelOnPNG));
 			_discardBtn.setAll("scrollFactor", new FlxPoint(0, 0));
 			this.add(_discardBtn);
 			
