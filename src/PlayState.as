@@ -17,6 +17,7 @@ package
 		[Embed(source = "../assets/battle_scroll.png")] private var UIBattleScrollPNG:Class;
 		[Embed(source = "../assets/cards_scroll.png")] private var UICardsScrollPNG:Class;
 		[Embed(source = "../assets/dread_meter.png")] private var UIDreadMeterPNG:Class;
+		[Embed(source = "../assets/card_scroll.png")] private var cardScrollPNG:Class;
 		
 		public var assetManager:AssetManager;
 		public var tileManager:TileManager;
@@ -53,7 +54,9 @@ package
 		public static const HAND_CARD_OFFSET:int = 150;
 		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(312, 600);
 		public static const SHRUNK_HAND_CARD_OFFSET:int = 60;
-		public static const DREAD_METER_START:FlxPoint = new FlxPoint(825, 30);
+		public static const DREAD_METER_START:FlxPoint = new FlxPoint(845, 20);
+		public static const HOPE_LABEL_START:FlxPoint = new FlxPoint(920, 500)
+		public static const GLORY_LABEL_START:FlxPoint = new FlxPoint(920, 560)
 		
 		public static const CARDS_PER_TURN:int = 3;
 		public static const BATTLE_TIME:Number = 2;
@@ -70,8 +73,10 @@ package
 		
 		public var player_alive:Boolean = true;
 		public var player_glory:int = 0;
+		public var player_glory_scroll:FlxSprite;
 		public var player_glory_label:FlxText;
 		public var player_stats_label:FlxText;
+		public var player_hope_scroll:FlxSprite;
 		public var player_hope_label:FlxText;
 		public var player_cards_label:FlxText;
 		public var player_cards_scroll:FlxSprite;
@@ -216,13 +221,6 @@ package
 			stats_hero_sprite.Appear(appearDelay);
 			appearDelay += APPEAR_DELAY;
 			guiGroup.add(stats_hero_sprite);
-			player_glory_label = new FlxText(FlxG.width - 150 - 45, 15, 120, "Glory: 0");
-			player_glory_label.setFormat("LemonsCanFly", 40, 0xFF95B5D6, "right", 0xFF2A72BB);
-			player_glory_label.scrollFactor = new FlxPoint(0, 0);
-			player_glory_label.antialiasing = true;
-			player_glory_label.Appear(appearDelay);
-			appearDelay += APPEAR_DELAY;
-			guiGroup.add(player_glory_label);
 			dread_meter = new FlxSprite(DREAD_METER_START.x, DREAD_METER_START.y);
 			dread_meter.loadGraphic(UIDreadMeterPNG, true, false, 150, 90);
 			dread_meter.frame = 0;
@@ -231,8 +229,25 @@ package
 			dread_meter.Appear(appearDelay);
 			appearDelay += APPEAR_DELAY;
 			guiGroup.add(dread_meter);
-			player_hope_label = new FlxText(FlxG.width - 150 - 285, 15, 120, "Hope: 0");
-			player_hope_label.setFormat("LemonsCanFly", 40, 0xFFEAE2AC, "right", 0xFF999966);
+			player_glory_scroll = new FlxSprite(GLORY_LABEL_START.x, GLORY_LABEL_START.y, cardScrollPNG);
+			player_glory_scroll.scrollFactor = new FlxPoint(0, 0);
+			player_glory_scroll.antialiasing = true;
+			player_glory_scroll.Appear(appearDelay);
+			guiGroup.add(player_glory_scroll);
+			player_glory_label = new FlxText(GLORY_LABEL_START.x + 5, GLORY_LABEL_START.y + 14, 100, "Glory: 0");
+			player_glory_label.setFormat("LemonsCanFly", 36, 0xFF2A72BB, "center");
+			player_glory_label.scrollFactor = new FlxPoint(0, 0);
+			player_glory_label.antialiasing = true;
+			player_glory_label.Appear(appearDelay);
+			appearDelay += APPEAR_DELAY;
+			guiGroup.add(player_glory_label);
+			player_hope_scroll = new FlxSprite(HOPE_LABEL_START.x, HOPE_LABEL_START.y, cardScrollPNG);
+			player_hope_scroll.scrollFactor = new FlxPoint(0, 0);
+			player_hope_scroll.antialiasing = true;
+			player_hope_scroll.Appear(appearDelay);
+			guiGroup.add(player_hope_scroll);
+			player_hope_label = new FlxText(HOPE_LABEL_START.x + 5, HOPE_LABEL_START.y + 14, 100, "Hope: 0");
+			player_hope_label.setFormat("LemonsCanFly", 36, 0xFFC4A152, "center");
 			player_hope_label.scrollFactor = new FlxPoint(0, 0);
 			player_hope_label.antialiasing = true;
 			player_hope_label.Appear(appearDelay);
