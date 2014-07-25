@@ -16,6 +16,7 @@ package
 		[Embed(source = "../assets/small_paper.png")] private var UIPaperPNG:Class;
 		[Embed(source = "../assets/battle_scroll.png")] private var UIBattleScrollPNG:Class;
 		[Embed(source = "../assets/cards_scroll.png")] private var UICardsScrollPNG:Class;
+		[Embed(source = "../assets/dread_meter.png")] private var UIDreadMeterPNG:Class;
 		
 		public var assetManager:AssetManager;
 		public var tileManager:TileManager;
@@ -52,6 +53,7 @@ package
 		public static const HAND_CARD_OFFSET:int = 150;
 		public static const SHRUNK_HAND_START:FlxPoint = new FlxPoint(312, 600);
 		public static const SHRUNK_HAND_CARD_OFFSET:int = 60;
+		public static const DREAD_METER_START:FlxPoint = new FlxPoint(825, 30);
 		
 		public static const CARDS_PER_TURN:int = 3;
 		public static const BATTLE_TIME:Number = 2;
@@ -70,10 +72,10 @@ package
 		public var player_glory:int = 0;
 		public var player_glory_label:FlxText;
 		public var player_stats_label:FlxText;
-		public var player_dread_label:FlxText;
 		public var player_hope_label:FlxText;
 		public var player_cards_label:FlxText;
 		public var player_cards_scroll:FlxSprite;
+		public var dread_meter:FlxSprite;
 		public var endTurnBtn:FlxButtonPlus;
 		public var cancelPlacingBtn:FlxButtonPlus;
 		public var battle_scroll:FlxSprite;
@@ -221,13 +223,14 @@ package
 			player_glory_label.Appear(appearDelay);
 			appearDelay += APPEAR_DELAY;
 			guiGroup.add(player_glory_label);
-			player_dread_label = new FlxText(FlxG.width - 150 - 165, 15, 120, "Dread: 0");
-			player_dread_label.setFormat("LemonsCanFly", 40, 0xFFFF8A8A, "right", 0xFFA82C2C);
-			player_dread_label.scrollFactor = new FlxPoint(0, 0);
-			player_dread_label.antialiasing = true;
-			player_dread_label.Appear(appearDelay);
+			dread_meter = new FlxSprite(DREAD_METER_START.x, DREAD_METER_START.y);
+			dread_meter.loadGraphic(UIDreadMeterPNG, true, false, 150, 90);
+			dread_meter.frame = 0;
+			dread_meter.scrollFactor = new FlxPoint(0, 0);
+			dread_meter.antialiasing = true;
+			dread_meter.Appear(appearDelay);
 			appearDelay += APPEAR_DELAY;
-			guiGroup.add(player_dread_label);
+			guiGroup.add(dread_meter);
 			player_hope_label = new FlxText(FlxG.width - 150 - 285, 15, 120, "Hope: 0");
 			player_hope_label.setFormat("LemonsCanFly", 40, 0xFFEAE2AC, "right", 0xFF999966);
 			player_hope_label.scrollFactor = new FlxPoint(0, 0);
@@ -519,7 +522,8 @@ package
 			//TODO only update these if any change instead of every frame
 			player_stats_label.text = hero.GetStats();
 			player_glory_label.text = "Glory: " + player_glory;
-			player_dread_label.text = "Dread: " + dungeon._dread_level;
+			//player_dread_label.text = "Dread: " + dungeon._dread_level;
+			dread_meter.frame = dungeon._dread_level;
 			player_hope_label.text = "Hope: " + dungeon._hope_level;
 		}
 		
@@ -584,9 +588,9 @@ package
 									if (!canAfford(card_in_hand)) {
 										hero.thinkSomething("card_afford", card_in_hand);
 										if (card_in_hand._type == "MONSTER") {
-											BulgeLabel(player_dread_label);
+											BulgeObject(dread_meter);
 										} else {
-											BulgeLabel(player_hope_label);
+											BulgeObject(player_hope_label);
 										}
 									} else {
 										//tr("clicked on card " + card_in_hand._title);
@@ -772,10 +776,10 @@ package
 				if (dungeon._dread_level < 0) {
 					dungeon._dread_level = 0;
 				}
-				BulgeLabel(player_dread_label);
+				BulgeObject(dread_meter);
 			} else if (card._type == "TREASURE") {
 				dungeon._hope_level -= card._cost;
-				BulgeLabel(player_hope_label);
+				BulgeObject(player_hope_label);
 			} 
 		}
 		
@@ -1053,10 +1057,10 @@ package
 			FlxG.switchState(new MenuState(true, player_alive, player_glory));
 		}
 		
-		public function BulgeLabel(label:FlxText):void {
+		public function BulgeObject(object:FlxObject):void {
 			var delay:Number = 0.3;
-			TweenLite.to(label, delay, { y:"-5", bothScale: 1.5 } );
-			TweenLite.to(label, delay, { y:"5", bothScale: 1.0, delay: delay } );
+			TweenLite.to(object, delay, { y:"-5", bothScale: 1.5 } );
+			TweenLite.to(object, delay, { y:"5", bothScale: 1.0, delay: delay } );
 		}
 		
 		public function GetTileAtXY(x:int, y:int):Tile {

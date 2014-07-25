@@ -55,7 +55,7 @@ package
 				_dread_level = 5;
 			}
 			if (old_dread != _dread_level) {
-				_playState.BulgeLabel(_playState.player_dread_label);
+				_playState.BulgeObject(_playState.dread_meter);
 			}
 		}
 		

@@ -425,7 +425,7 @@ package
 		
 		public function MonsterKilledResults(this_monster:Monster):void {
 			_playState.dungeon._hope_level += this_monster._dread + 1;
-			_playState.BulgeLabel(_playState.player_hope_label);
+			_playState.BulgeObject(_playState.player_hope_label);
 			this.current_tile.GainGlory(this_monster._dread * this_monster._dread);
 			setExpression(EXPRESSION_HAPPY);
 		}
