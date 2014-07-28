@@ -7,14 +7,13 @@ package
 	
 	public class Hero extends FlxSprite
 	{
-		[Embed(source = "../assets/hero_base.png")] private var heroBasePNG:Class;
 		[Embed(source = "../assets/hero_spritesheet_80px_COL.png")] private var heroPNG:Class;
+		[Embed(source = "../assets/hero_spritesheet_120px_COL.png")] private var heroLargePNG:Class;
 		
 		public static const TIME_TO_MOVE_TILES:Number = 1.0;
 		public static const ARRIVAL_THRESHOLD:int = 0;
 		public static const THINKING_TIME:Number = FloatingText.FADE_IN_TIME + FloatingText.DISPLAY_TIME + FloatingText.FADE_OUT_TIME;
 		public static const TIME_TREASURE:Number = 1.0;
-		public static const TILE_SIZE:int = 80;
 		
 		public static const EXPRESSION_HAPPY:int = 1;
 		public static const EXPRESSION_ANGRY:int = 2;
@@ -23,6 +22,7 @@ package
 		
 		public var tile_offset:FlxPoint = new FlxPoint(60, 60);
 		public var thought_offset:FlxPoint = new FlxPoint(29, -110);
+		public var sprite_size:int = 80;
 		
 		public var current_tile:Tile;
 		public var moving_to_tile:Tile;
@@ -45,6 +45,9 @@ package
 		public var _equipped_shield:Treasure;
 		
 		public var _equippables:FlxSprite;
+		public var _equippablesLarge:FlxSprite;
+		public var _stamper:FlxSprite;
+		public var _whiteSprite:FlxSprite;
 		
 		private var _playState:PlayState;
 		
@@ -63,8 +66,12 @@ package
 			is_female = (Math.random() < 0.5);
 			//tr("new hero, is_female? " + is_female);
 			
+			_stamper = new FlxSprite(X, Y);
+			_whiteSprite = new FlxSprite(X, Y);
 			_equippables = new FlxSprite(X, Y);
-			_equippables.loadGraphic(heroPNG, true, false, TILE_SIZE, TILE_SIZE);
+			_equippables.loadGraphic(heroPNG, true, false, sprite_size, sprite_size);
+			_equippablesLarge = new FlxSprite(X, Y);
+			_equippablesLarge.loadGraphic(heroLargePNG, true, false, sprite_size + 40, sprite_size + 40);
 			
 			antialiasing = true;
 			
@@ -80,51 +87,69 @@ package
 		}
 		
 		public function RedoSprite():void {
-			loadGraphic(heroBasePNG, false, false, TILE_SIZE, TILE_SIZE, true);
+			makeGraphic(sprite_size, sprite_size, 0x00FFFFFF, true);
+			_whiteSprite.makeGraphic(sprite_size + 40, sprite_size + 40, 0x00FFFFFF, true);
+			_stamper.makeGraphic(sprite_size, sprite_size, 0x00FFFFFF, true);
+			//loadGraphic(heroBasePNG, false, false, sprite_size, sprite_size, true);
+			
+			_equippables.frame = _equippablesLarge.frame = 0;
+			_stamper.stamp(_equippables);
+			_whiteSprite.stamp(_equippablesLarge);
 			
 			//expression
 			var expression_frame:int = expression;
 			if (is_female) {
 				expression_frame += 5;
 			} 
-			_equippables.frame = expression_frame;
-			this.stamp(_equippables);
+			_equippables.frame = _equippablesLarge.frame = expression_frame;
+			_stamper.stamp(_equippables);
+			_whiteSprite.stamp(_equippablesLarge);
 			
 			if (_equipped_helmet != null) {
-				_equippables.frame = _equipped_helmet._equippables_frame;
-				this.stamp(_equippables);
+				_equippables.frame = _equippablesLarge.frame = _equipped_helmet._equippables_frame;
+				_stamper.stamp(_equippables);
+				_whiteSprite.stamp(_equippablesLarge);
 			} else if (is_female) {
 				//female hair
-				_equippables.frame = 10;
-				this.stamp(_equippables);
+				_equippables.frame = _equippablesLarge.frame = 10;
+				_stamper.stamp(_equippables);
+				_whiteSprite.stamp(_equippablesLarge);
 			}
 			
 			if (_equipped_armour != null) {
-				_equippables.frame = _equipped_armour._equippables_frame;
-				this.stamp(_equippables);
+				_equippables.frame = _equippablesLarge.frame = _equipped_armour._equippables_frame;
+				_stamper.stamp(_equippables);
+				_whiteSprite.stamp(_equippablesLarge);
 			} else {
 				//tunic
 				if (is_female) {
-					_equippables.frame = 26;
+					_equippables.frame = _equippablesLarge.frame = 26;
 				} else {
-					_equippables.frame = 14;
+					_equippables.frame = _equippablesLarge.frame = 14;
 				}
-				this.stamp(_equippables);
+				_stamper.stamp(_equippables);
+				_whiteSprite.stamp(_equippablesLarge);
 			}
 			
 			if (_equipped_shield != null) {
-				_equippables.frame = _equipped_shield._equippables_frame;
-				this.stamp(_equippables);
+				_equippables.frame = _equippablesLarge.frame = _equipped_shield._equippables_frame;
+				_stamper.stamp(_equippables);
+				_whiteSprite.stamp(_equippablesLarge);
 			}
 			
 			if (_equipped_weapon != null) {
-				_equippables.frame = _equipped_weapon._equippables_frame;
-				this.stamp(_equippables);
+				_equippables.frame = _equippablesLarge.frame = _equipped_weapon._equippables_frame;
+				_stamper.stamp(_equippables);
+				_whiteSprite.stamp(_equippablesLarge);
 			}
 			
 			if (_playState.stats_hero_sprite != null) {
-				_playState.stats_hero_sprite.pixels = this.framePixels.clone();
+				_playState.stats_hero_sprite.pixels = _whiteSprite.framePixels.clone();
 			}
+			
+			_equippables.frame = _equippablesLarge.frame = 5;
+			this.stamp(_equippables);
+			this.stamp(_stamper);
 		}
 		
 		public function startTurn():void {

@@ -87,7 +87,7 @@ package
 			var _card_stamper:FlxSprite = new FlxSprite(X, Y);
 			_card_stamper.makeGraphic(CARD_WIDTH, CARD_HEIGHT, 0x00FFFFFF, true);
 			var _card_backgrounds:FlxSprite = new FlxSprite(X, Y);
-			_card_backgrounds.loadGraphic(cardBackgroundsPNG, false, false, CARD_WIDTH, CARD_HEIGHT);
+			_card_backgrounds.loadGraphic(cardBackgroundsPNG, true, false, CARD_WIDTH, CARD_HEIGHT);
 			//TODO _card_backgrounds could be static/preloaded somewhere
 			
 			switch (_type) {
