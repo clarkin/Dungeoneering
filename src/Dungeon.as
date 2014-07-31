@@ -48,7 +48,7 @@ package
 		
 		public function IncreaseDread():void {
 			var old_dread:Number = _dread_level;
-			var dread:Number = Math.floor((_playState.turn_number + 2) / 5);
+			var dread:Number = Math.floor((_playState.turn_number) / 10) + 1;
 			//tr("dread level changing from " + _dread_level + " to " + (_dread_level + dread));
 			_dread_level += dread;
 			if (_dread_level > 5) {

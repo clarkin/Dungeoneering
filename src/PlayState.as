@@ -98,6 +98,7 @@ package
 		public var camera_following:FlxObject = null;
 		public var is_dragging:Boolean = false;
 		public var hand_shrunk:Boolean = true;
+		public var placed_monster:Boolean = false;
 		public var click_start:FlxPoint; //needs to be null at start
 		public var dragging_from:FlxPoint = new FlxPoint();
 		public var possible_spots:int = 0;
@@ -509,7 +510,13 @@ package
 			if (turn_phase == PHASE_NEWTURN) {
 				turn_number++;
 				tr("** new turn: " + turn_number + " **");
-				dungeon.IncreaseDread();
+				if (!placed_monster) {
+					var dread_chance:int = Math.floor(Math.random() * 51); //0-50
+					if (turn_number + dread_chance > 25) {
+						dungeon.IncreaseDread();
+					}
+				}
+				placed_monster = false;
 				turn_phase = PHASE_BOSS_CHAT;
 				boss_monster.CheckChat();
 			} 
@@ -537,7 +544,6 @@ package
 			//TODO only update these if any change instead of every frame
 			player_stats_label.text = hero.GetStats();
 			player_glory_label.text = "Glory: " + player_glory;
-			//player_dread_label.text = "Dread: " + dungeon._dread_level;
 			dread_meter.frame = dungeon._dread_level;
 			player_hope_label.text = "Hope: " + dungeon._hope_level;
 		}
@@ -776,7 +782,6 @@ package
 		public function canAfford(card:Card):Boolean {
 			//tr("canAfford " + card._type + " : " + card._title + " for cost " + card._cost + "?");
 			if (card._type == "MONSTER") {
-				//return (dungeon._dread_level >= card._cost);
 				return true; //always allowed play a monster
 			} else if (card._type == "TREASURE") {
 				return (dungeon._hope_level >= card._cost);
@@ -787,11 +792,16 @@ package
 		
 		public function payForCard(card:Card):void {
 			if (card._type == "MONSTER") {
-				dungeon._dread_level -= card._cost;
-				if (dungeon._dread_level < 0) {
-					dungeon._dread_level = 0;
+				if (card._cost >= dungeon._dread_level) {
+					var old_dread:Number = dungeon._dread_level;
+					dungeon._dread_level--;
+					if (dungeon._dread_level < 0) {
+						dungeon._dread_level = 0;
+					}
+					if (old_dread != dungeon._dread_level) {
+						BulgeObject(dread_meter);
+					}
 				}
-				BulgeObject(dread_meter);
 			} else if (card._type == "TREASURE") {
 				dungeon._hope_level -= card._cost;
 				BulgeObject(player_hope_label);
