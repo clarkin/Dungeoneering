@@ -44,6 +44,7 @@ package
 		public static const PHASE_HERO_CARDS:int      = 7;
 		public static const PHASE_HERO_BATTLE:int     = 8;
 		public static const PHASE_BOSS_MOVE:int       = 9;
+		public static const PHASE_DREAD_EFFECTS:int   = 10;
 		public var turn_phase:int = PHASE_FADING_IN;
 		
 		public static const SCROLL_MAXVELOCITY:Number = 800;
@@ -113,6 +114,7 @@ package
 		public var greyOut:FlxSprite;
 		public var pathOverlay:FlxSprite;
 		public var particleEmitter:FlxEmitter;
+		public var is_checking_dread_effects:Boolean = false;
 		
 		override public function create():void {
 			//FlxG.visualDebug = true;
@@ -348,6 +350,7 @@ package
 			checkNewTurn();
 			checkHero();
 			checkBoss();
+			checkDreadEffects();
 			checkPlacing();
 			checkMouseClick();
 			checkKeyboard();
@@ -430,9 +433,57 @@ package
 					}
 				} else {
 					//tr('skipping boss turn');
-					turn_phase = PHASE_NEWTURN;
+					turn_phase = PHASE_DREAD_EFFECTS;
 				}
 			}
+		}
+		
+		public function checkDreadEffects():void {
+			if (turn_phase == PHASE_DREAD_EFFECTS && !is_checking_dread_effects) {
+				is_checking_dread_effects = true;
+				if (dungeon._dread_level >= 1) {
+					//find monster that can move
+					var monster_tiles:Array = [];
+					for each (var possible_tile:Tile in tiles.members) {
+						if (possible_tile.cards.length > 0 && possible_tile.countCards("MONSTER") == 1) {
+							var can_move:Boolean = false;
+							var possible_moves:Array = possible_tile.getConnectedTiles();
+							for each (var connected_tile:Tile in possible_moves) {
+								if (connected_tile.countCards("MONSTER") == 0 && hero.current_tile != connected_tile) {
+									tr("valid movable tile at " + connected_tile.type);
+									can_move = true;
+									break;
+								}
+							}
+							var possible_monster:Monster = possible_tile.cards[possible_tile.cards.length - 1]._monster;
+							if (possible_monster._type != "Fire Demon" && can_move) {
+								tr("possible monster " + possible_monster._type + " on tile " + possible_tile.type);
+								monster_tiles.push(possible_tile);
+							}
+						}
+					}
+					var chosen_monster_tile:Tile = monster_tiles[Math.floor(Math.random() * monster_tiles.length)];
+					var chosen_monster:Monster = chosen_monster_tile.cards[chosen_monster_tile.cards.length - 1]._monster;
+					var possible_new_tiles:Array = [];
+					var new_tile:Tile;
+					for each (var possible_connected_tile:Tile in chosen_monster_tile.getConnectedTiles()) {
+						if (possible_connected_tile.countCards("MONSTER") == 0 && hero.current_tile != possible_connected_tile) {
+							possible_new_tiles.push(possible_connected_tile);
+						}
+					}
+					new_tile = possible_new_tiles[Math.floor(Math.random() * possible_new_tiles.length)];
+					tr("** moving monster at tile " + chosen_monster_tile.type);
+					TweenLite.to(chosen_monster, Hero.TIME_TO_MOVE_TILES, { x:new_tile.x + Tile.MONSTER_ICON_OFFSET.x, y:new_tile.y + Tile.MONSTER_ICON_OFFSET.y, ease:Back.easeInOut.config(0.8) } );
+					TweenMax.delayedCall(Hero.TIME_TO_MOVE_TILES, endDreadEffects);
+				} else {
+					endDreadEffects();
+				}
+			}
+		}
+		
+		public function endDreadEffects():void {
+			is_checking_dread_effects = false;
+			turn_phase = PHASE_NEWTURN;
 		}
 				
 		public function heroArrivedAt(tile:Tile):void {
