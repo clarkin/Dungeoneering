@@ -24,6 +24,7 @@ package
 		public var dungeon:Dungeon;
 		public var tiles:FlxGroup = new FlxGroup();
 		public var highlights:FlxGroup = new FlxGroup();
+		public var tokens:FlxGroup = new FlxGroup();
 		public var guiGroup:FlxGroup = new FlxGroup();
 		public var questionMarks:FlxSprite;
 		public var cardsInHand:FlxGroup = new FlxGroup();
@@ -329,6 +330,7 @@ package
 			add(tiles);
 			add(camera_target);
 			add(highlights);
+			add(tokens);
 			add(pathOverlay);
 			add(hero);
 			add(boss_monster);
@@ -549,6 +551,7 @@ package
 				hero.current_tile.GainGlory(250);
 				TweenLite.delayedCall(0.6, leaveDungeon);
 			} else {
+				battling_monster.exists = false; //prevents drawing in tokens flxgroup (maybe remove instead?)
 				turn_phase = PlayState.PHASE_HERO_CARDS;
 				hero.is_processing_cards = false;
 			}

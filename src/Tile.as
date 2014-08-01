@@ -140,20 +140,6 @@ package
 			super.update();
 		}
 		
-		override public function draw():void {	
-			super.draw();
-			
-			//TODO: is this really the best way to do this?
-			for each (var card:Card in this.cards) {
-				if (card._monster != null && card._monster._type != "Fire Demon") {
-					card._monster.draw();
-				}
-				if (card._treasure != null) {
-					card._treasure.draw();
-				}
-			}
-		}
-		
 		public function resetPathingVars():void {
 			g = 0;
 			h = 0;
@@ -196,6 +182,7 @@ package
 			var newCard:Card = new Card(_playState, this.x, this.y, card._type, null, card._monster, card._treasure);
 			if (newCard._monster != null) {
 				var new_placing_card_monster:Monster = new Monster(this._playState, newCard._monster._type, true);
+				_playState.tokens.add(new_placing_card_monster);
 				newCard._monster = new_placing_card_monster;
 				newCard._monster.x = this.x + MONSTER_ICON_OFFSET.x;
 				newCard._monster.y = this.y + MONSTER_ICON_OFFSET.y;
@@ -203,6 +190,7 @@ package
 			}
 			if (newCard._treasure != null) {
 				var new_placing_card_treasure:Treasure = new Treasure(this._playState, newCard._treasure._type, true);
+				_playState.tokens.add(new_placing_card_treasure);
 				newCard._treasure = new_placing_card_treasure;
 				newCard._treasure.x = this.x + TREASURE_ICON_OFFSET.x;
 				newCard._treasure.y = this.y + TREASURE_ICON_OFFSET.y;

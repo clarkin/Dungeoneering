@@ -390,6 +390,7 @@ package
 						_playState.assetManager.PlaySound("coins");
 						this.current_tile.GainGlory(next_card._treasure._hope + 1);
 					}
+					next_card._treasure.exists = false; //prevents drawing in tokens flxgroup (maybe remove instead?)
 					TweenLite.delayedCall(TIME_TREASURE, processNextCard);
 				} else if (next_card._type == "MONSTER") {
 					//tr("starting battle with monster " + next_card._monster._type + ", frame at " + next_card._monster.frame);
