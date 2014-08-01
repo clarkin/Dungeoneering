@@ -463,7 +463,8 @@ package
 						}
 					}
 					var chosen_monster_tile:Tile = monster_tiles[Math.floor(Math.random() * monster_tiles.length)];
-					var chosen_monster:Monster = chosen_monster_tile.cards[chosen_monster_tile.cards.length - 1]._monster;
+					tr("** moving monster at tile " + chosen_monster_tile.type);
+					//var chosen_monster:Monster = chosen_monster_tile.cards[chosen_monster_tile.cards.length - 1]._monster;
 					var possible_new_tiles:Array = [];
 					var new_tile:Tile;
 					for each (var possible_connected_tile:Tile in chosen_monster_tile.getConnectedTiles()) {
@@ -472,8 +473,11 @@ package
 						}
 					}
 					new_tile = possible_new_tiles[Math.floor(Math.random() * possible_new_tiles.length)];
-					tr("** moving monster at tile " + chosen_monster_tile.type);
-					TweenLite.to(chosen_monster, Hero.TIME_TO_MOVE_TILES, { x:new_tile.x + Tile.MONSTER_ICON_OFFSET.x, y:new_tile.y + Tile.MONSTER_ICON_OFFSET.y, ease:Back.easeInOut.config(0.8) } );
+					var chosen_card:Card = chosen_monster_tile.cards.pop();
+					//copy of given card
+					//var newCard:Card = new Card(_playState, this.x, this.y, card._type, null, card._monster, card._treasure);
+					new_tile.addTreasureOrMonsterCard(chosen_card);
+					TweenLite.to(chosen_card._monster, Hero.TIME_TO_MOVE_TILES, { x:new_tile.x + Tile.MONSTER_ICON_OFFSET.x, y:new_tile.y + Tile.MONSTER_ICON_OFFSET.y, ease:Back.easeInOut.config(0.8) } );
 					TweenMax.delayedCall(Hero.TIME_TO_MOVE_TILES, endDreadEffects);
 				} else {
 					endDreadEffects();

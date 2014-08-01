@@ -209,13 +209,18 @@ package
 				newCard._treasure.Appear();
 			}
 			//tr("added card " + newCard._type + ":" + newCard._title + " to tile " + this.type);
+			addTreasureOrMonsterCard(newCard);
+		}
+		
+		public function addTreasureOrMonsterCard(newCard:Card):void {
 			if (this.cards.length == 0) {
 				this.cards.push(newCard);
 			} else {
 				if (newCard._type == "MONSTER") {
+					//monster cards always put on end of array (encountered first)
 					this.cards.push(newCard);
 				} else {
-					//monster cards always put on end of array (encountered first)
+					//treasure cards at start of array (encountered second)
 					this.cards.unshift(newCard);
 				}
 			}
