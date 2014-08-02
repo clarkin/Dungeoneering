@@ -105,7 +105,6 @@ package
 				
 				BossAddChat("NO! HE WAS MY LEAST FAVORITE MINION!", appearDelay);
 				appearDelay += oneChatCycle;
-				moveToBoard = true;
 			} else if (chat_type == "fifth_kill") {
 				BossAddChat("*sigh* As usual my minions are bumbling fools..", appearDelay, false);
 				appearDelay += oneChatCycle;

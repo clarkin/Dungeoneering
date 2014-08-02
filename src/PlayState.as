@@ -443,7 +443,8 @@ package
 		public function checkDreadEffects():void {
 			if (turn_phase == PHASE_DREAD_EFFECTS && !is_checking_dread_effects) {
 				is_checking_dread_effects = true;
-				if (dungeon._dread_level >= 1) {
+				var move_chance:Number = Math.floor(Math.random() * 5) + 1; //1-5
+				if (dungeon._dread_level >= 3 && dungeon._dread_level >= move_chance) {
 					//find monster that can move
 					var monster_tiles:Array = [];
 					for each (var possible_tile:Tile in tiles.members) {
@@ -452,14 +453,14 @@ package
 							var possible_moves:Array = possible_tile.getConnectedTiles();
 							for each (var connected_tile:Tile in possible_moves) {
 								if (connected_tile.countCards("MONSTER") == 0 && hero.current_tile != connected_tile) {
-									tr("valid movable tile at " + connected_tile.type);
+									//tr("valid movable tile at " + connected_tile.type);
 									can_move = true;
 									break;
 								}
 							}
 							var possible_monster:Monster = possible_tile.cards[possible_tile.cards.length - 1]._monster;
 							if (possible_monster._type != "Fire Demon" && can_move) {
-								tr("possible monster " + possible_monster._type + " on tile " + possible_tile.type);
+								//tr("possible monster " + possible_monster._type + " on tile " + possible_tile.type);
 								monster_tiles.push(possible_tile);
 							}
 						}
@@ -468,7 +469,7 @@ package
 						endDreadEffects();
 					} else {
 						var chosen_monster_tile:Tile = monster_tiles[Math.floor(Math.random() * monster_tiles.length)];
-						tr("** moving monster at tile " + chosen_monster_tile.type);
+						//tr("** moving monster at tile " + chosen_monster_tile.type);
 						var possible_new_tiles:Array = [];
 						var new_tile:Tile;
 						for each (var possible_connected_tile:Tile in chosen_monster_tile.getConnectedTiles()) {
@@ -479,8 +480,11 @@ package
 						new_tile = possible_new_tiles[Math.floor(Math.random() * possible_new_tiles.length)];
 						var chosen_card:Card = chosen_monster_tile.cards.pop();
 						new_tile.addTreasureOrMonsterCard(chosen_card);
-						TweenLite.to(chosen_card._monster, Hero.TIME_TO_MOVE_TILES, { x:new_tile.x + Tile.MONSTER_ICON_OFFSET.x, y:new_tile.y + Tile.MONSTER_ICON_OFFSET.y, ease:Back.easeInOut.config(0.8) } );
-						TweenMax.delayedCall(Hero.TIME_TO_MOVE_TILES, endDreadEffects);
+						var delay:Number = FloatingText.FADE_IN_TIME + FloatingText.DISPLAY_TIME + FloatingText.FADE_OUT_TIME;
+						setCameraFollowing(chosen_card._monster);
+						chosen_card._monster.thinkSomething();
+						TweenLite.to(chosen_card._monster, Hero.TIME_TO_MOVE_TILES, { delay: delay, x:new_tile.x + Tile.MONSTER_ICON_OFFSET.x, y:new_tile.y + Tile.MONSTER_ICON_OFFSET.y, ease:Back.easeInOut.config(0.8) } );
+						TweenMax.delayedCall(Hero.TIME_TO_MOVE_TILES + delay, endDreadEffects);
 					}
 				} else {
 					endDreadEffects();
@@ -489,6 +493,7 @@ package
 		}
 		
 		public function endDreadEffects():void {
+			setCameraFollowing(null);
 			is_checking_dread_effects = false;
 			turn_phase = PHASE_NEWTURN;
 		}

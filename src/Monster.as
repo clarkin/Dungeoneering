@@ -18,6 +18,8 @@ package
 			"Sorceress", "Skeleton", "Rubber Ducky", "Gray Ooze", "Mummy", "Zombie", "Bandito", "Cyclops",
 			"Orc Grunt", "Ghost", "Giant Bat", "Scary Spider", "Goblin"];
 		
+		public var thought_offset:FlxPoint = new FlxPoint(29, -110);
+			
 		public var _type:String = "";
 		public var _desc:String = "";
 		public var _dread:Number = 0;
@@ -185,6 +187,18 @@ package
 					throw new Error("no matching monster defined for " + _type);
 			}
 			play(_type);
+		}
+		
+		public function thinkSomething(thought_type:String = "movement"):void {
+			var thought:String = "";
+			
+			if (thought_type == "movement") {
+				var random_thoughts:Array = ["#@$%!"];
+				thought = random_thoughts[Math.floor(Math.random() * (random_thoughts.length))];
+			}
+			
+			TweenMax.to(this, 0.15, { x:x + 1, y:y - 2, bothScale:bothScale + 0.1, repeat:5, yoyo:true } );
+			_playState.floatingTexts.add(new FloatingText(x + thought_offset.x, y + thought_offset.y, thought));
 		}
 		
 		public function GetStats():String {
