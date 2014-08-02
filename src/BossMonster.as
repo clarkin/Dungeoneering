@@ -105,6 +105,7 @@ package
 				
 				BossAddChat("NO! HE WAS MY LEAST FAVORITE MINION!", appearDelay);
 				appearDelay += oneChatCycle;
+				moveToBoard = true;
 			} else if (chat_type == "fifth_kill") {
 				BossAddChat("*sigh* As usual my minions are bumbling fools..", appearDelay, false);
 				appearDelay += oneChatCycle;
@@ -273,6 +274,13 @@ package
 			var bossMonster:Monster = new Monster(_playState, "Fire Demon");
 			var bossCard:Card = new Card(_playState, 0, 0, "MONSTER", null, bossMonster); 
 			bossCard._monster = bossMonster;
+			for each (var card:Card in tile.cards) {
+				if (card._monster) {
+					card._monster.exists = false; //prevents drawing in tokens flxgroup (maybe remove instead?)
+				} else {
+					card._treasure.exists = false; //prevents drawing in tokens flxgroup (maybe remove instead?)
+				}
+			}
 			tile.cards = [];
 			tile.cards.push(bossCard);
 			//tr("added boss card to tile at [" + tile.x + "," + tile.y + "]. frame at " + bossCard._monster.frame);

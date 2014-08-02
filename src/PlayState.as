@@ -464,23 +464,24 @@ package
 							}
 						}
 					}
-					var chosen_monster_tile:Tile = monster_tiles[Math.floor(Math.random() * monster_tiles.length)];
-					tr("** moving monster at tile " + chosen_monster_tile.type);
-					//var chosen_monster:Monster = chosen_monster_tile.cards[chosen_monster_tile.cards.length - 1]._monster;
-					var possible_new_tiles:Array = [];
-					var new_tile:Tile;
-					for each (var possible_connected_tile:Tile in chosen_monster_tile.getConnectedTiles()) {
-						if (possible_connected_tile.countCards("MONSTER") == 0 && hero.current_tile != possible_connected_tile) {
-							possible_new_tiles.push(possible_connected_tile);
+					if (monster_tiles.length == 0) {
+						endDreadEffects();
+					} else {
+						var chosen_monster_tile:Tile = monster_tiles[Math.floor(Math.random() * monster_tiles.length)];
+						tr("** moving monster at tile " + chosen_monster_tile.type);
+						var possible_new_tiles:Array = [];
+						var new_tile:Tile;
+						for each (var possible_connected_tile:Tile in chosen_monster_tile.getConnectedTiles()) {
+							if (possible_connected_tile.countCards("MONSTER") == 0 && hero.current_tile != possible_connected_tile) {
+								possible_new_tiles.push(possible_connected_tile);
+							}
 						}
+						new_tile = possible_new_tiles[Math.floor(Math.random() * possible_new_tiles.length)];
+						var chosen_card:Card = chosen_monster_tile.cards.pop();
+						new_tile.addTreasureOrMonsterCard(chosen_card);
+						TweenLite.to(chosen_card._monster, Hero.TIME_TO_MOVE_TILES, { x:new_tile.x + Tile.MONSTER_ICON_OFFSET.x, y:new_tile.y + Tile.MONSTER_ICON_OFFSET.y, ease:Back.easeInOut.config(0.8) } );
+						TweenMax.delayedCall(Hero.TIME_TO_MOVE_TILES, endDreadEffects);
 					}
-					new_tile = possible_new_tiles[Math.floor(Math.random() * possible_new_tiles.length)];
-					var chosen_card:Card = chosen_monster_tile.cards.pop();
-					//copy of given card
-					//var newCard:Card = new Card(_playState, this.x, this.y, card._type, null, card._monster, card._treasure);
-					new_tile.addTreasureOrMonsterCard(chosen_card);
-					TweenLite.to(chosen_card._monster, Hero.TIME_TO_MOVE_TILES, { x:new_tile.x + Tile.MONSTER_ICON_OFFSET.x, y:new_tile.y + Tile.MONSTER_ICON_OFFSET.y, ease:Back.easeInOut.config(0.8) } );
-					TweenMax.delayedCall(Hero.TIME_TO_MOVE_TILES, endDreadEffects);
 				} else {
 					endDreadEffects();
 				}
