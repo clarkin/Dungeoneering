@@ -1139,9 +1139,9 @@ package
 		
 		public function leaveDungeon():void {
 			if (player_alive) {
-				assetManager.PlaySound("cheer");
+				//assetManager.PlaySound("cheer");
 			} else {
-				assetManager.PlaySound("deathscream");
+				//assetManager.PlaySound("deathscream");
 			}
 			FlxG.switchState(new MenuState(true, player_alive, player_glory));
 		}

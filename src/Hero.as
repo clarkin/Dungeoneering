@@ -287,7 +287,7 @@ package
 			TweenMax.delayedCall(THINKING_TIME, setExpression, [EXPRESSION_HAPPY]);
 			TweenMax.to(this, 0.15, { x:x + 1, y:y - 2, bothScale:bothScale + 0.1, repeat:5, yoyo:true } );
 			if (thought_type != "idle") {
-				_playState.assetManager.PlaySound("dungeoneertalk1");
+				//_playState.assetManager.PlaySound("dungeoneertalk1");
 			}
 			_playState.floatingTexts.add(new FloatingText(x + thought_offset.x, y + thought_offset.y, thought));
 		}
@@ -313,9 +313,9 @@ package
 		public function startMoving():void {
 			_playState.turn_phase = PlayState.PHASE_HERO_MOVING;
 			if (current_tile.type.indexOf("room") == 0) {
-				_playState.assetManager.PlaySound("doorcreak");
+				//_playState.assetManager.PlaySound("doorcreak");
 			} else if (current_tile.type.indexOf("corr") == 0) {
-				_playState.assetManager.PlaySound("footsteps");
+				//_playState.assetManager.PlaySound("footsteps");
 			}
 			is_moving = true;
 			previous_tile = current_tile;
@@ -387,7 +387,7 @@ package
 							//nothing
 					}
 					if (sell_it) {
-						_playState.assetManager.PlaySound("coins");
+						//_playState.assetManager.PlaySound("coins");
 						this.current_tile.GainGlory(next_card._treasure._hope + 1);
 					}
 					next_card._treasure.exists = false; //prevents drawing in tokens flxgroup (maybe remove instead?)
@@ -423,7 +423,7 @@ package
 			//tr("hero attacked monster");
 			if (EquippedStrength() > this_monster._armour) {
 				this_monster._health -= (EquippedStrength() - this_monster._armour);
-				_playState.assetManager.PlaySound("swordkill");
+				//_playState.assetManager.PlaySound("swordkill");
 			}
 			
 			if (this_monster._health <= 0) {

@@ -153,9 +153,9 @@ package
 			_playState.floatingTexts.add(boss_shout);
 			
 			if (angry) {
-				TweenLite.delayedCall(delay, _playState.assetManager.PlaySound, ["demontalk1"]);
+				//TweenLite.delayedCall(delay, _playState.assetManager.PlaySound, ["demontalk1"]);
 			} else {
-				TweenLite.delayedCall(delay, _playState.assetManager.PlaySound, ["demontalk2"]);
+				//TweenLite.delayedCall(delay, _playState.assetManager.PlaySound, ["demontalk2"]);
 			}
 		}
 		
