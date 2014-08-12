@@ -139,6 +139,7 @@ package
 			UIFrame = new FlxSprite(0, 0, UIFramePNG);
 			UIFrame.scrollFactor = new FlxPoint(0, 0);
 			UIFrame.AppearAlpha(appearDelay);
+			TweenLite.delayedCall(appearDelay, assetManager.PlaySound, ["scroll_unroll"]);
 			appearDelay += APPEAR_DELAY;
 			
 			hero = new Hero(this, starting_point.x, starting_point.y - Tile.TILESIZE);
@@ -192,6 +193,7 @@ package
 			addTileAt(starting_tile, starting_point.x, starting_point.y, false);
 			starting_tile.AppearAlpha(appearDelay);
 			starting_tile.has_visited = true;
+			TweenLite.delayedCall(appearDelay, assetManager.PlaySound, ["paper1"]);
 			appearDelay += APPEAR_DELAY;
 			hero.setCurrentTile(starting_tile);
 			hero.x = starting_tile.x + hero.tile_offset.x - hero.origin.x;
@@ -200,13 +202,19 @@ package
 			addTileAt(second_tile, starting_point.x, starting_point.y - Tile.TILESIZE);
 			second_tile.AppearAlpha(appearDelay);
 			second_tile.has_visited = true;
+			TweenLite.delayedCall(appearDelay, assetManager.PlaySound, ["paper1"]);
 			appearDelay += APPEAR_DELAY;
 			hero.Appear(appearDelay);
+			TweenLite.delayedCall(appearDelay, assetManager.PlaySound, ["pop1"]);
 			appearDelay += APPEAR_DELAY;
+			
+			//TODO maybe only use cards shuffle noise when showing actual decks shuffling?
+			//TweenLite.delayedCall(appearDelay, assetManager.PlaySound, ["cards_shuffle"]);
 			
 			var paper_background:FlxSprite = new FlxSprite(775, 600, UIPaperPNG);
 			paper_background.scrollFactor = new FlxPoint(0, 0);
 			paper_background.Appear(appearDelay);
+			TweenLite.delayedCall(appearDelay, assetManager.PlaySound, ["paper2"]);
 			appearDelay += APPEAR_DELAY;
 			guiGroup.add(paper_background);
 			player_stats_label = new FlxText(805, 650, 200, "Strength: 2");
@@ -231,6 +239,7 @@ package
 			dread_meter.scrollFactor = new FlxPoint(0, 0);
 			dread_meter.antialiasing = true;
 			dread_meter.Appear(appearDelay);
+			TweenLite.delayedCall(appearDelay, assetManager.PlaySound, ["paper3"]);
 			appearDelay += APPEAR_DELAY;
 			guiGroup.add(dread_meter);
 			player_glory_scroll = new FlxSprite(GLORY_LABEL_START.x, GLORY_LABEL_START.y, cardScrollPNG);
@@ -243,6 +252,7 @@ package
 			player_glory_label.scrollFactor = new FlxPoint(0, 0);
 			player_glory_label.antialiasing = true;
 			player_glory_label.Appear(appearDelay);
+			//TweenLite.delayedCall(appearDelay, assetManager.PlaySound, ["paper2"]);
 			appearDelay += APPEAR_DELAY;
 			guiGroup.add(player_glory_label);
 			player_hope_scroll = new FlxSprite(HOPE_LABEL_START.x, HOPE_LABEL_START.y, cardScrollPNG);
@@ -255,6 +265,7 @@ package
 			player_hope_label.scrollFactor = new FlxPoint(0, 0);
 			player_hope_label.antialiasing = true;
 			player_hope_label.Appear(appearDelay);
+			//TweenLite.delayedCall(appearDelay, assetManager.PlaySound, ["paper4"]);
 			appearDelay += APPEAR_DELAY;
 			guiGroup.add(player_hope_label);
 			
@@ -671,6 +682,7 @@ package
 						for each (var card_in_hand:Card in cardsInHand.members) {
 							if (card_in_hand != null && card_in_hand.alive) {
 								if (card_in_hand.bothScale == 1.0 && card_in_hand.clickableAt(clicked_at)) {
+									assetManager.PlaySound("click_down");
 									if (!canAfford(card_in_hand)) {
 										hero.thinkSomething("card_afford", card_in_hand);
 										if (card_in_hand._type == "MONSTER") {
@@ -694,7 +706,7 @@ package
 												}
 											}
 										}
-										
+
 										if (possible_spots <= 0) {
 											hero.thinkSomething("card_fit", card_in_hand);
 										} else {
@@ -748,6 +760,7 @@ package
 									var justAdded:Tile = addTileAt(new_tile, highlight.x, highlight.y);
 									justAdded.GainGlory();
 									justAdded.AppearAlpha();
+									assetManager.PlaySound("paper1");
 									highlight.kill()
 									is_placing_card = false;
 									highlights.visible = false;
@@ -989,7 +1002,9 @@ package
 				possible_card.bothScale = 0.5;	
 			}
 			cardsInHand.add(possible_card);
-			possible_card.Appear(sequence * Card.TIME_TO_APPEAR + appearDelay);
+			var cardDelay:Number = sequence * Card.TIME_TO_APPEAR + appearDelay;
+			possible_card.Appear(cardDelay);
+			TweenLite.delayedCall(cardDelay, assetManager.PlaySound, ["card_single"]);
 			//tr("finished adding card to hand " + possible_card._title);
 		}
 		

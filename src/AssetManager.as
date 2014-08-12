@@ -99,7 +99,7 @@ package
 			
 			if (!FlxG.mute) {
 				_sounds[soundName].play();
-				tr("played sound " + soundName);
+				//tr("played sound " + soundName);
 			}
 		}
 		

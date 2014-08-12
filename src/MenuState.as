@@ -124,7 +124,7 @@ package
 			
 			if (FlxG.debug && !showResults) {
 				showingInstructions = true;
-				FlxG.mute = true;
+				//FlxG.mute = true;
 				TweenLite.delayedCall(appearDelay, startGame);
 			}
 		}

@@ -387,8 +387,10 @@ package
 							//nothing
 					}
 					if (sell_it) {
-						//_playState.assetManager.PlaySound("coins");
+						_playState.assetManager.PlaySound("equip_coin_bag");
 						this.current_tile.GainGlory(next_card._treasure._hope + 1);
+					} else {
+						_playState.assetManager.PlaySound(next_card._treasure._equip_noise);
 					}
 					next_card._treasure.exists = false; //prevents drawing in tokens flxgroup (maybe remove instead?)
 					TweenLite.delayedCall(TIME_TREASURE, processNextCard);

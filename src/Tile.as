@@ -187,6 +187,7 @@ package
 				newCard._monster.x = this.x + MONSTER_ICON_OFFSET.x;
 				newCard._monster.y = this.y + MONSTER_ICON_OFFSET.y;
 				newCard._monster.Appear();
+				_playState.assetManager.PlaySound("pop1"); //TODO replace with monster noises
 			}
 			if (newCard._treasure != null) {
 				var new_placing_card_treasure:Treasure = new Treasure(this._playState, newCard._treasure._type, true);
@@ -195,6 +196,7 @@ package
 				newCard._treasure.x = this.x + TREASURE_ICON_OFFSET.x;
 				newCard._treasure.y = this.y + TREASURE_ICON_OFFSET.y;
 				newCard._treasure.Appear();
+				_playState.assetManager.PlaySound(newCard._treasure._equip_noise);
 			}
 			//tr("added card " + newCard._type + ":" + newCard._title + " to tile " + this.type);
 			addTreasureOrMonsterCard(newCard);
