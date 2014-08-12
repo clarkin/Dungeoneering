@@ -520,6 +520,7 @@ package
 			battle_monster_sprite.pixels = battling_monster.framePixels.clone();
 			
 			battleScreen.visible = true;
+			assetManager.PlaySound("clash");
 			
 			appearDelay = 0;
 			greyOut.AppearAlpha(appearDelay);
