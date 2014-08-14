@@ -10,6 +10,11 @@ package
 		[Embed(source = "../assets/sfx/ui/bling.wav", mimeType = "application/octet-stream")] private static const bling:Class;
 		[Embed(source = "../assets/sfx/ui/card_single.wav", mimeType = "application/octet-stream")] private static const card_single:Class;
 		[Embed(source = "../assets/sfx/ui/cards_shuffle.wav", mimeType = "application/octet-stream")] private static const cards_shuffle:Class;
+		[Embed(source = "../assets/sfx/ui/cheer.wav", mimeType = "application/octet-stream")] private static const cheer:Class;
+		[Embed(source = "../assets/sfx/ui/click_double.wav", mimeType = "application/octet-stream")] private static const click_double:Class;
+		[Embed(source = "../assets/sfx/ui/click_down.wav", mimeType = "application/octet-stream")] private static const click_down:Class;
+		[Embed(source = "../assets/sfx/ui/click_up.wav", mimeType = "application/octet-stream")] private static const click_up:Class;
+		[Embed(source = "../assets/sfx/ui/deathscream.wav", mimeType = "application/octet-stream")] private static const deathscream:Class;
 		[Embed(source = "../assets/sfx/ui/dice1.wav", mimeType = "application/octet-stream")] private static const dice1:Class;
 		[Embed(source = "../assets/sfx/ui/dice2.wav", mimeType = "application/octet-stream")] private static const dice2:Class;
 		[Embed(source = "../assets/sfx/ui/paper1.wav", mimeType = "application/octet-stream")] private static const paper1:Class;
@@ -26,9 +31,6 @@ package
 		[Embed(source = "../assets/sfx/ui/pop2.wav", mimeType = "application/octet-stream")] private static const pop2:Class;
 		[Embed(source = "../assets/sfx/ui/scroll_rollup.wav", mimeType = "application/octet-stream")] private static const scroll_rollup:Class;
 		[Embed(source = "../assets/sfx/ui/scroll_unroll.wav", mimeType = "application/octet-stream")] private static const scroll_unroll:Class;
-		[Embed(source = "../assets/sfx/ui/click_double.wav", mimeType = "application/octet-stream")] private static const click_double:Class;
-		[Embed(source = "../assets/sfx/ui/click_down.wav", mimeType = "application/octet-stream")] private static const click_down:Class;
-		[Embed(source = "../assets/sfx/ui/click_up.wav", mimeType = "application/octet-stream")] private static const click_up:Class;
 		
 		[Embed(source = "../assets/sfx/battle/attack_axe.wav", mimeType = "application/octet-stream")] private static const attack_axe:Class;
 		[Embed(source = "../assets/sfx/battle/attack_bow.wav", mimeType = "application/octet-stream")] private static const attack_bow:Class;
@@ -75,9 +77,9 @@ package
 		{
 			_playState = playState;
 				
-			_sound_names = ["bell", "bling", "card_single", "cards_shuffle", "click_double", "click_down", "click_up", "dice1", "dice2", 
-				"paper1", "paper2", "paper3", "paper4", "pencil1", "pencil2", "pencil3", "pencil4", "pencil5", "pencil6", 
-				"pop1", "pop2", "scroll_rollup", "scroll_unroll",
+			_sound_names = ["bell", "bling", "card_single", "cards_shuffle", "cheer", "click_double", "click_down", "click_up", 
+				"deathscream", "dice1", "dice2", "paper1", "paper2", "paper3", "paper4", "pencil1", "pencil2", "pencil3", "pencil4", 
+				"pencil5", "pencil6", "pop1", "pop2", "scroll_rollup", "scroll_unroll",
 				
 				"attack_axe", "attack_bow", "attack_club", "attack_knife", "attack_mace", "attack_staff", "attack_sword", "clash",
 				
