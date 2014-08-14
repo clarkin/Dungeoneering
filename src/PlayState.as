@@ -193,7 +193,7 @@ package
 			addTileAt(starting_tile, starting_point.x, starting_point.y, false);
 			starting_tile.AppearAlpha(appearDelay);
 			starting_tile.has_visited = true;
-			TweenLite.delayedCall(appearDelay, assetManager.PlaySound, ["paper1"]);
+			TweenLite.delayedCall(appearDelay, assetManager.PlaySound, ["pencil1"]);
 			appearDelay += APPEAR_DELAY;
 			hero.setCurrentTile(starting_tile);
 			hero.x = starting_tile.x + hero.tile_offset.x - hero.origin.x;
@@ -202,7 +202,7 @@ package
 			addTileAt(second_tile, starting_point.x, starting_point.y - Tile.TILESIZE);
 			second_tile.AppearAlpha(appearDelay);
 			second_tile.has_visited = true;
-			TweenLite.delayedCall(appearDelay, assetManager.PlaySound, ["paper1"]);
+			TweenLite.delayedCall(appearDelay, assetManager.PlaySound, ["pencil2"]);
 			appearDelay += APPEAR_DELAY;
 			hero.Appear(appearDelay);
 			TweenLite.delayedCall(appearDelay, assetManager.PlaySound, ["pop1"]);
@@ -676,13 +676,13 @@ package
 				dragging_from = null;
 			} else if (FlxG.mouse.justReleased() && !is_dragging) {
 				var clicked_at:FlxPoint = FlxG.mouse.getWorldPosition();
+				assetManager.PlaySound("click_down");
 				if (turn_phase == PHASE_CARDS_PLAY) {
 					if (!is_placing_card) {
 						clicked_at = FlxG.mouse.getScreenPosition();
 						for each (var card_in_hand:Card in cardsInHand.members) {
 							if (card_in_hand != null && card_in_hand.alive) {
 								if (card_in_hand.bothScale == 1.0 && card_in_hand.clickableAt(clicked_at)) {
-									assetManager.PlaySound("click_down");
 									if (!canAfford(card_in_hand)) {
 										hero.thinkSomething("card_afford", card_in_hand);
 										if (card_in_hand._type == "MONSTER") {
@@ -760,10 +760,14 @@ package
 									var justAdded:Tile = addTileAt(new_tile, highlight.x, highlight.y);
 									justAdded.GainGlory();
 									justAdded.AppearAlpha();
-									assetManager.PlaySound("paper1");
 									highlight.kill()
 									is_placing_card = false;
 									highlights.visible = false;
+									if (Math.random() > 0.5) {
+										assetManager.PlaySound("pencil1");
+									} else {
+										assetManager.PlaySound("pencil2");
+									}
 								} 
 							}
 						} else {

@@ -84,13 +84,13 @@ package
 					break;
 				case "Sapphire Ring":
 					_desc = "Mounted with a huge sapphire, fit for a princess";	
-					_equip_noise = "bell";
+					_equip_noise = "bling";
 					addAnimation(_type, [4]);
 					_hope = 3;
 					break;
 				case "Massive Gem":
 					_desc = "A gem as big as your head. Gotta have it!";
-					_equip_noise = "bell";
+					_equip_noise = "bling";
 					addAnimation(_type, [5]);
 					_hope = 5;
 					break;
