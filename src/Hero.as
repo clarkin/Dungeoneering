@@ -14,6 +14,7 @@ package
 		public static const ARRIVAL_THRESHOLD:int = 0;
 		public static const THINKING_TIME:Number = FloatingText.FADE_IN_TIME + FloatingText.DISPLAY_TIME + FloatingText.FADE_OUT_TIME;
 		public static const TIME_TREASURE:Number = 1.0;
+		public static const TIME_BETWEEN_ATTACKS:Number = 1.0;
 		
 		public static const EXPRESSION_HAPPY:int = 1;
 		public static const EXPRESSION_ANGRY:int = 2;
@@ -48,6 +49,7 @@ package
 		public var _equippablesLarge:FlxSprite;
 		public var _stamper:FlxSprite;
 		public var _whiteSprite:FlxSprite;
+		public var _largeSprite:FlxSprite;
 		
 		private var _playState:PlayState;
 		
@@ -68,6 +70,7 @@ package
 			
 			_stamper = new FlxSprite(X, Y);
 			_whiteSprite = new FlxSprite(X, Y);
+			_largeSprite = new FlxSprite(X, Y);
 			_equippables = new FlxSprite(X, Y);
 			_equippables.loadGraphic(heroPNG, true, false, sprite_size, sprite_size);
 			_equippablesLarge = new FlxSprite(X, Y);
@@ -89,8 +92,8 @@ package
 		public function RedoSprite():void {
 			makeGraphic(sprite_size, sprite_size, 0x00FFFFFF, true);
 			_whiteSprite.makeGraphic(sprite_size + 40, sprite_size + 40, 0x00FFFFFF, true);
+			_largeSprite.makeGraphic(sprite_size + 40, sprite_size + 40, 0x00FFFFFF, true);
 			_stamper.makeGraphic(sprite_size, sprite_size, 0x00FFFFFF, true);
-			//loadGraphic(heroBasePNG, false, false, sprite_size, sprite_size, true);
 			
 			_equippables.frame = _equippablesLarge.frame = 0;
 			_stamper.stamp(_equippables);
@@ -150,6 +153,9 @@ package
 			_equippables.frame = _equippablesLarge.frame = 5;
 			this.stamp(_equippables);
 			this.stamp(_stamper);
+			
+			_largeSprite.stamp(_equippablesLarge);
+			_largeSprite.stamp(_whiteSprite);
 		}
 		
 		public function startTurn():void {
@@ -397,49 +403,58 @@ package
 				} else if (next_card._type == "MONSTER") {
 					//tr("starting battle with monster " + next_card._monster._type + ", frame at " + next_card._monster.frame);
 					_playState.StartBattle(next_card._monster);
-					setExpression(EXPRESSION_ANGRY);
 				}
 				is_processing_cards = true;	
 			}
 		}
 		
 		public function FightMonster(this_monster:Monster):void {
+			var appearDelay:Number = 0;
 			if (EquippedSpeed() >= this_monster._speed) {
 				//tr("hero attacks first")
-				HeroAttacksMonster(this_monster);
-				
-				if (this_monster._health > 0) {
-					MonsterAttacksHero(this_monster);
-				}
+				TweenLite.delayedCall(appearDelay, HeroAttacksMonster, [this_monster]);
+				appearDelay += TIME_BETWEEN_ATTACKS;
+				TweenLite.delayedCall(appearDelay, MonsterAttacksHero, [this_monster]);
 			} else {
 				//tr("monster attacks first")
-				MonsterAttacksHero(this_monster);
-				
-				if (_health > 0) {
-					HeroAttacksMonster(this_monster);
-				}
+				TweenLite.delayedCall(appearDelay, MonsterAttacksHero, [this_monster]);
+				appearDelay += TIME_BETWEEN_ATTACKS;
+				TweenLite.delayedCall(appearDelay, HeroAttacksMonster, [this_monster]);
 			}
 		}
 		
 		public function HeroAttacksMonster(this_monster:Monster):void {
-			//tr("hero attacked monster");
-			if (EquippedStrength() > this_monster._armour) {
-				this_monster._health -= (EquippedStrength() - this_monster._armour);
-				//_playState.assetManager.PlaySound("swordkill");
-			}
-			
-			if (this_monster._health <= 0) {
-				var appearDelay:Number = PlayState.APPEAR_DELAY * 3 + PlayState.BATTLE_TIME;
-				//tr("triggering glory etc with delay " + appearDelay);
-				TweenLite.delayedCall(appearDelay, MonsterKilledResults, [this_monster]);
+			if (_health > 0) {
+				//tr("hero attacked monster");
+				if (EquippedStrength() > this_monster._armour) {
+					this_monster._health -= (EquippedStrength() - this_monster._armour);
+					_playState.assetManager.PlaySound("attack_sword");
+				} else {
+					_playState.assetManager.PlaySound("attack_club");
+				}
+				
+				_playState.BulgeObject(_playState.battle_hero_sprite);
+				_playState.battle_monster_stats.text = this_monster.GetStatsNumbers();
+				if (this_monster._health <= 0) {
+					var appearDelay:Number = PlayState.APPEAR_DELAY * 3 + PlayState.BATTLE_TIME;
+					//tr("triggering glory etc with delay " + appearDelay);
+					TweenLite.delayedCall(appearDelay, MonsterKilledResults, [this_monster]);
+				}
 			}
 		}
 		
 		public function MonsterAttacksHero(this_monster:Monster):void {
-			//tr("monster attacked hero");
-			if (this_monster._strength > EquippedArmour()) {
-				_health -= (this_monster._strength - EquippedArmour());
-				CheckHeroHealth();
+			if (this_monster._health > 0) {
+				//tr("monster attacked hero");
+				_playState.BulgeObject(_playState.battle_monster_sprite);
+				if (this_monster._strength > EquippedArmour()) {
+					_health -= (this_monster._strength - EquippedArmour());
+					CheckHeroHealth();
+					_playState.assetManager.PlaySound("attack_mace");
+					_playState.battle_hero_stats.text = this.GetStatsNumbers();
+				} else {
+					_playState.assetManager.PlaySound("attack_club");
+				}
 			}
 		}
 		

@@ -172,7 +172,7 @@ package
 			battle_hero_stats.scrollFactor = new FlxPoint(0, 0);
 			battle_hero_stats.antialiasing = true;
 			battleScreen.add(battle_hero_stats);
-			battle_hero_sprite = new FlxSprite(230, 373);
+			battle_hero_sprite = new FlxSprite(210, 353);
 			battle_hero_sprite.scrollFactor = new FlxPoint(0, 0);
 			battle_hero_sprite.pixels = hero.framePixels.clone();
 			battle_hero_sprite.antialiasing = true;
@@ -182,7 +182,7 @@ package
 			battle_monster_stats.scrollFactor = new FlxPoint(0, 0);
 			battle_monster_stats.antialiasing = true;
 			battleScreen.add(battle_monster_stats);
-			battle_monster_sprite = new FlxSprite(714, 373);
+			battle_monster_sprite = new FlxSprite(694, 353);
 			battle_monster_sprite.scrollFactor = new FlxPoint(0, 0);
 			battle_monster_sprite.pixels = hero.framePixels.clone();
 			battle_monster_sprite.antialiasing = true;
@@ -401,8 +401,6 @@ package
 							hero.startMoving();
 						} else {
 							hero.FightMonster(battling_monster);
-							battle_hero_stats.text = hero.GetStatsNumbers();
-							battle_monster_stats.text = battling_monster.GetStatsNumbers();
 						}
 					} else {
 						//battling_monster = null;
@@ -524,11 +522,12 @@ package
 			
 			battle_hero_stats.text = hero.GetStatsNumbers();
 			battle_monster_stats.text = battling_monster.GetStatsNumbers();
-			
 			hero.setExpression(Hero.EXPRESSION_ANGRY);
-			battle_hero_sprite.pixels = hero.framePixels.clone();
-			battling_monster.drawFrame(true); //necessary for boss_monster as it has never been visible so frame was never set
-			battle_monster_sprite.pixels = battling_monster.framePixels.clone();
+			battle_hero_sprite.pixels = hero._largeSprite.framePixels.clone();
+			var temp_battle_monster:Monster = new Monster(this, battling_monster._type, true, true);
+			temp_battle_monster.drawFrame(true); //necessary as it has never been visible so frame was never set
+			battle_monster_sprite.pixels = temp_battle_monster.framePixels.clone();
+			temp_battle_monster = null;
 			
 			battleScreen.visible = true;
 			assetManager.PlaySound("clash");
