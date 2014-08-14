@@ -205,8 +205,9 @@ package
 			//show tile search effect
 			var delay:Number = 0;
 			var flashTime:Number = 0.15;
-			for (var i:int = valid_tiles.length - 1; i >= 0; i--) {
-				var this_tile:Tile = valid_tiles[i];
+			var skipNumber:int = Math.ceil(valid_tiles.length / 10);
+			for (var i:int = valid_tiles.length - 1; i >= 0; i -= skipNumber) {
+				var this_tile:Tile = valid_tiles[Math.floor(Math.random() * valid_tiles.length)];
 				//TweenMax.to(this_tile, flashTime, { alpha:0.7, delay:delay, repeat:1, yoyo:true } );
 				TweenMax.delayedCall(delay, drawPath, [this_tile.pathToThis]);
 				delay += flashTime;
