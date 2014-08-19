@@ -228,6 +228,7 @@ package
 			}
 			
 			var thought:String = "";
+			var thought_sounds:Array = [];
 			if (thought_type == "movement") {
 				if (moving_to_tile.cards.length > 0) {
 					var top_card:Card = moving_to_tile.cards[moving_to_tile.cards.length - 1];
@@ -239,6 +240,7 @@ package
 								"BANZAAAAAIIIIII", "MONSTERs drop loot, right?"];
 							thought = monster_thoughts[Math.floor(Math.random() * (monster_thoughts.length))];
 							thought = thought.replace(/MONSTER/g, top_card._title);
+							thought_sounds = ["male_angry1", "male_angry2", "male_confident", "male_worried"];
 							break;
 						case "TREASURE":
 							setExpression(EXPRESSION_HAPPY);
@@ -247,6 +249,7 @@ package
 								"Ooh gimme", "TREASURE? TREASURE!", "Cha-CHING!"];
 							thought = treasure_thoughts[Math.floor(Math.random() * (treasure_thoughts.length))];
 							thought = thought.replace(/TREASURE/g, top_card._title);
+							thought_sounds = ["male_curious", "male_excited", "male_happy1", "male_happy2"];
 							break;
 						case "WEAPON":
 							setExpression(EXPRESSION_HAPPY);
@@ -255,25 +258,28 @@ package
 								"Hm, is that an upgrade?", "That will look nice on my mantelpiece"];
 							thought = weapon_thoughts[Math.floor(Math.random() * (weapon_thoughts.length))];
 							thought = thought.replace(/WEAPON/g, top_card._title);
+							thought_sounds = ["male_curious", "male_excited", "male_happy1", "male_happy2"];
 							break;
 					}
-					
 				} else {
 					var random_thoughts:Array = ["On we go..", "Hm.. was I already here?", "A dungeoneer's life is never dull..",
 						"I think I'm lost #DUNGEONEERING", "Eyes closed this time.. #YOLO", "This looks vaguely familiar", 
 						"The Guild isn't paying me enough for this", "Maybe over here", "I hope this place has a tavern"];
 					thought = random_thoughts[Math.floor(Math.random() * (random_thoughts.length))];
+					thought_sounds = ["male_curious", "male_confident", "male_bored1", "male_bored2"];
 				}
 			} else if (thought_type == "idle") {
 				var idle_thoughts:Array = ["Come on! Do SOMETHING!", "So.. bored", "Why can't I move now? Oh yeah you're playing those cards..",
 					"...", "zzzzZZZ", "*sigh*", "How about finding me something easy.. like a rubber ducky?", 
 					"I wish I was back at my nice warm room in the Guild", "*YAWN*", "Are you AFK?? Don't leave me here!"];
 				thought = idle_thoughts[Math.floor(Math.random() * (idle_thoughts.length))];
+				//thought_sounds = ["male_bored1", "male_bored2"];
 			} else if (thought_type == "poked") {
 				setExpression(EXPRESSION_ANGRY);
 				var poked_thoughts:Array = ["Ow - that hurt!", "Please stop clicking me", "What if I were to poke YOU instead!?",
 					"Stop that", "The rulebook clearly says that clicking me doesn't achieve anything", "Cut it out!"];
 				thought = poked_thoughts[Math.floor(Math.random() * (poked_thoughts.length))];
+				thought_sounds = ["male_angry1", "male_angry2"];
 			} else if (thought_type == "card_afford") {
 				setExpression(EXPRESSION_WORRIED);
 				var afford_thoughts:Array = ["No, silly, you need COST CURRENCY before you can play that!", "Playing a CARDNAME costs COST CURRENCY. Even I know that!!",
@@ -283,20 +289,20 @@ package
 				thought = thought.replace(/COST/g, card_clicked._cost);
 				thought = thought.replace(/CURRENCY/g, card_clicked._type == "MONSTER" ? "DREAD" : "HOPE");
 				thought = thought.replace(/CARDNAME/g, card_clicked._title);
+				thought_sounds = ["male_confident", "male_worried"];
 			} else if (thought_type == "card_fit") {
 				setExpression(EXPRESSION_SCARED);
 				var fit_thoughts:Array = ["I don't think that can fit anywhere right now..", "And just where would that CARDNAME fit?",
 					"There's nowhere that can fit that CARDNAME", "That won't fit anywhere!", "There's no space for that CARDNAME!"];
 				thought = fit_thoughts[Math.floor(Math.random() * (fit_thoughts.length))];
 				thought = thought.replace(/CARDNAME/g, card_clicked._title);
+				thought_sounds = ["male_confident", "male_worried"];
 			}
 			
 			TweenMax.delayedCall(THINKING_TIME, setExpression, [EXPRESSION_HAPPY]);
 			TweenMax.to(this, 0.15, { x:x + 1, y:y - 2, bothScale:bothScale + 0.1, repeat:5, yoyo:true } );
-			if (thought_type != "idle") {
-				//_playState.assetManager.PlaySound("dungeoneertalk1");
-			}
 			_playState.floatingTexts.add(new FloatingText(x + thought_offset.x, y + thought_offset.y, thought));
+			_playState.assetManager.PlaySound(thought_sounds[Math.floor(Math.random() * thought_sounds.length)]);
 		}
 		
 		public function setExpression(newExpression:int):void {

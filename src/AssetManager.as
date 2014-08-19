@@ -68,6 +68,17 @@ package
 		[Embed(source = "../assets/sfx/equipment/equip_winged_helm.wav", mimeType = "application/octet-stream")] private static const equip_winged_helm:Class;
 		[Embed(source = "../assets/sfx/equipment/equip_wooden_shield.wav", mimeType = "application/octet-stream")] private static const equip_wooden_shield:Class;
 		
+		[Embed(source = "../assets/sfx/voice/male/angry1.wav", mimeType = "application/octet-stream")] private static const male_angry1:Class;
+		[Embed(source = "../assets/sfx/voice/male/angry2.wav", mimeType = "application/octet-stream")] private static const male_angry2:Class;
+		[Embed(source = "../assets/sfx/voice/male/bored1.wav", mimeType = "application/octet-stream")] private static const male_bored1:Class;
+		[Embed(source = "../assets/sfx/voice/male/bored2.wav", mimeType = "application/octet-stream")] private static const male_bored2:Class;
+		[Embed(source = "../assets/sfx/voice/male/confident.wav", mimeType = "application/octet-stream")] private static const male_confident:Class;
+		[Embed(source = "../assets/sfx/voice/male/curious.wav", mimeType = "application/octet-stream")] private static const male_curious:Class;
+		[Embed(source = "../assets/sfx/voice/male/excited.wav", mimeType = "application/octet-stream")] private static const male_excited:Class;
+		[Embed(source = "../assets/sfx/voice/male/happy1.wav", mimeType = "application/octet-stream")] private static const male_happy1:Class;
+		[Embed(source = "../assets/sfx/voice/male/happy2.wav", mimeType = "application/octet-stream")] private static const male_happy2:Class;
+		[Embed(source = "../assets/sfx/voice/male/worried.wav", mimeType = "application/octet-stream")] private static const male_worried:Class;
+		
 		private var _playState:PlayState;
 		
 		public var _sounds:Array = new Array();
@@ -87,7 +98,10 @@ package
 				"equip_coin_chest", "equip_coin_double", "equip_coin_single", "equip_great_shield", "equip_horned_helm", "equip_knife", 
 				"equip_leather_armour", "equip_leather_helm", "equip_mace", "equip_platemail", "equip_potion", "equip_robes", 
 				"equip_scalemail", "equip_silver_shield", "equip_staff", "equip_staff_magic", "equip_sword", "equip_winged_helm", 
-				"equip_wooden_shield"];
+				"equip_wooden_shield",
+				
+				"male_angry1", "male_angry2", "male_bored1", "male_bored2", "male_confident", "male_curious", "male_excited", 
+				"male_happy1", "male_happy2", "male_worried"];
 			
 			for each (var sound_name:String in _sound_names) {
 				LoadSound(sound_name);
