@@ -356,6 +356,8 @@ package
 			
 			TweenLite.delayedCall(appearDelay, endFadeIn);
 			appearDelay = 0;
+			
+			assetManager.StartMusic();
 		}
 		
 		override public function update():void {
@@ -807,7 +809,16 @@ package
 			} else if (FlxG.keys.justReleased("S")) {
 				FlxG.mute = !FlxG.mute;
 				tr("*** Toggle Sound, mute now " + FlxG.mute + " ***");
-			} else if (FlxG.keys.justReleased("C")) {
+			} else if (FlxG.keys.justReleased("M")) {
+				if (FlxG.music && FlxG.music.active) {
+					assetManager.StopMusic();
+					tr("*** Toggle Music OFF ***");
+				} else {
+					assetManager.StartMusic();
+					tr("*** Toggle Music ON ***");
+				}
+			}
+			else if (FlxG.keys.justReleased("C")) {
 				UIFrame.visible = !UIFrame.visible;
 				cardsInHand.visible = !cardsInHand.visible;
 				guiGroup.visible = !guiGroup.visible;

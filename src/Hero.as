@@ -302,7 +302,9 @@ package
 			TweenMax.delayedCall(THINKING_TIME, setExpression, [EXPRESSION_HAPPY]);
 			TweenMax.to(this, 0.15, { x:x + 1, y:y - 2, bothScale:bothScale + 0.1, repeat:5, yoyo:true } );
 			_playState.floatingTexts.add(new FloatingText(x + thought_offset.x, y + thought_offset.y, thought));
-			_playState.assetManager.PlaySound(thought_sounds[Math.floor(Math.random() * thought_sounds.length)]);
+			if (thought_sounds.length > 0 ) {
+				_playState.assetManager.PlaySound(thought_sounds[Math.floor(Math.random() * thought_sounds.length)]);
+			}
 		}
 		
 		public function setExpression(newExpression:int):void {

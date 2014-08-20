@@ -2,7 +2,7 @@ package
 {
 	import org.flixel.*;
 	import org.as3wavsound.*;
-	import flash.utils.ByteArray;
+	import flash.utils.*;
 	
 	public class AssetManager 
 	{
@@ -79,6 +79,12 @@ package
 		[Embed(source = "../assets/sfx/voice/male/happy2.wav", mimeType = "application/octet-stream")] private static const male_happy2:Class;
 		[Embed(source = "../assets/sfx/voice/male/worried.wav", mimeType = "application/octet-stream")] private static const male_worried:Class;
 		
+		[Embed(source = "../assets/music/oompa.mp3")] private static const music_oompa:Class;
+		[Embed(source = "../assets/music/tune1.mp3")] private static const music_tune1:Class;
+		[Embed(source = "../assets/music/tune2.mp3")] private static const music_tune2:Class;
+		[Embed(source = "../assets/music/decor.mp3")] private static const music_decor:Class;
+		public var music_choices:Array = ["music_oompa", "music_tune1", "music_tune2", "music_decor"];
+		
 		private var _playState:PlayState;
 		
 		public var _sounds:Array = new Array();
@@ -123,6 +129,20 @@ package
 			if (!FlxG.mute) {
 				_sounds[soundName].play();
 				//tr("played sound " + soundName);
+			}
+		}
+		
+		public function StartMusic():void {
+			StopMusic();
+			var chosen_music_string:String = music_choices[Math.floor(Math.random() * music_choices.length)];
+			var chosen_music:Class = AssetManager[chosen_music_string] as Class;
+			FlxG.playMusic(chosen_music, 0.5);
+			tr("Now playing: " + chosen_music_string);
+		}
+		
+		public function StopMusic():void {
+			if (FlxG.music) {
+				FlxG.music.stop();
 			}
 		}
 		
