@@ -90,6 +90,7 @@ package
 		public var battle_stat_names:FlxText;
 		public var battle_hero_stats:FlxText;
 		public var battle_monster_stats:FlxText;
+		public var music_label:FlxText;
 		public var battle_hero_sprite:FlxSprite;
 		public var battle_monster_sprite:FlxSprite;
 		public var stats_hero_sprite:FlxSprite;
@@ -268,6 +269,12 @@ package
 			//TweenLite.delayedCall(appearDelay, assetManager.PlaySound, ["paper4"]);
 			appearDelay += APPEAR_DELAY;
 			guiGroup.add(player_hope_label);
+			
+			//**TEMP
+			music_label = new FlxText(800, 750, 100, "");
+			music_label.setFormat("LemonsCanFly", 24, 0xFF000000, "left");
+			music_label.scrollFactor = new FlxPoint(0, 0);
+			guiGroup.add(music_label);
 			
 			player_cards_scroll = new FlxSprite(HAND_START.x - 40 - 350, HAND_START.y - 47, UICardsScrollPNG);
 			player_cards_scroll.scrollFactor = new FlxPoint(0, 0);

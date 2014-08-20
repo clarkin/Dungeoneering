@@ -136,12 +136,14 @@ package
 			StopMusic();
 			var chosen_music_string:String = music_choices[Math.floor(Math.random() * music_choices.length)];
 			var chosen_music:Class = AssetManager[chosen_music_string] as Class;
-			FlxG.playMusic(chosen_music, 0.5);
+			FlxG.playMusic(chosen_music, 0.2);
+			_playState.music_label.text = chosen_music_string;
 			tr("Now playing: " + chosen_music_string);
 		}
 		
 		public function StopMusic():void {
 			if (FlxG.music) {
+				_playState.music_label.text = "";
 				FlxG.music.stop();
 			}
 		}
