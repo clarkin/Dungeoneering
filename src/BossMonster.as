@@ -152,11 +152,9 @@ package
 			}
 			_playState.floatingTexts.add(boss_shout);
 			
-			if (angry) {
-				//TweenLite.delayedCall(delay, _playState.assetManager.PlaySound, ["demontalk1"]);
-			} else {
-				//TweenLite.delayedCall(delay, _playState.assetManager.PlaySound, ["demontalk2"]);
-			}
+			//TODO: bring back 'if (angry)'
+			var possible_sounds:Array = ["demon1", "demon2", "demon3"];
+			TweenLite.delayedCall(delay, _playState.assetManager.PlaySound, [possible_sounds[Math.floor(Math.random() * possible_sounds.length)]]);
 		}
 		
 		public function thinkSomething(thought_type:String, card_clicked:Card = null):void {

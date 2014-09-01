@@ -79,11 +79,14 @@ package
 		[Embed(source = "../assets/sfx/voice/male/happy2.wav", mimeType = "application/octet-stream")] private static const male_happy2:Class;
 		[Embed(source = "../assets/sfx/voice/male/worried.wav", mimeType = "application/octet-stream")] private static const male_worried:Class;
 		
+		[Embed(source = "../assets/sfx/voice/demon/demon1.wav", mimeType = "application/octet-stream")] private static const demon1:Class;
+		[Embed(source = "../assets/sfx/voice/demon/demon2.wav", mimeType = "application/octet-stream")] private static const demon2:Class;
+		[Embed(source = "../assets/sfx/voice/demon/demon3.wav", mimeType = "application/octet-stream")] private static const demon3:Class;
+		
 		[Embed(source = "../assets/music/oompa.mp3")] private static const music_oompa:Class;
 		[Embed(source = "../assets/music/tune1.mp3")] private static const music_tune1:Class;
 		[Embed(source = "../assets/music/tune2.mp3")] private static const music_tune2:Class;
-		[Embed(source = "../assets/music/decor.mp3")] private static const music_decor:Class;
-		public var music_choices:Array = ["music_oompa", "music_tune1", "music_tune2", "music_decor"];
+		public var music_choices:Array = ["music_oompa", "music_tune1", "music_tune2"];
 		
 		private var _playState:PlayState;
 		
@@ -107,7 +110,9 @@ package
 				"equip_wooden_shield",
 				
 				"male_angry1", "male_angry2", "male_bored1", "male_bored2", "male_confident", "male_curious", "male_excited", 
-				"male_happy1", "male_happy2", "male_worried"];
+				"male_happy1", "male_happy2", "male_worried",
+				
+				"demon1", "demon2", "demon3"];
 			
 			for each (var sound_name:String in _sound_names) {
 				LoadSound(sound_name);
