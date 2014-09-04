@@ -83,10 +83,23 @@ package
 		[Embed(source = "../assets/sfx/voice/demon/demon2.wav", mimeType = "application/octet-stream")] private static const demon2:Class;
 		[Embed(source = "../assets/sfx/voice/demon/demon3.wav", mimeType = "application/octet-stream")] private static const demon3:Class;
 		
-		[Embed(source = "../assets/music/oompa.mp3")] private static const music_oompa:Class;
-		[Embed(source = "../assets/music/tune1.mp3")] private static const music_tune1:Class;
-		[Embed(source = "../assets/music/tune2.mp3")] private static const music_tune2:Class;
-		public var music_choices:Array = ["music_oompa", "music_tune1", "music_tune2"];
+		[Embed(source = "../assets/sfx/voice/monsters/bandito.wav", mimeType = "application/octet-stream")] private static const bandito:Class;
+		[Embed(source = "../assets/sfx/voice/monsters/cyclops.wav", mimeType = "application/octet-stream")] private static const cyclops:Class;
+		[Embed(source = "../assets/sfx/voice/monsters/ghost.wav", mimeType = "application/octet-stream")] private static const ghost:Class;
+		[Embed(source = "../assets/sfx/voice/monsters/giant_bat.wav", mimeType = "application/octet-stream")] private static const giant_bat:Class;
+		[Embed(source = "../assets/sfx/voice/monsters/goblin.wav", mimeType = "application/octet-stream")] private static const goblin:Class;
+		[Embed(source = "../assets/sfx/voice/monsters/gray_ooze.wav", mimeType = "application/octet-stream")] private static const gray_ooze:Class;
+		[Embed(source = "../assets/sfx/voice/monsters/mummy.wav", mimeType = "application/octet-stream")] private static const mummy:Class;
+		[Embed(source = "../assets/sfx/voice/monsters/orc_grunt.wav", mimeType = "application/octet-stream")] private static const orc_grunt:Class;
+		[Embed(source = "../assets/sfx/voice/monsters/rubber_ducky.wav", mimeType = "application/octet-stream")] private static const rubber_ducky:Class;
+		[Embed(source = "../assets/sfx/voice/monsters/scary_spider.wav", mimeType = "application/octet-stream")] private static const scary_spider:Class; //TODO proper sound
+		[Embed(source = "../assets/sfx/voice/monsters/skeleton.wav", mimeType = "application/octet-stream")] private static const skeleton:Class;
+		[Embed(source = "../assets/sfx/voice/monsters/sorceress.wav", mimeType = "application/octet-stream")] private static const sorceress:Class;
+		[Embed(source = "../assets/sfx/voice/monsters/zombie.wav", mimeType = "application/octet-stream")] private static const zombie:Class;
+		
+		[Embed(source = "../assets/music/dungeon_delvers.mp3")] private static const dungeon_delvers:Class;
+		[Embed(source = "../assets/music/adventurers_tavern.mp3")] private static const adventurers_tavern:Class;
+		public var music_choices:Array = ["dungeon_delvers", "adventurers_tavern"];
 		
 		private var _playState:PlayState;
 		
@@ -113,6 +126,11 @@ package
 				"male_happy1", "male_happy2", "male_worried",
 				
 				"demon1", "demon2", "demon3"];
+				
+			for each (var monster_type:String in Monster.ALL_MONSTERS) {
+				var monster_sound:String = monster_type.replace(" ", "_").toLowerCase();
+				_sound_names.push(monster_sound);
+			}
 			
 			for each (var sound_name:String in _sound_names) {
 				LoadSound(sound_name);
@@ -141,9 +159,9 @@ package
 			StopMusic();
 			var chosen_music_string:String = music_choices[Math.floor(Math.random() * music_choices.length)];
 			var chosen_music:Class = AssetManager[chosen_music_string] as Class;
-			FlxG.playMusic(chosen_music, 0.2);
-			_playState.music_label.text = chosen_music_string;
-			tr("Now playing: " + chosen_music_string);
+			FlxG.playMusic(chosen_music, 0.3);
+			_playState.music_label.text = "\"" + chosen_music_string.replace("_", " ") + "\"";
+			//tr("Now playing: " + chosen_music_string);
 		}
 		
 		public function StopMusic():void {

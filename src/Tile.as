@@ -187,7 +187,7 @@ package
 				newCard._monster.x = this.x + MONSTER_ICON_OFFSET.x;
 				newCard._monster.y = this.y + MONSTER_ICON_OFFSET.y;
 				newCard._monster.Appear();
-				_playState.assetManager.PlaySound("pop1"); //TODO replace with monster noises
+				_playState.assetManager.PlaySound(new_placing_card_monster._type.replace(" ", "_").toLowerCase());
 			}
 			if (newCard._treasure != null) {
 				var new_placing_card_treasure:Treasure = new Treasure(this._playState, newCard._treasure._type, true);

@@ -271,7 +271,7 @@ package
 			guiGroup.add(player_hope_label);
 			
 			//**TEMP
-			music_label = new FlxText(800, 750, 100, "");
+			music_label = new FlxText(800, 750, 200, "");
 			music_label.setFormat("LemonsCanFly", 24, 0xFF000000, "left");
 			music_label.scrollFactor = new FlxPoint(0, 0);
 			guiGroup.add(music_label);
@@ -963,9 +963,8 @@ package
 			}
 			//tr("total_tile: " + total_tile + ", total_monster: " + total_monster + ", total_treasure: " + total_treasure);
 			if (type == "") {
-				var possible_types:Array = ["TILE", "TILE", "TILE", "MONSTER", "MONSTER", "TREASURE"];
+				var possible_types:Array = ["TILE", "TILE", "MONSTER", "MONSTER", "TREASURE"];
 				if (total_tile == 0) {
-					possible_types.push("TILE");
 					possible_types.push("TILE");
 					possible_types.push("TILE");
 				}
