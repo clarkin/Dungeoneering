@@ -7,6 +7,7 @@ package
 
 	public class MenuState extends FlxState
 	{
+		[Embed(source = "../assets/cursor.png")] private var ARTcursor:Class;
 		[Embed(source = "../assets/title_screen.jpg")] private var ARTtitleScreen:Class;
 		[Embed(source = "../assets/instructions.png")] private var ARTinstructions:Class;
 		[Embed(source = "../assets/death_screen.png")] private var ARTdeathScreen:Class;
@@ -41,6 +42,7 @@ package
 
 
 		override public function create():void {
+			FlxG.mouse.load(ARTcursor);
 			FlxG.mouse.show();
 			FlxG.bgColor = 0xFF333333;
 			
