@@ -99,7 +99,8 @@ package
 		
 		[Embed(source = "../assets/music/dungeon_delvers.mp3")] private static const dungeon_delvers:Class;
 		[Embed(source = "../assets/music/adventurers_tavern.mp3")] private static const adventurers_tavern:Class;
-		public var music_choices:Array = ["dungeon_delvers", "adventurers_tavern"];
+		[Embed(source = "../assets/music/final_synthasy.mp3")] private static const final_synthasy:Class;
+		public var music_choices:Array = ["dungeon_delvers", "adventurers_tavern", "final_synthasy"];
 		
 		private var _playState:PlayState;
 		
